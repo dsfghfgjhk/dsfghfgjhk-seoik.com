@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>일고닷컴</title>
+<title>서익닷컴</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
@@ -963,7 +963,7 @@
   <!-- ============ HOME ============ -->
   <div data-view="home" class="show">
     <div class="topbar zb-top">
-      <div class="left"><button class="icon-btn hamburger" data-open-drawer aria-label="전체 메뉴"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span class="logo zb-logo">ILGO.COM</span></div>
+      <div class="left"><button class="icon-btn hamburger" data-open-drawer aria-label="전체 메뉴"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span class="logo zb-logo">SEOIK.COM</span></div>
       <div class="right"><button class="icon-btn" data-go-tab="my" aria-label="마이"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.3 7.5-5.3s6.3 1.7 7.5 5.3"/></svg></button><button class="icon-btn bell" data-go-tab="board" aria-label="게시판"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i class="bell-dot" id="bellDot" hidden></i></button></div>
     </div>
     <section class="zb-hero" id="ddayCard">
@@ -1028,7 +1028,7 @@
       <div class="zb-h zb-h-row"><span>공지사항</span><button type="button" class="zb-more" data-go-tab="board">전체보기</button></div>
       <div class="zb-notice" id="zbNotice"></div>
     </section>
-    <div class="zb-foot">ILGO.COM · 1학년 2학기 1차고사 대비</div>
+    <div class="zb-foot">SEOIK.COM · 1학년 2학기 1차고사 대비</div>
   </div>
 
   <!-- ============ 개념노트 ============ -->
@@ -11806,7 +11806,7 @@ function renderTimetable(){
     const done = s ? progress[s.id].filter(Boolean).length : 0;
     return '<div class="tt-row'+(s?' go':'')+'" '+(s?'data-sid="'+s.id+'" role="button" tabindex="0"':'')+'>'+
       '<div class="tt-p"><b>'+it.p+'교시</b><small>입실 '+it.enter+'</small></div>'+
-      '<div class="tt-m"><b>'+escapeHtml(it.name)+'</b><small>'+it.t+(s ? ' · 세트 '+done+'/'+s.quiz.length : ' · 일고닷컴 문제 없음')+'</small></div>'+
+      '<div class="tt-m"><b>'+escapeHtml(it.name)+'</b><small>'+it.t+(s ? ' · 세트 '+done+'/'+s.quiz.length : ' · 서익닷컴 문제 없음')+'</small></div>'+
       (s ? '<span class="tt-go">문제 풀기 ›</span>' : '<span class="tt-none">자습</span>')+'</div>';
   }).join("") + '<p class="tt-foot">1학년은 나머지 교시 자습 · 3교시 후 하교</p>';
   list.querySelectorAll(".tt-row.go").forEach(r=> r.onclick = ()=>{ studySubjectId = r.dataset.sid; studyUnitIdx = 0; goTab("study"); window.scrollTo(0,0); });
@@ -12512,7 +12512,7 @@ function sheetHeaderHTML(){
   const year = new Date().getFullYear();
   const topics = quizMode === "set" && quizSubject.topics && quizSubject.topics[quizSet];
   return '<header class="sh-head">'+
-    '<div class="sh-top"><span>'+year+'학년도 '+escapeHtml(ex.label || "")+' 대비</span><span>일고닷컴</span></div>'+
+    '<div class="sh-top"><span>'+year+'학년도 '+escapeHtml(ex.label || "")+' 대비</span><span>서익닷컴</span></div>'+
     '<h1 class="sh-title"><span class="sh-grade">1학년</span>'+escapeHtml(title)+'</h1>'+
     '<div class="sh-info">'+
       '<div class="k">과목</div><div class="v">'+escapeHtml(subjName)+'</div>'+
@@ -12776,7 +12776,7 @@ function renderBoard(){
   if(note){
     note.textContent = boardCanPublish===false
       ? "공개 글은 링크로 들어온 모두가 볼 수 있어요. 이 화면에서는 '나만 보기' 글만 쓸 수 있어요."
-      : "'공개' 글은 일고닷컴을 여는 모든 사람에게 보여요. '나만 보기' 글은 이 기기에만 저장돼요.";
+      : "'공개' 글은 서익닷컴을 여는 모든 사람에게 보여요. '나만 보기' 글은 이 기기에만 저장돼요.";
   }
 
   const catWrap = document.getElementById("boardCats");
