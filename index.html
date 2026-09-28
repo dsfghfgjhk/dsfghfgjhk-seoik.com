@@ -1033,7 +1033,7 @@
   }
 
   /* ---------- 인쇄 · PDF 저장 ---------- */
-  @page{ size:A4; margin:10mm; }
+  @page{ size:A4; margin:12mm 11mm; }
   @media print{
     html, body{ background:#fff !important; }
     body.sheet-mode .app{ max-width:none !important; }
@@ -1041,6 +1041,8 @@
     body.sheet-mode .app > *:not([data-view="quiz"]){ display:none !important; }
     body.sheet-mode [data-view="quiz"] .paper > *:not(#sheet){ display:none !important; }
     body.sheet-mode [data-view="quiz"] .paper{ padding:0 !important; margin:0 !important; }
+    body.print-doc #sheet > *:not(#shPrintDoc){ display:none !important; }
+    body.print-doc #shPrintDoc{ display:block !important; }
     body.sheet-mode .sh-bar, body.sheet-mode .sh-ans, body.sheet-mode .sh-submit, body.sheet-mode .sh-key-acts,
     body.sheet-mode .sq-flag:not(.on), body.sheet-mode .sh-key-note, body.sheet-mode .sh-key-go i{ display:none !important; }
     .sheet{ --pp:#fff !important; --pi:#000 !important; --pm:#444 !important; --pr:#999 !important; --red-pen:#D12B2B !important; --pencil:#333 !important; }
@@ -1059,6 +1061,59 @@
     .sq-cn svg path, .sq-grade svg path{ animation:none !important; stroke-dashoffset:0 !important; }
     .sh-key-list{ columns:2 !important; }
   }
+
+  /* 인쇄 메뉴 */
+  .sh-pmenu{ max-height:none; }
+  body.pmenu-open .sh-pmenu{ transform:translate(-50%, 0); }
+  .sh-pmenu-body{ padding:10px 12px 16px; display:grid; gap:8px; }
+  .sh-popt{
+    all:unset; box-sizing:border-box; display:flex; flex-direction:column; gap:2px; padding:12px 14px; border-radius:6px;
+    border:1px solid var(--border); background:var(--card); cursor:pointer;
+  }
+  .sh-popt b{ font:700 15px var(--sans); color:var(--ink); }
+  .sh-popt span{ font:500 12.5px var(--sans); color:var(--ink-soft); }
+  .sh-popt:focus-visible{ outline:2px solid #3B6FE0; outline-offset:2px; }
+  @media (hover:hover){ .sh-popt:hover{ border-color:var(--ink); } }
+
+  /* ---------- 학습지 인쇄 문서 (화면에는 안 보임) ---------- */
+  #shPrintDoc{ display:none; }
+  .pd{ color:#000; background:#fff; font-family:var(--serif); }
+  .pd-top{ display:flex; justify-content:space-between; gap:8mm; padding-bottom:1.6mm; border-bottom:1.6pt solid #000; font:600 8.5pt var(--sans); letter-spacing:.02em; }
+  .pd-title{ margin:4mm 0 1mm; font:700 16pt/1.3 var(--serif); letter-spacing:-0.02em; color:#000; }
+  .pd-sub{ font:500 9pt var(--sans); color:#333; }
+  .pd-goal{ margin:2.5mm 0 0; font:500 8.5pt/1.6 var(--sans); color:#222; }
+  .pd-goal b{ margin-right:2.5mm; }
+  .pd-goal span + span::before{ content:"·"; margin:0 2mm; }
+  .pd-name{ display:flex; justify-content:flex-end; gap:8mm; margin:3mm 0 5mm; padding-bottom:3mm; border-bottom:0.6pt solid #000; font:600 9pt var(--sans); }
+  .pd-name i{ display:inline-block; width:28mm; height:4mm; border-bottom:0.6pt solid #000; margin:0 2mm; vertical-align:-1mm; }
+  .pd-q{ column-count:2; column-gap:9mm; column-rule:0.5pt solid #000; }
+  .pd-item{ break-inside:avoid; page-break-inside:avoid; margin:0 0 7mm; }
+  .pd-qhead{ display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:1.6mm; }
+  .pd-n{ font:700 11pt/1.55 var(--sans); }
+  .pd-stem{ font-size:10pt; line-height:1.6; word-break:keep-all; color:#000; }
+  .pd-stem .mat-wrap{ border:0.6pt solid #000 !important; background:#fff !important; margin-top:2mm; border-radius:0 !important; }
+  .pd-stem .mat-label{ border-color:#000 !important; color:#000 !important; font-size:7.5pt; margin:1.6mm 0 0 2mm; }
+  .pd-stem .mat-box{ font-size:9pt; line-height:1.55; color:#000 !important; padding:1.6mm 2.4mm 2mm; }
+  .pd-stem table{ border-collapse:collapse; }
+  .pd-stem th, .pd-stem td{ border:0.5pt solid #000 !important; background:#fff !important; color:#000 !important; padding:1mm 1.6mm; font-size:8.5pt; }
+  .pd-star{ font-size:8pt; }
+  .pd-pt{ font:600 8.5pt var(--sans); white-space:nowrap; }
+  .pd-ch{ list-style:none; margin:2mm 0 0; padding:0 0 0 5mm; display:grid; gap:0.8mm 3mm; font-size:9.5pt; line-height:1.5; }
+  .pd-ch.c5{ grid-template-columns:repeat(5, minmax(0,1fr)); }
+  .pd-ch.c3{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+  .pd-ch li{ display:flex; gap:1.3mm; }
+  .pd-ch.c5 li, .pd-ch.c3 li{ white-space:nowrap; }
+  .pd-cn{ flex:0 0 auto; }
+  .pd-key{ break-before:page; page-break-before:always; }
+  .pd-key h2{ margin:0 0 4mm; padding-bottom:2mm; border-bottom:1.6pt solid #000; font:700 14pt var(--serif); color:#000; }
+  .pd-key h2 small{ font:500 9pt var(--sans); margin-left:3mm; color:#333; }
+  .pd-keytbl{ width:100%; border-collapse:collapse; margin-bottom:4mm; font:600 9pt var(--sans); }
+  .pd-keytbl th, .pd-keytbl td{ border:0.5pt solid #000; padding:1.3mm 0; text-align:center; }
+  .pd-keytbl th{ width:12mm; background:#eee; }
+  .pd-exp{ column-count:2; column-gap:8mm; column-rule:0.5pt solid #000; font-size:8.8pt; line-height:1.6; }
+  .pd-exp p{ break-inside:avoid; page-break-inside:avoid; margin:0 0 3mm; word-break:keep-all; }
+  .pd-exp b{ font-family:var(--sans); }
+  .pd-end{ margin-top:6mm; padding-top:2mm; border-top:0.5pt solid #000; text-align:center; font:500 8pt var(--sans); color:#444; }
 </style>
 </head>
 <body>
@@ -12684,6 +12739,14 @@ function renderSheet(){
     '</article>';
   });
   html += '<div id="shKeySlot"></div>';
+  html += '<div id="shPrintDoc" class="pd" aria-hidden="true"></div>';
+  html += '<div class="sh-ans sh-pmenu" id="shPMenu" aria-label="인쇄">'+
+    '<div class="sh-ans-head"><b>인쇄</b><span>A4 · 아이패드는 인쇄 화면에서 공유 → PDF로 저장</span><button type="button" class="sh-bar-btn ghost" id="shPClose">닫기</button></div>'+
+    '<div class="sh-pmenu-body">'+
+      '<button type="button" class="sh-popt" data-p="doc-key"><b>학습지로 인쇄</b><span>깨끗한 문제지 2단 + 맨 뒤 정답과 해설</span></button>'+
+      '<button type="button" class="sh-popt" data-p="doc"><b>문제만 인쇄</b><span>정답·해설 없이 종이에 풀 문제지만</span></button>'+
+      '<button type="button" class="sh-popt" data-p="graded"><b>지금 시험지 그대로</b><span>내가 고른 답·채점 표시·해설 쪽까지</span></button>'+
+    '</div></div>';
   html += '<div class="sh-ans" id="shAns" aria-label="답안지">'+
     '<div class="sh-ans-head"><b>답안지</b><span>번호를 누르면 그 문제로 가요 <em id="shFlagCnt"></em></span><button type="button" class="sh-bar-btn ghost" id="shAnsClose">닫기</button></div>'+
     '<div class="sh-ans-grid">'+quizItems.map((_,i)=>{
@@ -12707,6 +12770,8 @@ function renderSheet(){
   });
   document.getElementById("shSubmit").addEventListener("click", gradeSheet);
   document.getElementById("shPrintBtn").addEventListener("click", printSheet);
+  document.getElementById("shPClose").addEventListener("click", ()=> document.body.classList.remove("pmenu-open"));
+  document.querySelectorAll("#shPMenu .sh-popt").forEach(b=> b.addEventListener("click", ()=> doPrint(b.dataset.p)));
   if(quizMode !== "mock"){
     const tick = ()=>{ const el = document.getElementById("shClock"); if(el && sheetState && !sheetState.graded) el.textContent = " · " + fmtClock(Date.now() - sheetState.t0); };
     tick(); sheetState.clock = setInterval(tick, 1000);
@@ -12917,8 +12982,69 @@ function retryWrongNow(){
 }
 function printSheet(){
   document.body.classList.remove("ans-open");
+  document.body.classList.add("pmenu-open");
+}
+function doPrint(mode){
+  document.body.classList.remove("pmenu-open", "ans-open", "print-doc", "print-graded");
   window.dispatchEvent(new Event("pen:leave"));
-  setTimeout(()=> window.print(), 50);
+  const doc = document.getElementById("shPrintDoc");
+  if(mode === "graded"){ doc.innerHTML = ""; document.body.classList.add("print-graded"); }
+  else { doc.innerHTML = printDocHTML(mode === "doc-key"); document.body.classList.add("print-doc"); }
+  setTimeout(()=> window.print(), 80);
+}
+window.addEventListener("afterprint", ()=>{
+  document.body.classList.remove("print-doc", "print-graded");
+  const doc = document.getElementById("shPrintDoc"); if(doc) doc.innerHTML = "";
+});
+function printDocHTML(withKey){
+  const info = sheetInfo(), n = quizItems.length, pts = sheetPoints();
+  const ex = (typeof loadExam === "function" ? loadExam() : null) || {label:""};
+  const year = new Date().getFullYear();
+  const topics = quizMode === "set" && quizSubject.topics && quizSubject.topics[quizSet];
+  const big = quizMode === "set" ? info.range : info.title;
+  const sub = (quizMode === "set" ? info.title + " · " : "") + info.kind + " · " + n + "문항" + (pts ? " · 문항당 " + pts + "점" : "");
+  let h = '<header class="pd-head">'+
+    '<div class="pd-top"><span>서익닷컴 학습지</span><span>고1 · '+escapeHtml(info.subjName)+'</span></div>'+
+    '<h1 class="pd-title">'+escapeHtml(big)+'</h1>'+
+    '<div class="pd-sub">'+escapeHtml(sub)+'</div>'+
+    (topics && topics.length ? '<p class="pd-goal"><b>학습 목표</b>'+topics.map(t=>'<span>'+escapeHtml(t)+'</span>').join("")+'</p>' : '')+
+    '<div class="pd-name"><span>이름<i></i></span><span>점수<i></i>/ 100</span></div>'+
+  '</header>';
+  h += '<div class="pd-q">'+sheetState.items.map((st,i)=>{
+    const q = st.q;
+    const posOnly = !!q.fixed && st.order.every((o,k)=> q.choices[o] === CIRCLED[k]);
+    let stem = q.q;
+    if(pts){
+      const cut = stem.indexOf("<div"), mark = ' <span class="pd-pt">['+pts+'점]</span>';
+      stem = cut >= 0 ? stem.slice(0,cut) + mark + stem.slice(cut) : stem + mark;
+    }
+    const ch = st.order.map((o,k)=>{
+      const t = String(q.choices[o]);
+      const shown = (q.fixed && t === CIRCLED[k]) ? "" : escapeHtml(t);
+      return '<li><span class="pd-cn">'+CIRCLED[k]+'</span>'+(shown ? '<span>'+shown+'</span>' : '')+'</li>';
+    }).join("");
+    return '<div class="pd-item"><div class="pd-qhead"><b class="pd-n">'+(i+1)+'.</b><div class="pd-stem">'+
+      (q.hot ? '<span class="pd-star" title="자주 나오는 문제">★</span> ' : '')+stem+'</div></div>'+
+      '<ol class="pd-ch '+pdCols(q, posOnly)+'">'+ch+'</ol></div>';
+  }).join("")+'</div>';
+  if(withKey){
+    let tbl = '';
+    for(let s=0; s<n; s+=10){
+      const idx = []; for(let i=s;i<Math.min(n,s+10);i++) idx.push(i);
+      tbl += '<table class="pd-keytbl"><tr><th>번호</th>'+idx.map(i=>'<td>'+(i+1)+'</td>').join("")+'</tr>'+
+        '<tr><th>정답</th>'+idx.map(i=>{ const st = sheetState.items[i]; return '<td>'+CIRCLED[st.order.indexOf(st.q.correct)]+'</td>'; }).join("")+'</tr></table>';
+    }
+    h += '<section class="pd-key"><h2>정답과 해설 <small>'+escapeHtml(big)+'</small></h2>'+tbl+
+      '<div class="pd-exp">'+sheetState.items.map((st,i)=>'<p><b>'+(i+1)+'. 정답 '+CIRCLED[st.order.indexOf(st.q.correct)]+'</b> '+escapeHtml(String(st.q.explain || ""))+'</p>').join("")+'</div></section>';
+  }
+  h += '<div class="pd-end">서익닷컴 · '+year+'학년도 '+escapeHtml(ex.label || "")+' 대비</div>';
+  return h;
+}
+
+function pdCols(q, posOnly){
+  if(posOnly) return "c5";
+  const m = Math.max.apply(null, q.choices.map(c=>String(c).length));
+  return m <= 3 ? "c5" : m <= 6 ? "c3" : "";
 }
 
 /* ================= 게시판 (공개 글 + 나만 보기) ================= */
