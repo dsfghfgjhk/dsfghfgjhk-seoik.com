@@ -857,6 +857,8 @@
   .sh-bar-t{ flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.25; }
   .sh-bar-t b{ font:700 13.5px var(--sans); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .sh-bar-t span{ font:500 11.5px var(--sans); color:#B8BCC4; font-variant-numeric:tabular-nums; }
+  .sh-bar-t span i{ font-style:normal; }
+  @media (max-width:430px){ .sh-print-btn{ display:none; } }
   .sh-bar-btn{
     all:unset; box-sizing:border-box; flex:0 0 auto; padding:7px 11px; border-radius:4px; cursor:pointer;
     background:#F2F3F5; color:#1B1D21; font:700 12.5px var(--sans); white-space:nowrap;
@@ -914,7 +916,15 @@
   /* 문항 */
   .sq{ scroll-margin-top:70px; }
   .sh-col .sq + .sq{ margin-top:36px; }
-  .sq-head{ display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:7px; }
+  .sq-head{ display:grid; grid-template-columns:auto minmax(0,1fr) auto; column-gap:7px; }
+  .sq-flag{
+    all:unset; box-sizing:border-box; align-self:start; margin-top:3px; padding:2px 7px; border-radius:3px;
+    border:1px dashed var(--pr); color:var(--pm); font:600 11px/1.5 var(--sans); cursor:pointer; white-space:nowrap;
+  }
+  .sq-flag.on{ border:1.5px solid var(--pencil); color:var(--pi); background:color-mix(in srgb, var(--pi) 6%, transparent); }
+  .sq-flag:disabled{ cursor:default; }
+  .sq.done .sq-flag:not(.on){ visibility:hidden; }
+  .sq-flag:focus-visible{ outline:2px solid #3B6FE0; outline-offset:2px; }
   .sq-no{ position:relative; font:700 17px/1.8 var(--sans); color:var(--pi); font-variant-numeric:tabular-nums; }
   .sq-grade{ position:absolute; left:-15px; top:-9px; width:46px; height:46px; pointer-events:none; }
   .sq-grade svg{ width:100%; height:100%; overflow:visible; }
@@ -970,6 +980,8 @@
   .sh-ans-row{ display:flex; align-items:center; gap:7px; padding:6px 2px; border-bottom:1px dashed var(--border); }
   .sh-ans-no{ all:unset; box-sizing:border-box; position:relative; width:30px; text-align:center; font:700 14px var(--sans); color:var(--ink); cursor:pointer; font-variant-numeric:tabular-nums; }
   .sh-ans-no i{ position:absolute; inset:-6px -2px; pointer-events:none; }
+  .sh-ans-head span em{ font-style:normal; color:#D12B2B; font-weight:700; }
+  .sh-ans-row.flag .sh-ans-no::after{ content:"?"; position:absolute; right:-5px; top:-7px; font:700 11px var(--sans); color:#D12B2B; }
   .sh-ans-row.correct .sh-ans-no i{ border:2px solid #D12B2B; border-radius:50%; }
   .sh-ans-row.wrong .sh-ans-no i::after{ content:""; position:absolute; left:50%; top:-2px; bottom:-2px; width:2px; background:#D12B2B; transform:rotate(38deg); }
   .sh-bub{
@@ -990,6 +1002,12 @@
   .sh-key-score{ font:700 30px/1 var(--serif); color:var(--red-pen); }
   .sh-key-score small{ font-size:14px; }
   .sh-key-score span{ font:500 13px var(--sans); color:var(--pm); margin-left:6px; }
+  .sh-key-meta{ margin-top:8px; font:500 12.5px var(--sans); color:var(--pm); }
+  .sh-key-acts{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:0 0 16px; }
+  .sh-key-acts .btn{ width:auto; flex:0 1 auto; padding:11px 16px; font-size:14px; }
+  .sh-key-go .flagt{ font-size:11px; font-weight:700; color:var(--pm); border:1px solid var(--pr); padding:0 5px; border-radius:3px; }
+  .sh-key-note{ all:unset; box-sizing:border-box; margin-top:6px; display:inline-block; padding:4px 9px; border-radius:3px; border:1px solid var(--pr); font:600 12px var(--sans); color:var(--pi); cursor:pointer; }
+  .sh-key-note:focus-visible{ outline:2px solid #3B6FE0; outline-offset:2px; }
   .sh-key-tw{ overflow-x:auto; margin-bottom:10px; }
   .sh-key-tbl{ width:100%; border-collapse:collapse; font:500 13px var(--sans); color:var(--pi); }
   .sh-key-tbl th, .sh-key-tbl td{ border:1px solid var(--pi); padding:6px 4px; text-align:center; min-width:28px; }
@@ -1012,6 +1030,34 @@
   @media (prefers-reduced-motion: reduce){
     .sq-cn svg path, .sq-grade svg path{ animation:none; stroke-dashoffset:0; }
     .sh-ans{ transition:none; }
+  }
+
+  /* ---------- 인쇄 · PDF 저장 ---------- */
+  @page{ size:A4; margin:10mm; }
+  @media print{
+    html, body{ background:#fff !important; }
+    body.sheet-mode .app{ max-width:none !important; }
+    body.sheet-mode > *:not(.app){ display:none !important; }
+    body.sheet-mode .app > *:not([data-view="quiz"]){ display:none !important; }
+    body.sheet-mode [data-view="quiz"] .paper > *:not(#sheet){ display:none !important; }
+    body.sheet-mode [data-view="quiz"] .paper{ padding:0 !important; margin:0 !important; }
+    body.sheet-mode .sh-bar, body.sheet-mode .sh-ans, body.sheet-mode .sh-submit, body.sheet-mode .sh-key-acts,
+    body.sheet-mode .sq-flag:not(.on), body.sheet-mode .sh-key-note, body.sheet-mode .sh-key-go i{ display:none !important; }
+    .sheet{ --pp:#fff !important; --pi:#000 !important; --pm:#444 !important; --pr:#999 !important; --red-pen:#D12B2B !important; --pencil:#333 !important; }
+    .sh-page{ width:auto !important; max-width:none !important; min-height:0 !important; margin:0 !important; padding:0 !important;
+      box-shadow:none !important; break-before:page; page-break-before:always; }
+    #sheet > .sh-page[data-page="1"]{ break-before:auto; page-break-before:auto; }
+    .sh-cols{ display:grid !important; grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important; }
+    .sh-col:first-child{ padding-right:18px !important; }
+    .sh-col + .sh-col{ margin-top:0 !important; padding-left:18px !important; border-left:1px solid #000 !important; }
+    .sq{ break-inside:avoid; page-break-inside:avoid; }
+    .sq-stem{ font-size:13.5px !important; }
+    .sq-c{ font-size:13px !important; padding:3px 4px !important; }
+    .sq-ch.c5{ grid-template-columns:repeat(5, minmax(0,1fr)) !important; }
+    .sq-ch.c3{ grid-template-columns:repeat(3, minmax(0,1fr)) !important; }
+    .sh-id .opt{ display:table-cell !important; }
+    .sq-cn svg path, .sq-grade svg path{ animation:none !important; stroke-dashoffset:0 !important; }
+    .sh-key-list{ columns:2 !important; }
   }
 </style>
 </head>
@@ -11664,7 +11710,7 @@ function renderWrong(){
   const all = wrongList();
   const body = document.getElementById("wrongBody");
   const counts = {}; all.forEach(e=> counts[e.sid] = (counts[e.sid]||0)+1);
-  let html = '<div class="wr-head"><div class="wr-big">'+all.length+'<small>문제</small></div><p>틀린 문제가 자동으로 모여요. 다시 풀어서 <b>두 번 연속 맞히면</b> 목록에서 빠져요.</p></div>';
+  let html = '<div class="wr-head"><div class="wr-big">'+all.length+'<small>문제</small></div><p>틀린 문제와 <b>헷갈림</b> 체크한 문제가 자동으로 모여요. 다시 풀어서 <b>두 번 연속 맞히면</b> 목록에서 빠져요.</p></div>';
   html += '<div class="sub-toggle" id="wrongToggle"><button data-sid="ALL" class="'+(wrongFilter==="ALL"?"active":"")+'">전체 '+all.length+'</button>' +
     SUBJECTS.filter(s=>counts[s.id]).map(s=>'<button data-sid="'+s.id+'" class="'+(wrongFilter===s.id?"active":"")+'">'+escapeHtml(s.name)+' '+counts[s.id]+'</button>').join("") + '</div>';
   const list = wrongFilter==="ALL" ? all : all.filter(e=>e.sid===wrongFilter);
@@ -11678,7 +11724,7 @@ function renderWrong(){
     const s = subjById(e.sid), q = s.quiz[e.set][e.q];
     const u = s.units.find(u=>u.indices.includes(e.set));
     const stem = q.type==="order" ? (q.q+" 문장 배열") : plainText(q.q);
-    return '<div class="wr-item" style="--subj:'+subjStyle(e.sid).color+'"><div class="wr-meta"><span class="wr-sub">'+escapeHtml(s.name)+'</span>'+(u?escapeHtml(u.name):'')+(e.streak? ' · <b>1번 맞힘</b>':'')+(e.misses>1? ' · '+e.misses+'번 틀림':'')+'</div>' +
+    return '<div class="wr-item" style="--subj:'+subjStyle(e.sid).color+'"><div class="wr-meta"><span class="wr-sub">'+escapeHtml(s.name)+'</span>'+(u?escapeHtml(u.name):'')+(e.unsure? ' · <b class="wr-unsure">헷갈림</b>':'')+(e.streak? ' · <b>1번 맞힘</b>':'')+(e.misses>1? ' · '+e.misses+'번 틀림':'')+'</div>' +
       '<div class="wr-stem">'+escapeHtml(stem.length>90? stem.slice(0,90)+'…' : stem)+'</div>' +
       '<button class="wr-del" data-k="'+wkey(e)+'" aria-label="오답노트에서 빼기">빼기</button></div>';
   }).join("") + '</div>';
@@ -12517,6 +12563,7 @@ function sheetUsable(){
 }
 function sheetEl(){ return document.getElementById("sheet"); }
 function exitSheet(){
+  if(sheetState && sheetState.clock) clearInterval(sheetState.clock);
   sheetState = null;
   document.body.classList.remove("sheet-mode", "ans-open");
   if(sheetScrollHandler){ window.removeEventListener("scroll", sheetScrollHandler); sheetScrollHandler = null; }
@@ -12561,7 +12608,8 @@ function sqHTML(i){
   }
   return '<section class="sq" id="sq'+i+'">'+
     '<div class="sq-head"><span class="sq-no"><span class="sq-n">'+(i+1)+'.</span><span class="sq-grade"></span></span>'+
-    '<div class="sq-stem">'+tags+stem+'</div></div>'+
+    '<div class="sq-stem">'+tags+stem+'</div>'+
+    '<button type="button" class="sq-flag" data-flag="'+i+'" aria-pressed="false" title="헷갈리는 문제로 표시">헷갈림</button></div>'+
     '<ol class="sq-ch '+sqCols(q, posOnly)+'">'+ch+'</ol></section>';
 }
 function sheetPages(){
@@ -12610,14 +12658,16 @@ function renderSheet(){
         if(!a.order) a.order = q.fixed ? base : shuffle(base);
         order = a.order;
       } else order = q.fixed ? base : shuffle(base);
-      return { q, order, picked:null, done:false };
+      return { q, order, picked:null, done:false, flag:false };
     })
   };
+  sheetState.t0 = Date.now();
   const info = sheetInfo(), pages = sheetPages(), n = quizItems.length;
   let html = '<div class="sh-bar" id="shBar">'+
       '<button type="button" class="sh-bar-btn ghost" id="shBack">‹ 목록</button>'+
-      '<div class="sh-bar-t"><b>'+escapeHtml(info.subjName+" · "+info.kind)+'</b><span id="shPageNo">1 / '+pages.length+' 쪽</span></div>'+
+      '<div class="sh-bar-t"><b>'+escapeHtml(info.subjName+" · "+info.kind)+'</b><span><i id="shPageNo">1 / '+pages.length+' 쪽</i><i id="shClock"></i></span></div>'+
       '<span id="omrTimerSlot"></span>'+
+      '<button type="button" class="sh-bar-btn ghost sh-print-btn" id="shPrintBtn" title="시험지 인쇄 · PDF 저장">인쇄</button>'+
       '<button type="button" class="sh-bar-btn ghost" id="shAnsBtn">답안지 <em id="shAnsCnt">0/'+n+'</em></button>'+
       '<button type="button" class="sh-bar-btn" id="shGradeBtn">채점하기</button>'+
     '</div>';
@@ -12635,7 +12685,7 @@ function renderSheet(){
   });
   html += '<div id="shKeySlot"></div>';
   html += '<div class="sh-ans" id="shAns" aria-label="답안지">'+
-    '<div class="sh-ans-head"><b>답안지</b><span>번호를 누르면 그 문제로 가요</span><button type="button" class="sh-bar-btn ghost" id="shAnsClose">닫기</button></div>'+
+    '<div class="sh-ans-head"><b>답안지</b><span>번호를 누르면 그 문제로 가요 <em id="shFlagCnt"></em></span><button type="button" class="sh-bar-btn ghost" id="shAnsClose">닫기</button></div>'+
     '<div class="sh-ans-grid">'+quizItems.map((_,i)=>{
       const cnt = sheetState.items[i].q.choices.length;
       let r = '<div class="sh-ans-row" id="shar'+i+'"><button type="button" class="sh-ans-no" data-go="'+i+'">'+(i+1)+'<i></i></button>';
@@ -12656,6 +12706,11 @@ function renderSheet(){
     else gradeSheet();
   });
   document.getElementById("shSubmit").addEventListener("click", gradeSheet);
+  document.getElementById("shPrintBtn").addEventListener("click", printSheet);
+  if(quizMode !== "mock"){
+    const tick = ()=>{ const el = document.getElementById("shClock"); if(el && sheetState && !sheetState.graded) el.textContent = " · " + fmtClock(Date.now() - sheetState.t0); };
+    tick(); sheetState.clock = setInterval(tick, 1000);
+  }
   if(sheetScrollHandler) window.removeEventListener("scroll", sheetScrollHandler);
   let ticking = false;
   sheetScrollHandler = ()=>{
@@ -12685,10 +12740,13 @@ function renderAnsState(){
       b.classList.toggle("ans", sheetState.graded && st.order[k] === st.q.correct);
       b.disabled = sheetState.graded;
     });
+    row.classList.toggle("flag", !!st.flag);
     row.classList.toggle("correct", sheetState.graded && quizCells[i] === "correct");
     row.classList.toggle("wrong", sheetState.graded && quizCells[i] === "wrong");
   });
   const cnt = document.getElementById("shAnsCnt"); if(cnt) cnt.textContent = answered + "/" + n;
+  const fc = sheetState.items.filter(s=>s.flag).length, fe = document.getElementById("shFlagCnt");
+  if(fe) fe.textContent = fc ? "· 헷갈림 " + fc : "";
   const gb = document.getElementById("shGradeBtn");
   if(gb){
     if(sheetState.graded){
@@ -12731,22 +12789,40 @@ function answerKeyHTML(){
   }
   const list = sheetState.items.map((st,i)=>{
     const ans = st.order.indexOf(st.q.correct), ok = quizCells[i]==="correct";
+    const ns = notesSecFor(quizItems[i]);
     return '<li class="'+(ok?'ok':'no')+'"><button type="button" class="sh-key-go" data-go="'+i+'"><b>'+(i+1)+'.</b> 정답 '+CIRCLED[ans]+
-      (ok ? '' : ' <span class="mine">내 답 '+(st.picked===null ? '없음' : CIRCLED[st.picked])+'</span>')+'<i>문제 보기 ›</i></button>'+
-      '<p>'+escapeHtml(String(st.q.explain || ""))+'</p></li>';
+      (ok ? '' : ' <span class="mine">내 답 '+(st.picked===null ? '없음' : CIRCLED[st.picked])+'</span>')+
+      (st.flag ? ' <span class="flagt">헷갈림</span>' : '')+'<i>문제 보기 ›</i></button>'+
+      '<p>'+escapeHtml(String(st.q.explain || ""))+'</p>'+
+      (ns >= 0 ? '<button type="button" class="sh-key-note" data-note="'+quizItems[i].sid+'|'+ns+'">개념노트 '+escapeHtml(SUBJECT_NOTES[quizItems[i].sid].sections[ns].tag)+' 보기 ›</button>' : '')+
+      '</li>';
   }).join("");
+  const wrongN = quizCells.filter(c=>c==="wrong").length, flagN = sheetState.items.filter(s=>s.flag).length;
+  const meta = [];
+  if(sheetState.elapsed) meta.push("풀이 시간 " + fmtClockKo(sheetState.elapsed));
+  if(flagN) meta.push("헷갈림 체크 " + flagN + "문제 → 오답노트에 저장");
+  const acts = '<div class="sh-key-acts">'+
+    (wrongN ? '<button type="button" class="btn" id="shRetryWrong">틀린 '+wrongN+'문제만 바로 다시 풀기</button>' : '')+
+    '<button type="button" class="btn ghost" id="shPrint2">시험지·해설 인쇄 (PDF 저장)</button></div>';
   return '<article class="sh-page sh-key" data-page="0">'+
-    '<div class="sh-key-head"><span>'+escapeHtml(info.subjName+" · "+info.kind)+'</span><h2>정답 및 해설</h2><div class="sh-key-score">'+Math.round(sc/n*100)+'<small>점</small> <span>'+sc+' / '+n+' 문항</span></div></div>'+
+    '<div class="sh-key-head"><span>'+escapeHtml(info.subjName+" · "+info.kind)+'</span><h2>정답 및 해설</h2><div class="sh-key-score">'+Math.round(sc/n*100)+'<small>점</small> <span>'+sc+' / '+n+' 문항</span></div>'+
+    (meta.length ? '<div class="sh-key-meta">'+escapeHtml(meta.join(" · "))+'</div>' : '')+'</div>'+
+    acts+
     tbl+
     (topics && topics.length ? '<div class="sh-key-pts"><b>출제 포인트</b>'+topics.map(t=>'<span>'+escapeHtml(t)+'</span>').join("")+'</div>' : '')+
     '<ol class="sh-key-list">'+list+'</ol>'+
     '<div class="sh-foot"><span>- 정답 및 해설 -</span></div></article>';
 }
 function afterSheetGraded(){
+  sheetState.elapsed = Date.now() - sheetState.t0;
+  if(sheetState.clock){ clearInterval(sheetState.clock); sheetState.clock = null; }
   sheetState.graded = true;
   fillSheetScore();
   const sub = document.getElementById("shSubmit"); if(sub) sub.remove();
   document.getElementById("shKeySlot").innerHTML = answerKeyHTML();
+  const rw = document.getElementById("shRetryWrong"); if(rw) rw.addEventListener("click", retryWrongNow);
+  document.getElementById("shPrint2").addEventListener("click", printSheet);
+  document.querySelectorAll("#sheet .sq-flag").forEach(b=>{ b.disabled = true; });
   document.body.classList.remove("ans-open");
   renderAnsState();
   setTimeout(()=> sheetEl().scrollIntoView({behavior:"smooth", block:"start"}), 60);
@@ -12763,6 +12839,7 @@ function gradeSheet(){
     if(ok) quizScore++;
     quizCells[i] = ok ? "correct" : "wrong";
     recordAnswer(quizItems[i], ok);
+    if(st.flag) recordUnsure(quizItems[i]);
     paintGrade(i);
   });
   if(quizMode === "wrong") showWrongResult(); else showQuizResult();
@@ -12785,6 +12862,7 @@ function paintMockSheet(){
     const a = mockState.answers[i];
     st.picked = (a.picked===null || a.picked===undefined) ? null : st.order.indexOf(a.picked);
     st.done = true;
+    if(st.flag) recordUnsure(quizItems[i]);
     paintPick(i, st.picked);
     paintGrade(i);
   });
@@ -12796,6 +12874,10 @@ function sheetGo(i){
   t.scrollIntoView({behavior:"smooth", block:"start"});
 }
 document.getElementById("sheet").addEventListener("click", e=>{
+  const fl = e.target.closest(".sq-flag");
+  if(fl){ toggleFlag(+fl.dataset.flag); return; }
+  const nt = e.target.closest(".sh-key-note");
+  if(nt){ const [sid, idx] = nt.dataset.note.split("|"); openNotes(sid, +idx); return; }
   const go = e.target.closest("[data-go]");
   if(go){ sheetGo(+go.dataset.go); return; }
   const bub = e.target.closest(".sh-bub");
@@ -12804,6 +12886,40 @@ document.getElementById("sheet").addEventListener("click", e=>{
   if(b && !b.disabled) onSheetAnswer(+b.dataset.i, +b.dataset.k);
 });
 
+
+function fmtClock(ms){ const s = Math.max(0, Math.floor(ms/1000)); return String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0"); }
+function fmtClockKo(ms){ const s = Math.max(0, Math.round(ms/1000)), m = Math.floor(s/60); return (m ? m + "분 " : "") + (s%60) + "초"; }
+function toggleFlag(i){
+  if(!sheetState || sheetState.graded) return;
+  const st = sheetState.items[i]; if(!st) return;
+  st.flag = !st.flag;
+  const b = document.querySelector('#sq'+i+' .sq-flag');
+  if(b){ b.classList.toggle("on", st.flag); b.setAttribute("aria-pressed", st.flag ? "true" : "false"); b.textContent = st.flag ? "✓ 헷갈림" : "헷갈림"; }
+  renderAnsState();
+}
+function recordUnsure(it){
+  const w = loadWrong(), k = wkey(it);
+  if(w[k]){ w[k].unsure = true; w[k].streak = 0; w[k].ts = Date.now(); }
+  else w[k] = { sid:it.sid, set:it.set, q:it.q, ts:Date.now(), streak:0, misses:0, unsure:true };
+  saveWrong(w);
+}
+function notesSecFor(it){
+  const n = SUBJECT_NOTES[it.sid], s = subjById(it.sid);
+  if(!n || !s) return -1;
+  const u = s.units.find(u=>u.indices.includes(it.set)); if(!u) return -1;
+  const tag = u.name.split(".")[0].trim();
+  return n.sections.findIndex(sec=> sec.tag === tag);
+}
+function retryWrongNow(){
+  const items = quizItems.filter((_,i)=> quizCells[i] === "wrong").map(x=>({sid:x.sid, set:x.set, q:x.q}));
+  if(!items.length) return;
+  startCustomQuiz("wrong", items, "방금 틀린 문제 다시 풀기", "다시 풀기 · " + items.length + "문제", quizReturnTab);
+}
+function printSheet(){
+  document.body.classList.remove("ans-open");
+  window.dispatchEvent(new Event("pen:leave"));
+  setTimeout(()=> window.print(), 50);
+}
 
 /* ================= 게시판 (공개 글 + 나만 보기) ================= */
 const BOARD_KEY = "seoik_board_posts_v1";
