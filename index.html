@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&family=Nanum+Pen+Script&display=block" rel="stylesheet">
 <style>
   :root{
     --bg:#EDF0F4; --card:#FFFFFF; --border:#DCE1E9; --line-soft:#E9ECF1;
@@ -802,6 +803,131 @@
   .mn-it{ display:block; width:100%; text-align:left; padding:9px 12px; border:none; background:none; color:var(--ink); font-size:13.5px; cursor:pointer; border-radius:8px; }
   .mn-it:active{ background:var(--bg); }
   .mn-it.off{ color:var(--ink-faint); cursor:default; }
+.mn-arch-head{ padding:6px 2px 12px; border-bottom:1px solid var(--border); margin-bottom:8px; }
+.mn-arch-head b{ display:block; font-size:16px; margin-bottom:4px; }
+.mn-arch-head span{ display:block; font-size:11.5px; color:var(--ink-faint); line-height:1.6; }
+/* ---------- 기말 대비 홍보 (팝업 + 홈 띠) ---------- */
+.home-hide{ display:none !important; }
+#ttSec[hidden]{ display:none; }
+.ad-hero{ position:relative; padding:4px 16px 0; }
+.ad-track{ display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; -webkit-overflow-scrolling:touch; scroll-padding:0 16px; margin:0 -16px; padding:0 16px; }
+.ad-track::-webkit-scrollbar{ display:none; }
+.ad-slide{ position:relative; flex:0 0 calc(100% - 26px); scroll-snap-align:start; aspect-ratio:2.05/1; min-height:170px; padding:18px 20px 40px; color:#fff; overflow:hidden; display:flex; align-items:center; border-radius:16px; }
+.ad-slide:last-child{ margin-right:16px; }
+@media (max-width:899px){ .ad-slide{ aspect-ratio:auto; min-height:196px; padding:16px 18px 46px; align-items:flex-start; } .ad-txt{ max-width:80%; } }
+.zb-state{ white-space:nowrap; }
+#qlinkAdvanced .zb-open{ display:none; }
+.ad-slide.s1{ background:radial-gradient(130% 120% at 85% 10%, #2E66F0 0%, #163C9E 50%, #0A1A48 100%); }
+.ad-slide.s2{ background:linear-gradient(135deg,#E2533B,#A8261A); }
+.ad-slide.s3{ background:linear-gradient(135deg,#14A08A,#0B5E62); }
+.ad-slide.s4{ background:linear-gradient(135deg,#6E4BD8,#35208A); }
+.ad-txt{ position:relative; z-index:1; max-width:74%; }
+.ad-txt small{ display:inline-block; font-size:11px; font-weight:700; padding:3px 9px; border-radius:99px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.25); }
+.ad-txt b{ display:block; margin:8px 0 6px; font-size:23px; line-height:1.2; font-weight:900; letter-spacing:-.03em; text-shadow:0 2px 0 rgba(0,0,0,.18); }
+.ad-txt b em{ font-style:normal; color:#FFD84D; }
+.ad-txt span{ display:block; font-size:12px; opacity:.85; }
+.ad-txt button{ margin-top:10px; border:none; border-radius:99px; padding:7px 13px; background:#fff; color:#0A1A48; font-size:12px; font-weight:800; cursor:pointer; }
+.ad-slide.s1 .ad-txt button{ background:#FFD84D; }
+.ad-deco{ position:absolute; right:-6px; bottom:6px; pointer-events:none; }
+.ad-deco.big{ font-size:70px; font-weight:900; letter-spacing:-.04em; color:rgba(255,255,255,.14); line-height:1; }
+.ad-deco.ad-omr{ right:22px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:7px; }
+.ad-deco.ad-omr i{ display:block; width:26px; height:15px; border-radius:50%; border:1.6px solid rgba(255,255,255,.45); }
+.ad-deco.ad-omr i.on{ background:#FFD84D; border-color:#FFD84D; }
+.ad-count{ position:absolute; left:28px; bottom:10px; z-index:2; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; font-size:11.5px; color:#1A1D24; background:rgba(255,255,255,.82); padding:4px 11px; border-radius:99px; }
+.ad-count span{ color:#6B7280; } .ad-count b{ font-weight:600; }
+.hm-head{ padding:6px 16px 12px; }
+.hm-tag{ font-size:14.5px; font-weight:600; color:var(--ink); margin-bottom:8px; }
+.hm-subjrow{ display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; padding:6px; border:1px solid var(--border); border-radius:12px; background:var(--card); }
+.hm-subjrow::-webkit-scrollbar{ display:none; }
+.hm-subjrow button{ flex-shrink:0; border:none; background:none; color:var(--ink); font-size:14px; padding:8px 10px; border-radius:8px; cursor:pointer; }
+.hm-subjrow button:active{ background:var(--bg); }
+.zb-wide{ width:100%; margin-top:8px; }
+.zb-state{ font-style:normal; font-size:10px; font-weight:700; color:var(--blue); margin-left:6px; padding:1px 6px; border-radius:5px; background:var(--blue-soft, rgba(37,99,235,.1)); }
+.zb-state.off{ color:var(--ink-faint); background:var(--bg); }
+.dd-wrap{ border-radius:14px; overflow:hidden; }
+@media (min-width:900px){
+  body.view-home .app, body.view-home .bottomnav{ max-width:1100px; }
+  .home-2col{ display:grid; grid-template-columns:1fr 1fr; gap:6px; align-items:start; }
+  .ad-hero{ padding:4px 24px 0; }
+  .ad-track{ margin:0 -24px; padding:0 24px; scroll-padding:0 24px; }
+  .ad-slide{ flex-basis:calc(100% - 40px); aspect-ratio:3.7/1; padding:22px 40px 46px; }
+  .ad-slide:last-child{ margin-right:24px; }
+  .ad-txt b{ font-size:34px; } .ad-txt span{ font-size:14px; } .ad-deco.big{ font-size:120px; }
+  .ad-count{ left:36px; bottom:14px; }
+  .hm-head{ padding:8px 24px 14px; } .home-2col .zb-sec{ padding-left:24px; padding-right:24px; }
+}
+/* ---------- 시작(로딩) 화면 ---------- */
+.splash{ position:fixed; inset:0; z-index:3000; overflow:hidden; background:#EEF5FF; transition:opacity .45s ease, visibility 0s .45s; }
+.splash.out{ opacity:0; visibility:hidden; }
+.sp-scene{ position:absolute; inset:0; width:100%; height:100%; filter:saturate(1.05); }
+.splash::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:30%; background:linear-gradient(rgba(40,24,8,0), rgba(40,24,8,.42)); pointer-events:none; }
+.sp-brand{ z-index:1; }
+.sp-copy{ position:absolute; left:0; right:0; top:max(12vh, calc(env(safe-area-inset-top,0px) + 40px)); text-align:center; padding:0 16px; }
+.sp-title{ margin:0; font-family:"Nanum Brush Script", "Nanum Pen Script", cursive; font-weight:400; line-height:1; transform:rotate(-3deg); }
+.sp-title span{ display:inline-block; }
+.sp-a{ color:#0B1530; font-size:clamp(32px, 9vw, 104px); margin-right:.18em; white-space:nowrap; }
+.sp-b{ color:#1F5BFF; font-size:clamp(58px, 12vw, 140px); position:relative; }
+.sp-b::after{ content:""; position:absolute; left:4%; right:-2%; bottom:.02em; height:.08em; border-radius:99px; background:#1F5BFF; transform:rotate(-2deg); }
+.sp-note{ margin:18px auto 0; font-family:"Nanum Pen Script", cursive; font-size:clamp(24px, 4vw, 36px); line-height:1.1; color:#24324F; transform:rotate(-6deg); }
+.sp-brand{ position:absolute; left:0; right:0; bottom:calc(env(safe-area-inset-bottom,0px) + 7vh); text-align:center; font-size:clamp(30px, 5vw, 52px); font-weight:800; letter-spacing:-.03em; color:#fff; text-shadow:0 2px 10px rgba(60,35,10,.45); }
+.sp-copy, .sp-brand{ animation:spIn .7s ease both; }
+.sp-brand{ animation-delay:.2s; }
+@keyframes spIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+@media (max-width:640px){ .sp-a{ display:block; margin:0 0 .1em; } .sp-b{ font-size:clamp(58px, 19vw, 120px); } }
+@media (prefers-reduced-motion: reduce){ .splash{ transition:none; } .sp-copy, .sp-brand{ animation:none; } }
+.ad-all{ width:min(100%, 420px); max-height:80vh; overflow:auto; background:var(--card); border-radius:16px; padding:6px 0 10px; }
+.ad-all-h{ display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); }
+.ad-all-h b{ font-size:15px; } .ad-all-h button{ border:none; background:none; color:var(--ink-soft); font-size:13px; cursor:pointer; }
+.ad-all-list button{ display:flex; gap:12px; align-items:center; width:100%; text-align:left; border:none; background:none; padding:12px 16px; cursor:pointer; color:var(--ink); border-bottom:1px solid var(--border); }
+.ad-all-list i{ flex-shrink:0; width:44px; height:44px; border-radius:10px; }
+.ad-all-list small{ display:block; font-size:11px; color:var(--ink-faint); } .ad-all-list b{ display:block; font-size:14px; }
+.study-start{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; cursor:pointer; padding:14px; border-radius:14px; border:1.5px solid var(--blue); background:var(--blue-soft, rgba(37,99,235,.08)); color:var(--ink); }
+.study-start .ss-ic{ flex-shrink:0; width:40px; height:40px; border-radius:12px; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; }
+.study-start .ss-ic svg{ width:22px; height:22px; }
+.study-start .ss-t{ flex:1; min-width:0; }
+.study-start b{ display:block; font-size:15.5px; font-weight:800; }
+.study-start small{ display:block; font-size:11.5px; color:var(--ink-soft); margin-top:2px; line-height:1.45; }
+.study-start i{ font-style:normal; color:var(--blue); font-size:20px; }
+.study-start + .zb-resume{ margin-top:10px; }
+.ad-mini{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.ad-mini button{ text-align:left; border:none; border-radius:14px; padding:14px; min-height:92px; cursor:pointer; color:#fff; }
+.ad-mini .m1{ background:linear-gradient(135deg,#F2A81D,#D9731A); }
+.ad-mini .m2{ background:linear-gradient(135deg,#2B8456,#195C3B); }
+.ad-mini small{ display:block; font-size:11px; font-weight:700; opacity:.85; }
+.ad-mini b{ display:block; margin-top:6px; font-size:15px; line-height:1.3; font-weight:800; }
+.promo-dim{ position:fixed; inset:0; z-index:1200; background:rgba(6,10,24,.62); display:flex; align-items:center; justify-content:center; padding:20px; }
+.promo-dim[hidden]{ display:none; }
+.promo{ width:min(100%, 320px); animation:promoIn .32s cubic-bezier(.2,.8,.2,1); }
+@keyframes promoIn{ from{ opacity:0; transform:translateY(14px) scale(.97); } to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce){ .promo{ animation:none; } }
+.promo-card{ position:relative; overflow:hidden; border-radius:18px 18px 0 0; padding:22px 20px 20px; color:#fff; text-align:center;
+  background:radial-gradient(120% 70% at 50% 0%, #2E66F0 0%, #163C9E 45%, #0A1A48 100%); }
+.promo-card::after{ content:""; position:absolute; inset:0; pointer-events:none; opacity:.12;
+  background-image:repeating-linear-gradient(0deg, #fff 0 1px, transparent 1px 26px); }
+.promo-badge{ display:inline-block; font-size:11px; font-weight:700; letter-spacing:.02em; padding:5px 11px; border-radius:99px; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.22); }
+.promo-omr{ display:flex; justify-content:center; gap:7px; margin:16px 0 6px; }
+.promo-omr i{ width:15px; height:22px; border-radius:50%; border:1.6px solid rgba(255,255,255,.55); }
+.promo-omr i.on{ background:#FFD84D; border-color:#FFD84D; }
+.promo-title{ position:relative; z-index:1; margin:6px 0 16px; font-size:40px; line-height:1.12; font-weight:900; letter-spacing:-.03em; }
+.promo-title span{ display:block; text-shadow:0 3px 0 rgba(0,0,0,.25); }
+.promo-title .pt-hl{ color:#FFD84D; }
+.promo-box{ position:relative; z-index:1; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); border-radius:12px; padding:12px 12px 11px; }
+.promo-box b{ display:block; font-size:15px; font-weight:800; }
+.promo-box > span{ display:block; font-size:12px; opacity:.85; margin-top:3px; }
+.promo-tags{ display:flex; justify-content:center; flex-wrap:wrap; gap:5px; margin-top:9px; }
+.promo-tags em{ font-style:normal; font-size:11px; font-weight:700; padding:3px 8px; border-radius:6px; background:#fff; color:#163C9E; }
+.promo-cta{ position:relative; z-index:1; display:block; width:100%; margin-top:14px; border:none; border-radius:12px; padding:14px; cursor:pointer;
+  background:#FFD84D; color:#0A1A48; font-size:16px; font-weight:900; box-shadow:0 4px 0 #C9A21A; }
+.promo-cta:active{ transform:translateY(2px); box-shadow:0 2px 0 #C9A21A; }
+.promo-foot{ display:flex; background:var(--card); border-radius:0 0 18px 18px; overflow:hidden; }
+.promo-foot button{ flex:1; border:none; background:none; padding:13px 8px; font-size:13px; color:var(--ink-soft); cursor:pointer; }
+.promo-foot button + button{ border-left:1px solid var(--border); color:var(--ink); font-weight:700; }
+.term-seg{ display:flex; gap:2px; padding:3px; border-radius:99px; background:var(--bg); }
+.term-seg button{ border:none; background:none; color:var(--ink-faint); font-size:13px; font-weight:600; padding:6px 14px; border-radius:99px; cursor:pointer; }
+.term-bar{ position:fixed; left:50%; transform:translateX(-50%); bottom:calc(env(safe-area-inset-bottom,0px) + 70px); z-index:960; display:flex; align-items:center; gap:10px; padding:6px 6px 6px 14px; border-radius:99px; background:var(--ink); color:var(--card); font-size:12.5px; box-shadow:0 6px 20px rgba(0,0,0,.18); white-space:nowrap; }
+.term-bar[hidden], body.in-quiz .term-bar{ display:none; }
+.term-bar b{ font-weight:700; }
+.term-bar button{ border:none; border-radius:99px; padding:7px 12px; background:var(--blue); color:#fff; font-size:12px; font-weight:700; cursor:pointer; }
   .mn-tip{ font-style:normal; font-size:10.5px; font-weight:600; color:var(--orange); background:var(--orange-soft); padding:2px 6px; border-radius:5px; margin-left:4px; }
   /* 실전대비 / 공통 목록 */
   .tabrow{ background:transparent !important; border:none !important; padding:0 !important; margin:4px 16px 0 !important; gap:14px; overflow-x:auto; scrollbar-width:none; }
@@ -1208,6 +1334,47 @@
 </head>
 <body>
 
+<div class="splash" id="splash" role="img" aria-label="서익닷컴 시작 화면">
+  <svg class="sp-scene" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="spSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EAF3FF"/><stop offset=".55" stop-color="#F7FAFF"/><stop offset="1" stop-color="#FFF8EC"/></linearGradient>
+      <radialGradient id="spSun" cx=".28" cy=".3" r=".55"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
+      <linearGradient id="spDesk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9B48A"/><stop offset="1" stop-color="#B98B5E"/></linearGradient>
+      <linearGradient id="spRay" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    </defs>
+    <rect width="1200" height="800" fill="url(#spSky)"/>
+    <g opacity=".9">
+      <rect x="90" y="70" width="420" height="430" rx="6" fill="#CFE4FA"/>
+      <g fill="#E9F4FF"><rect x="104" y="84" width="190" height="196"/><rect x="306" y="84" width="190" height="196"/><rect x="104" y="292" width="190" height="196"/><rect x="306" y="292" width="190" height="196"/></g>
+      <g fill="#BFE0B4" opacity=".7"><circle cx="170" cy="380" r="60"/><circle cx="250" cy="420" r="70"/><circle cx="400" cy="400" r="66"/><circle cx="460" cy="330" r="44"/></g>
+      <rect x="40" y="50" width="46" height="480" rx="4" fill="#8DB8E8" opacity=".75"/>
+      <rect x="514" y="50" width="40" height="480" rx="4" fill="#8DB8E8" opacity=".6"/>
+    </g>
+    <rect x="740" y="210" width="380" height="230" rx="6" fill="#2F5D4E"/>
+    <g fill="#F4F1E6" opacity=".85"><rect x="770" y="240" width="70" height="52" rx="2"/><rect x="860" y="250" width="60" height="70" rx="2"/><rect x="950" y="236" width="80" height="60" rx="2"/><rect x="1050" y="252" width="44" height="58" rx="2"/></g>
+    <polygon points="0,0 620,0 1200,620 900,800 0,800" fill="url(#spRay)" opacity=".35"/>
+    <rect width="1200" height="800" fill="url(#spSun)"/>
+    <path d="M0 610 L1200 560 L1200 800 L0 800 Z" fill="url(#spDesk)"/>
+    <path d="M0 610 L1200 560" stroke="#E7C9A3" stroke-width="6"/>
+    <g transform="translate(140 600) rotate(-4)"><rect width="250" height="40" rx="5" fill="#F3EEE4"/><rect y="40" width="250" height="34" rx="5" fill="#E7DCCB"/><rect y="74" width="250" height="30" rx="5" fill="#F7F3EA"/></g>
+    <g transform="translate(470 570) rotate(-3)">
+      <rect width="300" height="200" rx="18" fill="#C7CCD3"/><rect x="12" y="12" width="276" height="176" rx="10" fill="#FFFFFF"/>
+      <g fill="none" stroke="#9AA6B8" stroke-width="2.4">
+        <g transform="translate(36 40)"><circle cx="0" cy="0" r="9"/><circle cx="30" cy="0" r="9"/><circle cx="60" cy="0" r="9" fill="#2563EB" stroke="#2563EB"/><circle cx="90" cy="0" r="9"/><circle cx="120" cy="0" r="9"/></g>
+        <g transform="translate(36 80)"><circle cx="0" cy="0" r="9" fill="#2563EB" stroke="#2563EB"/><circle cx="30" cy="0" r="9"/><circle cx="60" cy="0" r="9"/><circle cx="90" cy="0" r="9"/><circle cx="120" cy="0" r="9"/></g>
+        <g transform="translate(36 120)"><circle cx="0" cy="0" r="9"/><circle cx="30" cy="0" r="9"/><circle cx="60" cy="0" r="9"/><circle cx="90" cy="0" r="9" fill="#2563EB" stroke="#2563EB"/><circle cx="120" cy="0" r="9"/></g>
+      </g>
+      <g stroke="#DCE2EA" stroke-width="8" stroke-linecap="round"><path d="M200 40h60"/><path d="M200 80h44"/><path d="M200 120h54"/></g>
+    </g>
+    <g transform="translate(860 640) rotate(-12)"><rect width="200" height="16" rx="8" fill="#F2C94C"/><polygon points="200,0 226,8 200,16" fill="#E9D2AE"/><polygon points="218,5 226,8 218,11" fill="#333"/><rect width="22" height="16" rx="6" fill="#E57373"/></g>
+    <g transform="translate(960 560)"><rect width="160" height="70" rx="30" fill="#E9E1D6"/><path d="M20 22h120" stroke="#CDBFAE" stroke-width="4"/></g>
+  </svg>
+  <div class="sp-copy">
+    <h1 class="sp-title"><span class="sp-a">내신만점으로 가는</span><span class="sp-b">지름길</span></h1>
+    <p class="sp-note">오늘 푼 한 세트가<br>시험날 나를 빛나게 ✨</p>
+  </div>
+  <div class="sp-brand">서익닷컴</div>
+</div>
 <div class="app">
 
   <!-- ============ HOME ============ -->
@@ -1216,7 +1383,42 @@
       <div class="left"><button class="icon-btn hamburger" data-open-drawer aria-label="전체 메뉴"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span class="logo zb-logo">SEOIK.COM</span></div>
       <div class="right"><button class="icon-btn" data-go-tab="my" aria-label="마이"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.3 7.5-5.3s6.3 1.7 7.5 5.3"/></svg></button><button class="icon-btn bell" data-go-tab="board" aria-label="게시판"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i class="bell-dot" id="bellDot" hidden></i></button></div>
     </div>
-    <section class="zb-hero" id="ddayCard">
+    <div class="hm-head">
+      <div class="hm-tag"><span id="hmTagline">전과목 내신대비</span> 📚</div>
+      <div class="hm-subjrow" id="hmSubjRow"></div>
+    </div>
+    <section class="ad-hero" aria-roledescription="carousel" aria-label="서익닷컴 소식">
+      <div class="ad-track" id="adTrack">
+        <div class="ad-slide s1" role="group" aria-label="1 / 4"><div class="ad-txt"><small>2학기 2차고사</small><b><em>기말대비도</em><br>서익닷컴과 함께!</b><span>범위가 나오는 대로 전과목 문제를 올려요</span><button type="button" data-ad="drawer">공부 시작하기 ›</button></div><div class="ad-deco ad-omr" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i><i></i></div></div>
+        <div class="ad-slide s2" role="group" aria-label="2 / 4"><div class="ad-txt"><small>오답노트</small><b>틀린 문제,<br>두 번 맞히면 졸업</b><span>틀리거나 헷갈린 문제가 저절로 모여요</span><button type="button" data-ad="wrong">오답노트 보기 ›</button></div><div class="ad-deco big" aria-hidden="true">✕✓</div></div>
+        <div class="ad-slide s3" role="group" aria-label="3 / 4"><div class="ad-txt"><small>실전 모의고사</small><b>타이머 켜고<br>시험처럼 풀기</b><span>단원별로 고르게 뽑아 한 번에 채점해요</span><button type="button" data-ad="mock">모의고사 보기 ›</button></div><div class="ad-deco big" aria-hidden="true">50:00</div></div>
+        <div class="ad-slide s4" role="group" aria-label="4 / 4"><div class="ad-txt"><small>지난 시험</small><b>1차고사 문제도<br>그대로 있어요</b><span>☰ 메뉴 위쪽에서 1차고사를 고르면 돼요</span><button type="button" data-ad="mid">1차고사 보기 ›</button></div><div class="ad-deco big" aria-hidden="true">1차</div></div>
+      </div>
+      <button type="button" class="ad-count" id="adCountBtn"><span id="adCount">1 / 4</span><b>전체보기</b></button>
+    </section>
+
+    <div class="home-2col">
+      <section class="zb-sec hm-col">
+        <div class="zb-h"><span data-term-plain>2학기 2차고사</span>대비</div>
+        <div class="zb-grid">
+        <button type="button" class="zb-link" id="zbNotesBtn"><span>개념학습</span><i>›</i></button>
+        <button type="button" class="zb-link" data-go-tab="study"><span>단원별 학습</span><i>›</i></button>
+        <button type="button" class="zb-link" id="qlinkBasic"><span>실전대비</span><i>›</i></button>
+        <button type="button" class="zb-link" id="homeMockBtn"><span>실전 모의고사</span><i>›</i></button>
+        <button type="button" class="zb-link" id="qlinkAdvanced"><span>심화 공략 <em class="zb-open">심화</em></span><i>›</i></button>
+        <button type="button" class="zb-link" id="homeWrongBtn"><span>최다오답 공략 <em class="zb-open" id="homeWrongCount"></em></span><i>›</i></button>
+      </div>
+        <button type="button" class="zb-link zb-wide" data-go-tab="board"><span>📢 업로드 소식 전체보기</span><i>›</i></button>
+        <button type="button" class="zb-resume" id="resumeCard" style="display:none;"><span class="zr-tag">이어풀기</span><span class="zr-text"><b id="resumeTitle"></b><small id="resumeSub"></small></span><i>›</i></button>
+      </section>
+      <section class="zb-sec hm-col">
+        <div class="zb-h zb-h-row"><span>공지사항</span><button type="button" class="zb-more" data-go-tab="board">전체보기</button></div>
+        <div class="zb-notice" id="zbNotice"></div>
+      </section>
+    </div>
+
+    <section class="zb-sec"><div class="dd-wrap">
+      <section class="zb-hero" id="ddayCard">
       <div class="dd-main">
         <div class="dd-label" id="ddLabel"></div>
         <div class="dd-date" id="ddDate"></div>
@@ -1229,41 +1431,36 @@
         <button type="button" class="btn" id="ddSaveBtn">저장</button>
       </div>
     </section>
-    <div class="zb-live"><span class="live-pill">LIVE</span><span class="live-text" id="liveText"></span></div>
+      <div class="zb-live"><span class="live-pill">LIVE</span><span class="live-text" id="liveText"></span></div>
+
+    </div></section>
 
     <section class="zb-sec">
       <div class="zb-h">알림</div>
       <button type="button" class="zb-noti" id="notiCard"></button>
     </section>
 
-    <section class="zb-sec">
-      <div class="zb-h">시험 시간표 <span class="zb-tag">#2학기 1차고사</span></div>
+    <section class="zb-sec" id="ttSec">
+      <div class="zb-h">시험 시간표 <span class="zb-tag" data-term-label>#2학기 2차고사</span></div>
       <div class="zb-sub">1학년 · 과목을 누르면 바로 문제로 이동해요</div>
       <div class="tt-days" id="ttDays"></div>
       <div class="tt-list" id="ttList"></div>
     </section>
 
     <section class="zb-sec">
-      <div class="zb-h">맞춤형 학습 <span class="zb-tag">#2학기 1차고사</span></div>
-      <div class="zb-sub">1학년 시험범위 문제 실시간 업데이트 중</div>
-      <div class="zb-grid">
-        <button type="button" class="zb-link" id="zbNotesBtn"><span>개념학습</span><i>›</i></button>
-        <button type="button" class="zb-link" data-go-tab="study"><span>단원별 학습</span><i>›</i></button>
-        <button type="button" class="zb-link" id="qlinkBasic"><span>실전대비</span><i>›</i></button>
-        <button type="button" class="zb-link" id="homeMockBtn"><span>실전 모의고사</span><i>›</i></button>
-        <button type="button" class="zb-link" id="qlinkAdvanced"><span>심화 공략 <em class="zb-open">심화</em></span><i>›</i></button>
-        <button type="button" class="zb-link" id="homeWrongBtn"><span>최다오답 공략 <em class="zb-open" id="homeWrongCount"></em></span><i>›</i></button>
+      <div class="ad-mini">
+        <button type="button" class="m1" data-ad="board"><small>게시판</small><b>시험 정보<br>같이 나눠요</b></button>
+        <button type="button" class="m2" data-ad="my"><small>MY</small><b>내 학습 기록<br>한눈에 보기</b></button>
       </div>
-      <button type="button" class="zb-resume" id="resumeCard" style="display:none;"><span class="zr-tag">이어풀기</span><span class="zr-text"><b id="resumeTitle"></b><small id="resumeSub"></small></span><i>›</i></button>
     </section>
 
-    <section class="zb-sec">
+    <section class="zb-sec home-hide">
       <div class="zb-h">과목별 학습 <span class="zb-tag" id="zbTotalTag"></span></div>
       <div class="zb-sub">시험범위 전과목 내신대비</div>
       <div class="zb-subjtabs" id="zbSubjTabs"></div>
     </section>
 
-    <section class="zb-sec">
+    <section class="zb-sec home-hide">
       <div class="zb-h">내 학습 현황</div>
       <section class="omr" aria-label="과목별 진도">
         <div class="omr-head">
@@ -1273,12 +1470,7 @@
         <div id="homeSubjectCards"></div>
       </section>
     </section>
-
-    <section class="zb-sec">
-      <div class="zb-h zb-h-row"><span>공지사항</span><button type="button" class="zb-more" data-go-tab="board">전체보기</button></div>
-      <div class="zb-notice" id="zbNotice"></div>
-    </section>
-    <div class="zb-foot">SEOIK.COM · 1학년 2학기 1차고사 대비</div>
+    <div class="zb-foot">SEOIK.COM · 1학년 <span data-term-foot>2학기 2차고사</span> 대비</div>
   </div>
 
   <!-- ============ 개념노트 ============ -->
@@ -1418,11 +1610,34 @@
 </div>
 
 
+<div class="promo-dim" id="adAllDim" hidden>
+  <div class="ad-all" role="dialog" aria-modal="true" aria-labelledby="adAllTitle">
+    <div class="ad-all-h"><b id="adAllTitle">이벤트·소식 전체보기</b><button type="button" id="adAllX" aria-label="닫기">닫기</button></div>
+    <div class="ad-all-list" id="adAllList"></div>
+  </div>
+</div>
+<div class="promo-dim" id="promoDim" hidden>
+  <div class="promo" role="dialog" aria-modal="true" aria-labelledby="promoTitle">
+    <div class="promo-card">
+      <div class="promo-badge">SEOIK.COM · 2학기 2차고사</div>
+      <div class="promo-omr" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i><i></i></div>
+      <h2 class="promo-title" id="promoTitle"><span class="pt-hl">기말대비도</span><span>서익닷컴과</span><span>함께해요!</span></h2>
+      <div class="promo-box">
+        <b>시험범위 전과목 내신대비</b>
+        <span>범위가 나오는 대로 문제를 차례차례 올려요</span>
+        <div class="promo-tags"><em>단원별 학습</em><em>실전 모의고사</em><em>오답노트</em></div>
+      </div>
+      <button type="button" class="promo-cta" id="promoCta">기말 대비 시작하기 ›</button>
+    </div>
+    <div class="promo-foot"><button type="button" id="promoToday">오늘 하루 보지 않기</button><button type="button" id="promoClose">닫기</button></div>
+  </div>
+</div>
+<div class="term-bar" id="termBar" hidden><b id="termBarLabel">지난 시험</b><button type="button" id="termBarBack">2차고사 대비로 ›</button></div>
 <div class="drawer-dim" id="drawerDim"></div>
 <aside class="drawer" id="subjectDrawer" aria-hidden="true">
   <div class="drawer-head">
     <button class="drawer-close" id="drawerClose" aria-label="메뉴 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-    <div class="mn-seg"><span class="on">고1</span><span class="dh-sub" id="drawerSub"></span></div>
+    <div class="mn-seg"><div class="term-seg" id="termSeg" role="tablist" aria-label="시험 선택"></div><span class="dh-sub" id="drawerSub"></span></div>
     <button class="drawer-close" data-go-home aria-label="홈으로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg></button>
   </div>
   <div class="mn-chips" id="mnChips"></div>
@@ -1650,7 +1865,7 @@ const KR_QUIZ = [[{"q": "한글 맞춤법 총칙 제1항의 내용으로 옳은 
 const KR_SET_TITLES = ["한글 맞춤법 총칙·표기 원리 심화", "된소리 표기(제5항) 심화", "어간과 어미(제15항) 심화", "접미사가 붙은 말(제19항) 심화", "띄어쓰기(제41~43항) 심화", "사이시옷(제30항) 심화", "한글 맞춤법 종합 실전 1 (심화)", "한글 맞춤법 종합 실전 2 (심화)"];
 const KR_UNITS = [{"name": "(1) 우리말 바로 쓰기 · 표기 원리", "indices": [0, 1, 2, 3]}, {"name": "(1) 우리말 바로 쓰기 · 띄어쓰기·사이시옷", "indices": [4, 5]}, {"name": "(1) 우리말 바로 쓰기 · 종합 실전", "indices": [6, 7]}];
 const KR_SET_TOPICS = {"0": ["제1항 '소리대로'와 '어법에 맞도록' 구별하기", "한글 맞춤법의 구성 이해하기", "표음주의와 표의주의 이해하기"], "1": ["두 모음 사이·ㄴㄹㅁㅇ 받침 뒤 된소리 적기", "'ㄱ, ㅂ' 받침 뒤 된소리 적지 않기", "같은·비슷한 음절 겹침 예외 알기"], "2": ["어간과 어미 구별하여 적기", "본뜻 유지·멀어짐(넘어지다/드러나다) 구별", "명사형 '-음/-ㅁ' 바르게 쓰기"], "3": ["'-이, -음/-ㅁ, -히'가 붙은 말 원형 밝히기", "'-이, -음' 외 접미사가 붙은 말 소리대로 적기", "조사로 바뀐 말(부터, 조차, 나마)"], "4": ["조사 붙여 쓰기(연속·어미 뒤 포함)", "의존 명사와 조사 구별하기", "단위 명사 띄어쓰기의 원칙과 허용"], "5": ["사이시옷 표기의 세 조건", "된소리·ㄴ·ㄴㄴ 덧남 구별", "예외(외래어, 한자어 6개, 접미사, 거센소리)"], "6": ["표기 원리 종합 적용", "띄어쓰기 종합", "사이시옷·된소리 종합"], "7": ["고난도 오답 함정 정리", "원칙과 허용 구별", "명사형·의존 명사 심화"]};
-const SUBJECTS = [
+const MID_SUBJECTS = [
   { id: "kh", name: "한국사", desc: "일제 강점기 — 무단 통치·독립운동·3·1운동·임시정부·문화 통치·사회 운동", quiz: KH_QUIZ, titles: KH_SET_TITLES, units: KH_UNITS, topics: {} },
   { id: "is", name: "통합사회", desc: "인권과 헌법 · 사회 정의와 불평등 · 시장경제와 지속가능발전 · 세계화와 평화", quiz: IS_QUIZ, titles: IS_SET_TITLES, units: IS_UNITS, topics: IS_SET_TOPICS },
   { id: "info", name: "정보", desc: "컴퓨팅 시스템 · 데이터 · 알고리즘과 프로그래밍 · 인공지능", quiz: INFO_QUIZ, titles: INFO_SET_TITLES, units: INFO_UNITS, topics: INFO_SET_TOPICS },
@@ -1658,6 +1873,23 @@ const SUBJECTS = [
   { id: "sci", name: "통합과학", desc: "통합과학2 2학기 1차고사 범위 — 지질 시대·자연선택 · 산화·환원 · 태양 에너지·발전기 · 과학과 미래 사회", quiz: SCI_QUIZ, titles: SCI_SET_TITLES, units: SCI_UNITS, topics: SCI_SET_TOPICS },
   { id: "kr", name: "공통국어", desc: "(1) 우리말 바로 쓰기 — 한글 맞춤법 · 된소리 · 어간과 어미 · 접미사 · 띄어쓰기 · 사이시옷", quiz: KR_QUIZ, titles: KR_SET_TITLES, units: KR_UNITS, topics: KR_SET_TOPICS }
 ];
+const FINAL_SUBJECTS = [
+  { id: "kh_f", name: "한국사", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
+  { id: "is_f", name: "통합사회", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
+  { id: "info_f", name: "정보", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
+  { id: "en_f", name: "영어", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
+  { id: "sci_f", name: "통합과학", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
+  { id: "kr_f", name: "공통국어", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} }
+];
+/* 시험별 묶음: final = 메인(지금 대비 중인 시험), mid = 지난 시험 · 왼쪽 메뉴 상단에서 선택 */
+const TERMS = {
+  final: { key:"final", label:"2학기 2차고사", subjects: FINAL_SUBJECTS, schedule: [] },
+  mid:   { key:"mid",   label:"2학기 1차고사", subjects: MID_SUBJECTS,   schedule: [] }
+};
+const ALL_SUBJECTS = FINAL_SUBJECTS.concat(MID_SUBJECTS);
+let curTerm = TERMS.final;
+let SUBJECTS = curTerm.subjects;
+function isArchiveView(){ return curTerm !== TERMS.final; }
 
 function isAdvanced(subject, globalIdx){ return subject.titles[globalIdx].includes("심화"); }
 function subjectTotalQ(subject){ return subject.quiz.reduce((a,s)=>a+s.length,0); }
@@ -1668,7 +1900,7 @@ const PENDING_KEY = "jokbo_app_pending_v2";
 
 function freshProgress(){
   const p = {};
-  SUBJECTS.forEach(s => { p[s.id] = new Array(s.quiz.length).fill(false); });
+  ALL_SUBJECTS.forEach(s => { p[s.id] = new Array(s.quiz.length).fill(false); });
   return p;
 }
 function loadProgress(){
@@ -1676,7 +1908,7 @@ function loadProgress(){
     const raw = localStorage.getItem(STORAGE_KEY);
     if(!raw) return freshProgress();
     const p = JSON.parse(raw);
-    SUBJECTS.forEach(s => { if(!Array.isArray(p[s.id]) || p[s.id].length !== s.quiz.length) p[s.id] = new Array(s.quiz.length).fill(false); });
+    ALL_SUBJECTS.forEach(s => { if(!Array.isArray(p[s.id]) || p[s.id].length !== s.quiz.length) p[s.id] = new Array(s.quiz.length).fill(false); });
     return p;
   }catch(e){ return freshProgress(); }
 }
@@ -1689,7 +1921,7 @@ function loadPending(){
     const raw = localStorage.getItem(PENDING_KEY);
     if(!raw) return null;
     const p = JSON.parse(raw);
-    const subj = SUBJECTS.find(s=>s.id===p.subjectId);
+    const subj = ALL_SUBJECTS.find(s=>s.id===p.subjectId);
     if(!subj) return null;
     if(typeof p.setIndex!=="number" || p.setIndex<0 || p.setIndex>=subj.quiz.length) return null;
     return p;
@@ -1744,7 +1976,7 @@ let quizReturnTab = "home";
 let quizMode = "set";        // set | wrong | mock
 let quizItems = [];          // [{sid,set,q}]
 let mockState = null;        // {answers:[{order,picked}], endAt, timerId, sid}
-function subjById(id){ return SUBJECTS.find(s=>s.id===id); }
+function subjById(id){ return ALL_SUBJECTS.find(s=>s.id===id); }
 function curItem(){ return quizItems[quizQ]; }
 function curQData(){ const it = curItem(); return subjById(it.sid).quiz[it.set][it.q]; }
 function quizN(){ return quizItems.length; }
@@ -1756,6 +1988,7 @@ function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").repl
 function showView(name){
   const wasQuiz = document.body.classList.contains("in-quiz");
   document.body.classList.toggle("in-quiz", name==="quiz");
+  document.body.classList.toggle("view-home", name==="home");
   if(wasQuiz && name!=="quiz") window.dispatchEvent(new Event("pen:leave"));
   document.querySelectorAll("[data-view]").forEach(el=>{
     el.classList.toggle("show", el.getAttribute("data-view")===name);
@@ -1790,7 +2023,7 @@ const SUBJECT_STYLE = {
   en:{ emoji:"영", color:"#C9761A", soft:"rgba(201,118,26,.13)" },
   sci:{ emoji:"과", color:"#16839A", soft:"rgba(22,131,154,.12)" }
 };
-function subjStyle(id){ return SUBJECT_STYLE[id] || { emoji:"📚", color:"var(--blue)", soft:"var(--blue-soft)" }; }
+function subjStyle(id){ return SUBJECT_STYLE[String(id).replace(/_f$/,"")] || { emoji:"📚", color:"var(--blue)", soft:"var(--blue-soft)" }; }
 let studyOpenUnit = -1;
 let drawerExpanded = null;
 
@@ -1804,15 +2037,23 @@ function openSubjectStudy(subjId, unitIdx){
 }
 let drawerSel = null;
 function renderDrawer(){
+  if(drawerSel && !SUBJECTS.some(s=>s.id===drawerSel)) drawerSel = null;
   const totalQ = SUBJECTS.reduce((a,s)=>a+subjectTotalQ(s),0);
-  document.getElementById("drawerSub").textContent = SUBJECTS.length+"과목 · "+totalQ.toLocaleString()+"문항";
+  document.getElementById("drawerSub").textContent = SUBJECTS.length+"과목"+(totalQ ? " · "+totalQ.toLocaleString()+"문항" : " · 준비 중");
+  const seg = document.getElementById("termSeg");
+  seg.innerHTML = ["mid","final"].map(k=>'<button type="button" role="tab" aria-selected="'+(curTerm.key===k)+'" class="'+(curTerm.key===k?"on":"")+'" data-term="'+k+'">'+escapeHtml(TERMS[k].label.replace("2학기 ",""))+'</button>').join("");
+  seg.querySelectorAll("button").forEach(b=> b.onclick = ()=>{
+    if(curTerm.key===b.dataset.term) return;
+    setTerm(b.dataset.term); renderDrawer(); document.getElementById("drawerBody").scrollTop = 0;
+    if(!document.body.classList.contains("in-quiz")) goTab(activeTab||"home");
+  });
   if(!drawerSel) drawerSel = (activeTab==="study" && studySubjectId) || (nextExamDay() && (nextExamDay().items.find(i=>i.sid)||{}).sid) || SUBJECTS[0].id;
   const wc = wrongList().length;
   const chips = document.getElementById("mnChips");
   chips.innerHTML = [["wrong","오답노트"+(wc?" "+wc:"")],["mock","실전 모의고사"],["board","게시판"],["my","MY"]].map(([t,l])=>'<button type="button" data-t="'+t+'">'+l+' ›</button>').join("");
   chips.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ closeDrawer(); goTab(b.dataset.t); window.scrollTo(0,0); });
   const side = document.getElementById("mnSide");
-  side.innerHTML = SUBJECTS.map(s=>'<button type="button" class="'+(s.id===drawerSel?"on":"")+'" data-sid="'+s.id+'">'+escapeHtml(s.name)+'</button>').join("");
+  side.innerHTML = SUBJECTS.map(s=>'<button type="button" class="'+(s.id===drawerSel?"on":"")+'" data-sid="'+s.id+'">'+escapeHtml(s.name)+'</button>').join("") ;
   side.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ drawerSel = b.dataset.sid; renderDrawer(); document.getElementById("drawerBody").scrollTop = 0; });
   const s = subjById(drawerSel), ex = examOf(s.id), sw = wrongList(s.id).length;
   const hasAdv = s.quiz.some((_,i)=>isAdvanced(s,i));
@@ -1853,6 +2094,49 @@ function closeDrawer(){
   d.classList.remove("open"); d.setAttribute("aria-hidden","true");
   document.body.style.overflow = "";
 }
+function openArchiveDrawer(){ openDrawer(); }
+const PROMO_KEY = "seoik_promo_hide_until";
+function showPromo(force){
+  if(!force){ try{ if(Date.now() < (+localStorage.getItem(PROMO_KEY)||0)) return; }catch(e){} }
+  if(isArchiveView() || document.body.classList.contains("in-quiz")) return;
+  document.getElementById("promoDim").hidden = false;
+}
+function hidePromo(){ document.getElementById("promoDim").hidden = true; }
+document.getElementById("promoClose").addEventListener("click", hidePromo);
+document.getElementById("promoToday").addEventListener("click", ()=>{
+  const d = new Date(); d.setHours(24,0,0,0);
+  try{ localStorage.setItem(PROMO_KEY, String(d.getTime())); }catch(e){}
+  hidePromo();
+});
+document.getElementById("promoDim").addEventListener("click", e=>{ if(e.target.id==="promoDim") hidePromo(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") hidePromo(); });
+document.getElementById("promoCta").addEventListener("click", ()=>{ hidePromo(); openDrawer(); });
+(function adCarousel(){
+  const track = document.getElementById("adTrack"), cnt = document.getElementById("adCount");
+  const slides = Array.from(track.children), n = slides.length; let idx = 0, holdUntil = 0;
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const step = ()=> n>1 ? slides[1].offsetLeft - slides[0].offsetLeft : track.clientWidth;
+  const go = (i)=> track.scrollTo({ left: i*step(), behavior: reduce ? "auto" : "smooth" });
+  track.addEventListener("scroll", ()=>{ const i = Math.min(n-1, Math.round(track.scrollLeft / Math.max(1, step()))); if(i!==idx){ idx = i; cnt.textContent = (idx+1)+" / "+n; } }, {passive:true});
+  ["touchstart","pointerdown","wheel"].forEach(ev=> track.addEventListener(ev, ()=>{ holdUntil = Date.now()+7000; }, {passive:true}));
+  if(!reduce) setInterval(()=>{
+    if(Date.now()<holdUntil || document.hidden || !document.querySelector('[data-view="home"].show') || !document.getElementById("promoDim").hidden || !document.getElementById("adAllDim").hidden || document.getElementById("splash")) return;
+    go((idx+1)%n);
+  }, 4500);
+  const dim = document.getElementById("adAllDim"), list = document.getElementById("adAllList");
+  list.innerHTML = slides.map((s,k)=>{ const bg = getComputedStyle(s).backgroundImage; return '<button type="button" data-k="'+k+'"><i style="background:'+bg.replace(/"/g,"'")+'"></i><span><small>'+escapeHtml(s.querySelector("small").textContent)+'</small><b>'+escapeHtml(s.querySelector("b").textContent)+'</b></span></button>'; }).join("");
+  list.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ dim.hidden = true; holdUntil = Date.now()+7000; go(+b.dataset.k); });
+  document.getElementById("adCountBtn").onclick = ()=>{ dim.hidden = false; };
+  document.getElementById("adAllX").onclick = ()=>{ dim.hidden = true; };
+  dim.addEventListener("click", e=>{ if(e.target===dim) dim.hidden = true; });
+})();
+document.querySelectorAll("[data-ad]").forEach(b=> b.addEventListener("click", ()=>{
+  const a = b.dataset.ad;
+  if(a==="drawer"){ if(isArchiveView()) setTerm("final"); openDrawer(); }
+  else if(a==="mid"){ setTerm("mid"); goTab("home"); openDrawer(); }
+  else { goTab(a); window.scrollTo(0,0); }
+}));
+document.getElementById("termBarBack").addEventListener("click", ()=>{ setTerm("final"); closeDrawer(); goTab("home"); window.scrollTo(0,0); });
 document.querySelectorAll("[data-open-drawer]").forEach(b=> b.addEventListener("click", openDrawer));
 document.getElementById("drawerDim").addEventListener("click", closeDrawer);
 document.getElementById("drawerClose").addEventListener("click", closeDrawer);
@@ -1918,13 +2202,14 @@ function recordAnswer(it, correct){
 function wrongList(sid){
   const w = loadWrong();
   return Object.values(w).filter(e=>{
-    const s = subjById(e.sid); return s && s.quiz[e.set] && s.quiz[e.set][e.q] && (!sid || e.sid===sid);
+    const s = subjById(e.sid); return s && SUBJECTS.includes(s) && s.quiz[e.set] && s.quiz[e.set][e.q] && (!sid || e.sid===sid);
   }).sort((a,b)=> b.ts - a.ts);
 }
 function plainText(html){ const d = document.createElement("div"); d.innerHTML = html; return (d.textContent||"").replace(/\s+/g," ").trim(); }
 
 let wrongFilter = "ALL";
 function renderWrong(){
+  if(wrongFilter!=="ALL" && !SUBJECTS.some(s=>s.id===wrongFilter)) wrongFilter = "ALL";
   const all = wrongList();
   const body = document.getElementById("wrongBody");
   const counts = {}; all.forEach(e=> counts[e.sid] = (counts[e.sid]||0)+1);
@@ -2013,7 +2298,9 @@ function pickMockItems(sid, n){
 function renderMock(){
   const body = document.getElementById("mockBody");
   const hist = loadMockHist().slice(-6).reverse();
+  if(!SUBJECTS.some(s=>s.id===mockSid)) mockSid = SUBJECTS[0].id;
   const total = mockPool(mockSid).reduce((a,b)=>a+b.length,0);
+  if(!total){ body.innerHTML = '<div class="empty-note">'+escapeHtml(curTerm.label)+' 문제가 아직 없어요.<br>문제가 추가되면 여기서 실전 모의고사를 볼 수 있어요.</div>'; return; }
   if(mockCount>total) mockCount = total;
   body.innerHTML =
     '<div class="mk-card"><div class="mk-row-t">과목</div><div class="sub-toggle mk-chips" id="mockSubj">'+
@@ -2096,18 +2383,31 @@ function finishMock(timeUp){
 
 
 /* ================= 시험 시간표 (1학년) ================= */
-const EXAM_SCHEDULE = [
+const MID_SCHEDULE = [
   { date:"2026-09-29", items:[ {p:3, enter:"11:10", t:"11:20~12:10", name:"통합과학2", sid:"sci"} ] },
   { date:"2026-09-30", items:[ {p:1, enter:"08:50", t:"09:00~09:50", name:"정보", sid:"info"}, {p:3, enter:"11:10", t:"11:20~12:10", name:"한국사2", sid:"kh"} ] },
   { date:"2026-10-01", items:[ {p:1, enter:"08:50", t:"09:00~09:50", name:"공통국어2", sid:"kr"}, {p:3, enter:"11:10", t:"11:20~12:10", name:"공통수학2"} ] },
   { date:"2026-10-02", items:[ {p:1, enter:"08:50", t:"09:00~09:50", name:"통합사회2", sid:"is"}, {p:3, enter:"11:10", t:"11:20~12:10", name:"공통영어2", sid:"en"} ] }
 ];
+TERMS.mid.schedule = MID_SCHEDULE;
+let EXAM_SCHEDULE = curTerm.schedule;
+function setTerm(key){
+  curTerm = TERMS[key]; SUBJECTS = curTerm.subjects; EXAM_SCHEDULE = curTerm.schedule;
+  if(!SUBJECTS.some(s=>s.id===studySubjectId)) studySubjectId = SUBJECTS[0].id;
+  drillSubjectId = "ALL"; drillUnitKey = "ALL"; wrongFilter = "ALL";
+  mockSid = SUBJECTS[0].id; mockCount = 20; ttSel = null; drawerSel = null;
+  document.body.classList.toggle("term-archive", isArchiveView());
+  document.querySelectorAll("[data-term-label]").forEach(el=> el.textContent = "#"+curTerm.label);
+  document.querySelectorAll("[data-term-foot],[data-term-plain]").forEach(el=> el.textContent = curTerm.label);
+  const bar = document.getElementById("termBar");
+  if(bar){ bar.hidden = !isArchiveView(); document.getElementById("termBarLabel").textContent = "지난 시험 · "+curTerm.label; document.getElementById("termBarBack").textContent = TERMS.final.label.replace("2학기 ","")+" 대비로 ›"; }
+}
 function homeNotesSid(){
   for(const d of EXAM_SCHEDULE){
     if(dayDiff(d.date) < 0) continue;
     for(const it of d.items){ if(it.sid && SUBJECT_NOTES[it.sid]) return it.sid; }
   }
-  return SUBJECT_NOTES.info ? "info" : Object.keys(SUBJECT_NOTES)[0];
+  const c = SUBJECTS.find(s=>SUBJECT_NOTES[s.id]); return c ? c.id : null;
 }
 function dayDiff(dateStr){
   const [y,m,d] = dateStr.split("-").map(Number);
@@ -2124,6 +2424,7 @@ function nextExamDay(){ return EXAM_SCHEDULE.find(d=>dayDiff(d.date)>=0) || null
 let ttSel = null;
 function renderTimetable(){
   const days = document.getElementById("ttDays"), list = document.getElementById("ttList");
+  if(!EXAM_SCHEDULE.length){ days.innerHTML = ""; list.innerHTML = '<div class="empty-note" style="padding:22px 12px">'+escapeHtml(curTerm.label)+' 시간표가 나오면 여기에 올라와요.</div>'; return; }
   if(ttSel===null){ const nd = nextExamDay(); ttSel = nd ? EXAM_SCHEDULE.indexOf(nd) : 0; }
   days.innerHTML = EXAM_SCHEDULE.map((d,i)=>{
     const n = dayDiff(d.date);
@@ -2147,7 +2448,8 @@ function liveMessages(){
   const totalSets = SUBJECTS.reduce((a,s)=>a+s.quiz.length,0), doneSets = SUBJECTS.reduce((a,s)=>a+progress[s.id].filter(Boolean).length,0);
   const msgs = [];
   if(nd){ const n = dayDiff(nd.date); msgs.push((n===0?'<b>오늘</b> ':'<b>'+ddText(n)+'</b> · ')+fmtDay(nd.date)+' '+nd.items.map(i=>i.p+'교시 <b>'+escapeHtml(i.name)+'</b>').join(", ")); }
-  msgs.push('지금까지 <b>'+doneSets+'세트</b> 완료 · 전체 '+totalSets+'세트 중 '+Math.round(doneSets/totalSets*100)+'%');
+  if(totalSets) msgs.push('지금까지 <b>'+doneSets+'세트</b> 완료 · 전체 '+totalSets+'세트 중 '+Math.round(doneSets/totalSets*100)+'%');
+  else msgs.push('<b>'+escapeHtml(curTerm.label)+'</b> 대비 문제를 준비하고 있어요');
   msgs.push(wc ? '오답노트에 <b>'+wc+'문제</b>가 모여 있어요 · 두 번 맞히면 졸업' : '틀린 문제는 <b>오답노트</b>에 자동으로 모여요');
   return msgs;
 }
@@ -2158,7 +2460,8 @@ function renderLive(){
 }
 function renderNoti(){
   const card = document.getElementById("notiCard"), nd = nextExamDay();
-  if(!nd){ card.innerHTML = '<b>[안내] 2학기 1차고사가 끝났어요</b><span>수고했어요! 틀린 문제는 오답노트에 남아 있어요.</span>'; card.onclick = ()=> goTab("wrong"); return; }
+  if(!nd && !isArchiveView()){ card.innerHTML = '<b>[안내] '+escapeHtml(curTerm.label)+' 대비를 준비하고 있어요</b><span>지난 '+escapeHtml(TERMS.mid.label)+' 문제는 왼쪽 메뉴(☰) 위쪽에서 1차고사를 고르면 볼 수 있어요.</span>'; card.onclick = ()=> openArchiveDrawer(); return; }
+  if(!nd){ card.innerHTML = '<b>[안내] '+escapeHtml(curTerm.label)+'가 끝났어요</b><span>수고했어요! 틀린 문제는 오답노트에 남아 있어요.</span>'; card.onclick = ()=> goTab("wrong"); return; }
   const n = dayDiff(nd.date), first = nd.items.find(i=>i.sid) || nd.items[0];
   const wc = wrongList(first.sid).length;
   card.innerHTML = '<b>['+(n===0?'오늘 시험':n===1?'내일 시험':ddText(n))+'] '+nd.items.map(i=>escapeHtml(i.name)).join(" · ")+'</b>'+
@@ -2167,21 +2470,33 @@ function renderNoti(){
   card.onclick = ()=>{ if(first.sid && wc){ wrongFilter = first.sid; goTab("wrong"); } else if(first.sid){ studySubjectId = first.sid; goTab("study"); } };
 }
 function renderHomeExtras(){
+  const allQ = ALL_SUBJECTS.reduce((a,s)=>a+subjectTotalQ(s),0);
+  document.getElementById("hmTagline").textContent = allQ.toLocaleString()+"문항으로 전과목 내신대비";
+  const sr = document.getElementById("hmSubjRow");
+  sr.innerHTML = SUBJECTS.map(s=>'<button type="button" data-sid="'+s.id+'">'+escapeHtml(s.name)+'</button>').join("");
+  sr.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ openDrawer(); drawerSel = b.dataset.sid; renderDrawer(); });
+  const isOpen = SUBJECTS.some(s=>s.quiz.length);
+  document.querySelectorAll('[data-view="home"] .zb-grid .zb-link').forEach(b=>{
+    let tag = b.querySelector(".zb-state");
+    if(!tag){ tag = document.createElement("em"); tag.className = "zb-state"; b.querySelector("span").appendChild(tag); }
+    tag.textContent = isOpen ? "OPEN" : "준비 중"; tag.classList.toggle("off", !isOpen);
+  });
+  document.getElementById("ttSec").hidden = !EXAM_SCHEDULE.length;
   renderTimetable(); renderLive(); renderNoti();
   const totalQ = SUBJECTS.reduce((a,s)=>a+subjectTotalQ(s),0);
-  document.getElementById("zbTotalTag").textContent = "#"+totalQ.toLocaleString()+"문항";
+  document.getElementById("zbTotalTag").textContent = totalQ ? "#"+totalQ.toLocaleString()+"문항" : "#준비 중";
   const tabs = document.getElementById("zbSubjTabs");
   tabs.innerHTML = SUBJECTS.map(s=>{ const e = examOf(s.id), n = e ? dayDiff(e.date) : null;
-    return '<button type="button" data-sid="'+s.id+'"><b>'+escapeHtml(s.name)+'</b>'+(e && n>=0 ? '<small>'+fmtDay(e.date)+' '+ddText(n)+'</small>' : '<small>'+subjectTotalQ(s)+'문항</small>')+'</button>'; }).join("");
+    return '<button type="button" data-sid="'+s.id+'"><b>'+escapeHtml(s.name)+'</b>'+(e && n>=0 ? '<small>'+fmtDay(e.date)+' '+ddText(n)+'</small>' : '<small>'+(s.quiz.length ? subjectTotalQ(s)+'문항' : '준비 중')+'</small>')+'</button>'; }).join("");
   tabs.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ studySubjectId = b.dataset.sid; studyUnitIdx = 0; goTab("study"); window.scrollTo(0,0); });
   const posts = allPosts().sort((a,b)=> b.ts-a.ts).slice(0,4);
-  const defaults = [["안내","2학기 1차고사 1학년 시간표가 등록되었어요"],["안내","오답노트 · 실전 모의고사 기능이 추가되었어요"],["안내","정보 개념노트(Ⅰ~Ⅳ단원)가 추가되었어요"],["안내","9월 모의고사 영어 41~45번 장문 세트가 추가되었어요"]];
+  const defaults = [["안내","기말대비도 서익닷컴과 함께! 2학기 2차고사 대비 오픈"],["안내","지난 1차고사 문제는 메뉴(☰) 위쪽 학기 선택에서 볼 수 있어요"],["안내","오답노트 · 실전 모의고사 기능이 추가되었어요"],["안내","정보 개념노트(Ⅰ~Ⅳ단원)가 추가되었어요"],["안내","9월 모의고사 영어 41~45번 장문 세트가 추가되었어요"]];
   const rows = posts.length ? posts.map(p=>['<span class="nt-c">['+escapeHtml(p.cat)+']</span> '+escapeHtml(p.title), p.id]) : defaults.map(d=>['<span class="nt-c">['+d[0]+']</span> '+d[1], null]);
   const nb = document.getElementById("zbNotice");
   nb.innerHTML = rows.map(r=>'<button type="button" data-id="'+(r[1]||"")+'">'+r[0]+'</button>').join("");
   nb.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ goTab("board"); if(b.dataset.id) renderBoardDetail(b.dataset.id); });
   document.getElementById("bellDot").hidden = !allPosts().length;
-  document.getElementById("zbNotesBtn").onclick = ()=> openNotes(homeNotesSid());
+  document.getElementById("zbNotesBtn").onclick = ()=>{ const sid = homeNotesSid(); if(sid) openNotes(sid); else { goTab("study"); window.scrollTo(0,0); } };
 }
 const FLOAT_KEY = "seoik_float_closed";
 function updateFloat(viewName){
@@ -2202,9 +2517,10 @@ function loadExam(){ try{ const e = JSON.parse(localStorage.getItem(EXAM_KEY) ||
 function renderDday(){
   const nd = nextExamDay(), first = EXAM_SCHEDULE[0], last = EXAM_SCHEDULE[EXAM_SCHEDULE.length-1];
   const card = document.getElementById("ddayCard");
-  if(!nd){ document.getElementById("ddLabel").textContent = "2학기 1차고사 종료"; document.getElementById("ddDate").textContent = "수고했어요!"; document.getElementById("ddNum").textContent = "END"; return; }
+  if(!EXAM_SCHEDULE.length){ document.getElementById("ddLabel").textContent = curTerm.label+" 대비"; document.getElementById("ddDate").textContent = "시간표가 나오면 D-day가 표시돼요"; document.getElementById("ddNum").textContent = "D-?"; card.classList.remove("today"); return; }
+  if(!nd){ document.getElementById("ddLabel").textContent = curTerm.label+" 종료"; document.getElementById("ddDate").textContent = "수고했어요!"; document.getElementById("ddNum").textContent = "END"; return; }
   const n = dayDiff(nd.date), started = dayDiff(first.date) <= 0;
-  document.getElementById("ddLabel").innerHTML = (started ? '2학기 1차고사 진행 중' : '2학기 1차고사') + ' <em>'+fmtDay(first.date)+' ~ '+fmtDay(last.date)+'</em>';
+  document.getElementById("ddLabel").innerHTML = (started ? curTerm.label+' 진행 중' : curTerm.label) + ' <em>'+fmtDay(first.date)+' ~ '+fmtDay(last.date)+'</em>';
   document.getElementById("ddDate").textContent = (n===0 ? "오늘 " : "다음 시험 ") + fmtDay(nd.date) + " · " + nd.items.map(i=>i.p+"교시 "+i.name).join(", ");
   document.getElementById("ddNum").textContent = ddText(n);
   card.classList.toggle("today", n===0);
@@ -2235,12 +2551,12 @@ function renderHome(){
   const totalSets = SUBJECTS.reduce((a,s)=>a+s.quiz.length,0);
   const doneSets = SUBJECTS.reduce((a,s)=>a+progress[s.id].filter(Boolean).length,0);
   document.getElementById("homeTotalNote").textContent = SUBJECTS.length + "과목 " + totalQ + "문항 · " + doneSets + "/" + totalSets + " 세트 완료";
-  document.getElementById("homePct").innerHTML = Math.round(doneSets/totalSets*100) + "<small>%</small>";
+  document.getElementById("homePct").innerHTML = (totalSets ? Math.round(doneSets/totalSets*100) : 0) + "<small>%</small>";
 
   const pending = loadPending();
   const resumeCard = document.getElementById("resumeCard");
-  if(pending){
-    const subj = SUBJECTS.find(s=>s.id===pending.subjectId);
+  const subj = pending && SUBJECTS.find(s=>s.id===pending.subjectId);
+  if(subj){
     resumeCard.style.display = "flex";
     document.getElementById("resumeTitle").textContent = subj.name + " SET " + (pending.setIndex+1) + " 이어 풀기";
     document.getElementById("resumeSub").textContent = subj.titles[pending.setIndex];
@@ -2258,7 +2574,7 @@ function renderHome(){
     row.className = "omr-row";
     row.setAttribute("role","button"); row.tabIndex = 0;
     row.style.setProperty("--subj", st.color);
-    row.innerHTML = '<div class="omr-subj"><b>'+escapeHtml(subj.name)+'</b><span>'+cleared+' / '+subj.quiz.length+' 세트</span></div><div class="omr-bubbles batt-wrap">'+battHTML(cleared/subj.quiz.length*100)+'</div>';
+    row.innerHTML = '<div class="omr-subj"><b>'+escapeHtml(subj.name)+'</b><span>'+(subj.quiz.length ? cleared+' / '+subj.quiz.length+' 세트' : '준비 중')+'</span></div><div class="omr-bubbles batt-wrap">'+battHTML(subj.quiz.length ? cleared/subj.quiz.length*100 : 0)+'</div>';
     const go = ()=>{ studySubjectId = subj.id; studyUnitIdx = 0; goTab("study"); window.scrollTo(0,0); };
     row.addEventListener("click", go);
     row.addEventListener("keydown", e=>{ if(e.key==="Enter") go(); });
@@ -2277,6 +2593,7 @@ function setRowHTML(subject, globalIdx, showTag){
     (showTag ? '<span class="sr-tag '+(adv?'adv':'basic')+'">'+(adv?'심화':'기본')+'</span>' : '');
 }
 function renderStudy(){
+  if(!SUBJECTS.some(s=>s.id===studySubjectId)) studySubjectId = SUBJECTS[0].id;
   const toggle = document.getElementById("studySubjectToggle");
   toggle.innerHTML = "";
   SUBJECTS.forEach(subj=>{
@@ -2297,6 +2614,7 @@ function renderStudy(){
   const list = document.getElementById("studyUnitList");
   list.innerHTML = "";
 
+  if(!subject.units.length) list.innerHTML = '<div class="empty-note">'+escapeHtml(curTerm.label)+' 범위 문제를 준비하고 있어요.<br>지난 '+escapeHtml(TERMS.mid.label)+' 문제는 왼쪽 메뉴(☰) 위쪽에서 1차고사를 고르면 풀 수 있어요.</div>';
   subject.units.forEach((unit, ui)=>{
     const basicIdx = unit.indices.filter(i=>!isAdvanced(subject,i));
     const advIdx = unit.indices.filter(i=>isAdvanced(subject,i));
@@ -2342,6 +2660,7 @@ function renderStudy(){
 
 /* ================= 실전대비 ================= */
 function renderDrill(){
+  if(drillSubjectId!=="ALL" && !SUBJECTS.some(s=>s.id===drillSubjectId)) drillSubjectId = "ALL";
   const tabs = document.getElementById("drillTabs");
   tabs.innerHTML = "";
   [["basic","기본 공략"],["advanced","심화 공략"]].forEach(([key,label])=>{
@@ -2422,7 +2741,7 @@ function renderDrillList(){
   });
 
   if(!anyUnit){
-    list.innerHTML = '<div class="empty-note">이 조건에 맞는 세트가 없어요. 다른 난이도나 단원을 선택해 보세요.</div>';
+    list.innerHTML = SUBJECTS.every(s=>!s.quiz.length) ? '<div class="empty-note">'+escapeHtml(curTerm.label)+' 문제를 준비하고 있어요.<br>지난 1차고사 문제는 왼쪽 메뉴(☰) 위쪽에서 고를 수 있어요.</div>' : '<div class="empty-note">이 조건에 맞는 세트가 없어요. 다른 난이도나 단원을 선택해 보세요.</div>';
   }
 }
 
@@ -2433,7 +2752,7 @@ function renderMy(){
   const totalSets = SUBJECTS.reduce((a,s)=>a+s.quiz.length,0);
   const clearedSets = SUBJECTS.reduce((a,s)=>a+progress[s.id].filter(Boolean).length,0);
   const totalQ = SUBJECTS.reduce((a,s)=>a+subjectTotalQ(s),0);
-  [["완료 세트", clearedSets+"/"+totalSets], ["전체 문항", totalQ], ["완료율", Math.round(clearedSets/totalSets*100)+"%"]].forEach(([label,num])=>{
+  [["완료 세트", clearedSets+"/"+totalSets], ["전체 문항", totalQ], ["완료율", (totalSets ? Math.round(clearedSets/totalSets*100) : 0)+"%"]].forEach(([label,num])=>{
     const d = document.createElement("div");
     d.className = "my-stat";
     d.innerHTML = '<div class="m-num">'+num+'</div><div class="m-label">'+label+'</div>';
@@ -3472,13 +3791,23 @@ detectPublish();
 
 /* ================= init ================= */
 function init(){
+  setTerm("final");
+  (function(){ const sp = document.getElementById("splash"); if(!sp) return;
+    const t0 = performance.now(); let done = false;
+    const hide = ()=>{ if(done) return; done = true; sp.classList.add("out"); setTimeout(()=> sp.remove(), 500); };
+    sp.addEventListener("click", hide);
+    const minWait = new Promise(r=> setTimeout(r, Math.max(0, 1700 - t0)));
+    const fontWait = (document.fonts && document.fonts.load) ? Promise.race([Promise.all([document.fonts.load('60px "Nanum Brush Script"', "지름길"), document.fonts.load('30px "Nanum Pen Script"', "오늘")]), new Promise(r=> setTimeout(r, 3000))]) : Promise.resolve();
+    Promise.all([minWait, fontWait.catch(()=>{})]).then(hide);
+  })();
   const pending = loadPending();
-  if(pending){
-    const subj = SUBJECTS.find(s=>s.id===pending.subjectId);
+  const subj = pending && SUBJECTS.find(s=>s.id===pending.subjectId);
+  if(subj){
     enterQuiz(subj, pending.setIndex, "home");
     document.querySelectorAll(".bottomnav button").forEach(b=>b.classList.remove("active"));
   } else {
     goTab("home");
+    (function wait(){ if(document.getElementById("splash")) return setTimeout(wait, 200); setTimeout(()=> showPromo(false), 250); })();
   }
 }
 init();
