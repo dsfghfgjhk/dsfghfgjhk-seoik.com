@@ -926,6 +926,62 @@
 .promo-foot button + button{ border-left:1px solid var(--border); color:var(--ink); font-weight:700; }
 .term-seg{ display:flex; gap:2px; padding:3px; border-radius:99px; background:var(--bg); }
 .term-seg button{ border:none; background:none; color:var(--ink-faint); font-size:13px; font-weight:600; padding:6px 14px; border-radius:99px; cursor:pointer; }
+/* ---------- 체육 서논술 암기장 ---------- */
+body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-memo #penFab{ display:none !important; }
+.pm-top{ display:grid; gap:10px; padding:10px 16px 12px; background:var(--card); border-bottom:1px solid var(--border); }
+.pm-modes{ display:grid; grid-template-columns:repeat(3,1fr); gap:4px; padding:4px; border-radius:12px; background:var(--bg); }
+.pm-modes button{ border:none; background:none; border-radius:9px; padding:8px 4px; font-size:14px; font-weight:700; color:var(--ink-faint); cursor:pointer; line-height:1.25; }
+.pm-modes button small{ display:block; font-weight:400; font-size:11px; }
+.pm-modes button[aria-pressed="true"]{ background:var(--card); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.14); }
+.pm-filters{ display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; }
+.pm-filters::-webkit-scrollbar{ display:none; }
+.pm-filters button{ flex-shrink:0; border:1px solid var(--border); background:var(--card); color:var(--ink); border-radius:99px; padding:4px 12px; font-size:13px; cursor:pointer; }
+.pm-filters button[aria-pressed="true"]{ background:var(--ink); color:var(--card); border-color:var(--ink); }
+.pm-main{ padding:14px 16px 130px; }
+.pm-how{ font-size:13px; color:var(--ink-soft); margin:0 0 14px; line-height:1.6; }
+.pm-list{ display:grid; gap:16px; }
+.pm-q{ background:var(--card); border:1px solid var(--border); border-radius:6px; padding:16px 16px 18px; min-width:0; line-height:1.8; font-size:15.5px; }
+.pm-q-h{ display:flex; gap:8px; align-items:flex-start; margin-bottom:10px; }
+.pm-q-n{ flex-shrink:0; font-size:19px; font-weight:800; color:#D2561E; line-height:1.3; }
+.pm-q-t{ margin:0; font-size:16px; font-weight:700; line-height:1.5; }
+.pm-box{ border:1px solid var(--ink); padding:8px 12px; font-size:13px; line-height:1.6; margin:0 0 12px; }
+.pm-lab{ font-size:12px; font-weight:700; letter-spacing:.06em; color:var(--green); margin:4px 0 2px; }
+.pm-p{ margin:0 0 10px; word-break:keep-all; overflow-wrap:anywhere; }
+.pm-p:last-child{ margin-bottom:0; }
+.pm-foot{ display:flex; justify-content:space-between; gap:8px; margin-top:12px; padding-top:10px; border-top:1px dashed var(--border); font-size:13px; color:var(--ink-faint); }
+.pm-foot b{ color:var(--ink); font-variant-numeric:tabular-nums; }
+.pm-no{ display:inline-block; font-size:11px; font-weight:700; color:#D2561E; vertical-align:super; line-height:1; margin-right:2px; }
+.pm-sb{ display:inline-block; vertical-align:baseline; min-height:1.5em; min-width:4em; max-width:100%; border-bottom:2px solid var(--ink); cursor:pointer; color:transparent; user-select:none; }
+.pm-sb.show{ display:inline; color:var(--blue); font-family:"Nanum Pen Script", var(--sans), cursive; font-size:1.32em; line-height:1.3; border-bottom-color:var(--blue); }
+.pm-db{ display:inline-block; vertical-align:middle; min-height:1.9em; min-width:5.5em; max-width:100%; padding:1px 8px; margin:2px 0; border:2px dashed var(--border); border-radius:8px; background:var(--bg); color:var(--ink); font-size:14px; line-height:1.5; cursor:pointer; text-align:left; }
+.pm-db.target{ border-color:var(--blue); background:var(--blue-soft); }
+.pm-db.filled{ border-style:solid; border-color:var(--blue); background:var(--card); }
+.pm-db.ok{ border-color:var(--green); background:var(--green-soft); }
+.pm-db.bad{ border-color:var(--red); background:var(--red-soft); }
+.pm-bank{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; padding:12px; border-radius:10px; background:var(--bg); min-height:56px; }
+.pm-bank:empty::before{ content:"카드를 모두 넣었어요. [채점하기]를 눌러 보세요."; color:var(--ink-faint); font-size:13px; }
+.pm-chip{ touch-action:none; user-select:none; -webkit-user-select:none; border:1px solid var(--border); border-bottom-width:3px; background:var(--card); color:var(--ink); border-radius:9px; padding:6px 10px; font-size:14px; line-height:1.45; cursor:grab; text-align:left; max-width:100%; }
+.pm-chip.sel{ border-color:var(--blue); background:var(--blue-soft); }
+.pm-chip.dragging{ opacity:.3; }
+.pm-ghost{ position:fixed; z-index:3000; pointer-events:none; opacity:.93; transform:translate(-50%,-60%) rotate(-2deg); box-shadow:0 8px 22px rgba(0,0,0,.22); max-width:min(80vw,420px); }
+.pm-tb{ display:inline-block; vertical-align:top; max-width:100%; font:inherit; font-size:15px; line-height:1.55; color:var(--ink); background:var(--blue-soft); border:none; border-bottom:2px solid var(--blue); border-radius:6px 6px 0 0; padding:2px 6px; margin:1px 0; resize:none; overflow:hidden; }
+.pm-tb.ok{ background:var(--green-soft); border-color:var(--green); }
+.pm-tb.near{ background:color-mix(in srgb, #D49A00 20%, var(--card)); border-color:#C98A00; }
+.pm-tb.bad{ background:var(--red-soft); border-color:var(--red); }
+.pm-ans{ display:block; font-size:13px; line-height:1.5; margin:2px 0 4px; padding:4px 8px; border-left:3px solid var(--red); background:var(--red-soft); color:var(--ink); }
+.pm-ans.near{ border-color:#C98A00; background:color-mix(in srgb, #D49A00 16%, var(--card)); }
+.pm-bar{ position:fixed; left:0; right:0; bottom:0; z-index:900; background:var(--card); border-top:1px solid var(--border); padding:10px max(16px, env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px)); }
+[data-view="pememo"]:not(.show) .pm-bar{ display:none; }
+.pm-bar-in{ max-width:520px; margin:0 auto; display:flex; align-items:center; gap:6px; }
+.pm-score{ flex:1; min-width:0; font-size:12px; color:var(--ink-faint); line-height:1.35; }
+.pm-score b{ display:block; font-size:20px; font-weight:800; color:var(--ink); font-variant-numeric:tabular-nums; }
+.pm-btn{ flex-shrink:0; white-space:nowrap; border:1px solid var(--border); background:var(--card); color:var(--ink); border-radius:10px; padding:10px 12px; font-size:13.5px; font-weight:700; cursor:pointer; }
+.pm-btn.main{ background:var(--blue); color:#fff; border-color:var(--blue); }
+@media (max-width:420px){ .pm-score{ font-size:0; } .pm-score b{ font-size:19px; } .pm-btn{ padding:10px; font-size:13px; } }
+.pm-cards{ display:grid; gap:8px; }
+.pm-card{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--card); color:var(--ink); cursor:pointer; }
+.pm-card b{ display:block; font-size:15px; } .pm-card small{ display:block; font-size:12px; color:var(--ink-faint); }
+.pm-card span{ flex:1; min-width:0; } .pm-card i{ font-style:normal; color:var(--ink-faint); }
 .term-bar{ position:fixed; left:50%; transform:translateX(-50%); bottom:calc(env(safe-area-inset-bottom,0px) + 70px); z-index:960; display:flex; align-items:center; gap:10px; padding:6px 6px 6px 14px; border-radius:99px; background:var(--ink); color:var(--card); font-size:12.5px; box-shadow:0 6px 20px rgba(0,0,0,.18); white-space:nowrap; }
 .term-bar[hidden], body.in-quiz .term-bar{ display:none; }
 .term-bar b{ font-weight:700; }
@@ -1485,6 +1541,27 @@
     <div class="nt-body" id="notesBody"></div>
   </div>
 
+  <!-- ============ 체육 서논술 암기장 ============ -->
+  <div data-view="pememo">
+    <div class="topbar">
+      <div class="left"><button class="icon-btn" id="pmBack" aria-label="뒤로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="title">체육2 서논술 암기장</span></div>
+      <div class="right"><button class="icon-btn" data-go-home aria-label="홈으로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg></button></div>
+    </div>
+    <div class="pm-top">
+      <div class="pm-modes" role="group" aria-label="공부 방법">
+        <button type="button" id="pmM-sheet" data-mode="sheet">시험지<small>보고 손으로 쓰기</small></button>
+        <button type="button" id="pmM-drag" data-mode="drag">끌어넣기<small>카드를 빈칸에</small></button>
+        <button type="button" id="pmM-type" data-mode="type">직접 쓰기<small>빈칸에 입력</small></button>
+      </div>
+      <div class="pm-filters" id="pmFilters" role="group" aria-label="문항 고르기"></div>
+    </div>
+    <div class="pm-main">
+      <p class="pm-how" id="pmHow"></p>
+      <div class="pm-list" id="pmQs"></div>
+    </div>
+    <div class="pm-bar"><div class="pm-bar-in" id="pmBar"></div></div>
+  </div>
+
   <!-- ============ 단원별 학습 ============ -->
   <div data-view="study">
     <div class="topbar">
@@ -1886,7 +1963,8 @@ const FINAL_SUBJECTS = [
   { id: "info_f", name: "정보", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
   { id: "en_f", name: "영어", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
   { id: "sci_f", name: "통합과학", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
-  { id: "kr_f", name: "공통국어", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} }
+  { id: "kr_f", name: "공통국어", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
+  { id: "pe_f", name: "체육", desc: "체육2 서논술 암기장 — 밑줄 친 부분 빈칸 17칸", quiz: [], titles: [], units: [], topics: {}, memo: true }
 ];
 /* 시험별 묶음: final = 메인(지금 대비 중인 시험), mid = 지난 시험 · 왼쪽 메뉴 상단에서 선택 */
 const TERMS = {
@@ -1999,6 +2077,7 @@ function showView(name){
   const wasQuiz = document.body.classList.contains("in-quiz");
   document.body.classList.toggle("in-quiz", name==="quiz");
   document.body.classList.toggle("view-home", name==="home");
+  document.body.classList.toggle("in-memo", name==="pememo");
   if(wasQuiz && name!=="quiz") window.dispatchEvent(new Event("pen:leave"));
   document.querySelectorAll("[data-view]").forEach(el=>{
     el.classList.toggle("show", el.getAttribute("data-view")===name);
@@ -2031,7 +2110,8 @@ const SUBJECT_STYLE = {
   is:{ emoji:"사", color:"#2B8456", soft:"rgba(43,132,86,.12)" },
   info:{ emoji:"정", color:"#6448C9", soft:"rgba(100,72,201,.12)" },
   en:{ emoji:"영", color:"#C9761A", soft:"rgba(201,118,26,.13)" },
-  sci:{ emoji:"과", color:"#16839A", soft:"rgba(22,131,154,.12)" }
+  sci:{ emoji:"과", color:"#16839A", soft:"rgba(22,131,154,.12)" },
+  pe:{ emoji:"체", color:"#D2561E", soft:"rgba(210,86,30,.12)" }
 };
 function subjStyle(id){ return SUBJECT_STYLE[String(id).replace(/_f$/,"")] || { emoji:"📚", color:"var(--blue)", soft:"var(--blue-soft)" }; }
 let studyOpenUnit = -1;
@@ -2066,6 +2146,17 @@ function renderDrawer(){
   side.innerHTML = SUBJECTS.map(s=>'<button type="button" class="'+(s.id===drawerSel?"on":"")+'" data-sid="'+s.id+'">'+escapeHtml(s.name)+'</button>').join("") ;
   side.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ drawerSel = b.dataset.sid; renderDrawer(); document.getElementById("drawerBody").scrollTop = 0; });
   const s = subjById(drawerSel), ex = examOf(s.id), sw = wrongList(s.id).length;
+  if(s.memo){
+    const body = document.getElementById("drawerBody");
+    body.innerHTML = '<div class="mn-grp"><div class="mn-gh" data-pm="type">서논술 암기장<i>›</i></div>'+
+      '<button type="button" class="mn-it" data-pm="sheet">시험지 <em class="mn-tip">보고 손으로 쓰기</em></button>'+
+      '<button type="button" class="mn-it" data-pm="drag">끌어넣기 <em class="mn-tip">카드를 빈칸에</em></button>'+
+      '<button type="button" class="mn-it" data-pm="type">직접 쓰기 <em class="mn-tip">빈칸에 입력·채점</em></button></div>'+
+      '<div class="mn-grp"><div class="mn-gh">문항별로 외우기</div>'+PE_MEMO.map((q,i)=>'<button type="button" class="mn-it" data-pmq="'+i+'">'+(i+1)+'. '+escapeHtml(q.tag)+' <em class="mn-tip">'+q.count+'칸</em></button>').join("")+'</div>';
+    body.querySelectorAll("[data-pm]").forEach(b=> b.onclick = ()=>{ closeDrawer(); openMemo(b.dataset.pm, "all"); });
+    body.querySelectorAll("[data-pmq]").forEach(b=> b.onclick = ()=>{ closeDrawer(); openMemo(null, b.dataset.pmq); });
+    return;
+  }
   const hasAdv = s.quiz.some((_,i)=>isAdvanced(s,i));
   let html = '';
   if(ex){ const n = dayDiff(ex.date); if(n>=0) html += '<button type="button" class="mn-card" data-act="study"><small>'+fmtDay(ex.date)+' '+ex.p+'교시 · '+ex.t+'</small><b><span class="mn-check">✓</span> '+escapeHtml(ex.name)+' 시험 '+ddText(n)+' <em class="mn-new">범위</em></b><i>›</i></button>'; }
@@ -2104,6 +2195,169 @@ function closeDrawer(){
   d.classList.remove("open"); d.setAttribute("aria-hidden","true");
   document.body.style.overflow = "";
 }
+/* ================= 체육 서논술 암기장 ================= */
+const PE_MEMO = [
+  { title:"다음과 같은 상황에서 진수에게 취해야 할 응급 처치 방법을 서술하시오.", tag:"응급 처치",
+    box:"점심시간에 친구들과 함께 운동장에서 축구를 하고 있었다. 진수는 친구가 패스한 공을 발로 컨트롤하는 과정에서 공을 밟는 바람에 발목을 심하게 접질렸다. 바닥에 누워 고통을 호소하는 진수를 보며 우리는 몹시 당황스러웠다.",
+    paras:[[ "발목 염좌가 생긴 경우 PRICE 원칙에 따라 응급 처치를 해야 한다. 우선 진수를 ",
+      {a:"안전한 곳으로 옮기고"}, ", ", {a:"주변 환경에 의해 다른 부상을 당하지 않도록 보호"},
+      "(Protection)한다. 이후 ", {a:"부상당한 발목에 무리가 가지 않도록 움직임을 최소화하여 안정"},
+      "(Rest)을 취하도록 한다. 그 다음에는 ", {a:"부상 부위에 얼음"},
+      "(Ice)으로 찜질을 하여 부기와 통증을 줄인다. 부상 부위는 ", {a:"탄력 붕대나 압박 붕대를 사용하여 적절하게 압박"},
+      "(Compression)하고, ", {a:"다친 부위를 심장보다 더 높게 들어 올린다"}, "(Elevation)." ]] },
+  { title:"구르기 동작과 물구나무서기 동작 방법을 과학적 원리를 바탕으로 서술하시오.", tag:"구르기·물구나무서기",
+    paras:[
+      [ "구르기 동작을 잘하기 위해서는 구르기 동작을 할 때 목과 허리를 최대한 굽혀 몸을 둥글게 해야 한다. ",
+        {a:"몸을 둥글게 하면 회전력이 커지고 저항력은 작아진다"}, ". 또한 몸의 무게 중심을 구르는 방향의 앞쪽에 두면 회전력이 커지게 된다." ],
+      [ "물구나무서기를 잘하기 위해서는 ", {a:"손을 짚을 때 어깨가 양손보다 앞으로 나가지 않도록 하고"}, ", ",
+        {a:"머리를 들어서 양손과 시선이 정삼각형을 이루는 것이 중요하다"}, ". 어깨가 양손보다 앞으로 나가면 무게 중심이 앞으로 쏠려 균형을 유지할 수 없다." ] ] },
+  { title:"양궁 경기에서 날아가는 화살에 적용되는 과학적 원리를 2가지 이상 설명하시오.", tag:"양궁 화살",
+    paras:[
+      [ {a:"포물선의 원리"}, ": 활시위를 떠난 화살에는 수평 에너지와 수직 에너지가 동시에 작용한다. ",
+        {a:"처음에는 수평 에너지가 크게 작용하여 화살이 거의 직선으로 날아가지만"}, ", ",
+        {a:"차츰 수직 에너지가 높아져 중력이 커진다"}, ". 선수들은 이러한 화살의 궤도를 예상하여 조금 위쪽을 조준한다." ],
+      [ {a:"패러독스 현상"}, ": ", {a:"화살이 물고기처럼 좌우로 흔들리며 날아가는 현상을 말한다"}, ". ",
+        {a:"이는 무게 중심이 있는 앞쪽을 뒤쪽이 앞서려고 하기 때문에 일어난다"},
+        ". 따라서 화살대의 강도가 낮을수록, 길이가 짧을수록, 날아가는 속도가 느릴수록 화살이 많이 흔들리게 된다." ],
+      [ {a:"자이로 효과"}, ": ", {a:"적당한 회전이 물체의 안정적인 상태를 유지해 주는 현상을 말한다"},
+        ". 화살 끝의 깃은 흔들림을 잡아 주고, 안정적으로 회전하도록 돕는다." ] ] }
+];
+(function(){ let g=0; PE_MEMO.forEach((q,qi)=>{ let n=0; q.paras.forEach(p=>p.forEach(s=>{ if(typeof s!=="string"){ s.id=g++; s.q=qi; s.n=++n; } })); q.count=n; }); })();
+const openMemo = (function(){
+  const Q = PE_MEMO, ALL = Q.flatMap(q=>q.paras.flat().filter(s=>typeof s!=="string"));
+  const CIR = "①②③④⑤⑥⑦⑧⑨⑩", esc = escapeHtml;
+  const get=(k,d)=>{ try{ const v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } };
+  const put=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} };
+  let mode = get("seoik_pm_mode","type"), filter = "all", state = {}, graded = false, selChip = null;
+  if(!["sheet","drag","type"].includes(mode)) mode = "type";
+  const norm = s => s.replace(/[\s.,·~!?'"“”‘’()\[\]「」:;\-]/g,"");
+  function sim(a,b){ a=norm(a); b=norm(b); if(!a.length||!b.length) return 0; const dp=new Array(b.length+1).fill(0);
+    for(let i=1;i<=a.length;i++){ let prev=0; for(let j=1;j<=b.length;j++){ const t=dp[j]; dp[j]= a[i-1]===b[j-1] ? prev+1 : Math.max(dp[j],dp[j-1]); prev=t; } }
+    return dp[b.length]/Math.max(a.length,b.length); }
+  const HOW = {
+    sheet:"빈칸을 보고 종이나 펜슬로 직접 써 보세요. 빈칸을 누르면 그 칸의 정답이 보여요.",
+    drag:"아래 카드를 끌어서 빈칸에 넣어요. 카드를 한 번 누르고 빈칸을 눌러도 돼요. 넣은 카드를 다시 누르면 빠져요.",
+    type:"빈칸을 누르고 직접 써요. 펜슬로 써도 글자로 바뀌어요. 띄어쓰기와 문장부호는 채점에서 빼요. Enter를 누르면 다음 칸으로 가요." };
+  const $ = id => document.getElementById(id);
+  const visible = ()=> Q.map((q,i)=>i).filter(i=> filter==="all" || String(i)===filter);
+  const visBlanks = ()=> ALL.filter(s=> visible().includes(s.q));
+  const shuffle = a=>{ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  const chipHTML = id=> '<button type="button" class="pm-chip" draggable="false" data-a="'+id+'">'+esc(ALL[id].a)+'</button>';
+
+  function blankHTML(s){
+    const no = '<span class="pm-no">'+CIR[s.n-1]+'</span>';
+    if(mode==="sheet") return no+'<span class="pm-sb" data-id="'+s.id+'" role="button" tabindex="0" aria-label="'+s.n+'번 빈칸, 눌러서 정답 보기" style="width:'+Math.min(s.a.length*0.95+1,22)+'em">'+esc(s.a)+'</span>';
+    if(mode==="drag"){ const v=state[s.id]; return no+'<button type="button" class="pm-db'+(v!=null?" filled":"")+'" data-id="'+s.id+'" aria-label="'+s.n+'번 빈칸">'+(v==null?"":esc(ALL[v].a))+'</button>'; }
+    return no+'<textarea class="pm-tb" id="pmtb'+s.id+'" data-id="'+s.id+'" rows="1" spellcheck="false" autocomplete="off" aria-label="'+s.n+'번 빈칸" style="width:'+Math.min(s.a.length*1.05+1.6,60)+'em">'+esc(state[s.id]||"")+'</textarea>';
+  }
+  function render(){
+    graded=false; selChip=null;
+    document.querySelectorAll(".pm-modes button").forEach(b=> b.setAttribute("aria-pressed", b.dataset.mode===mode));
+    const f=$("pmFilters");
+    f.innerHTML='<button type="button" data-f="all">전체</button>'+Q.map((q,i)=>'<button type="button" data-f="'+i+'">'+(i+1)+'. '+esc(q.tag)+'</button>').join("");
+    f.querySelectorAll("button").forEach(b=>{ b.setAttribute("aria-pressed", b.dataset.f===filter); b.onclick=()=>{ filter=b.dataset.f; render(); window.scrollTo(0,0); }; });
+    $("pmHow").textContent = HOW[mode];
+    $("pmQs").innerHTML = visible().map(i=>{ const q=Q[i];
+      let h='<article class="pm-q"><div class="pm-q-h"><span class="pm-q-n">'+(i+1)+'.</span><p class="pm-q-t">'+esc(q.title)+'</p></div>';
+      if(q.box) h+='<p class="pm-box">'+esc(q.box)+'</p>';
+      h+='<div class="pm-lab">예시 답안</div>'+q.paras.map(p=>'<p class="pm-p">'+p.map(s=> typeof s==="string" ? esc(s) : blankHTML(s)).join("")+'</p>').join("");
+      if(mode==="drag"){ const used=Object.values(state); const ids=shuffle(ALL.filter(s=>s.q===i).map(s=>s.id).filter(id=>!used.includes(id)));
+        h+='<div class="pm-bank" data-q="'+i+'">'+ids.map(chipHTML).join("")+'</div>'; }
+      return h+'<div class="pm-foot"><span>빈칸 '+q.count+'개</span><span class="pm-qs" data-q="'+i+'"></span></div></article>'; }).join("");
+    if(mode==="sheet") bindSheet(); else if(mode==="drag") bindDrag(); else bindType();
+    renderBar();
+  }
+  function check(s){
+    if(mode==="drag") return state[s.id]===s.id ? "ok" : "bad";
+    const v=state[s.id]||""; if(!norm(v)) return "bad";
+    if(norm(v)===norm(s.a)) return "ok";
+    return sim(v,s.a)>=0.8 ? "near" : "bad";
+  }
+  function renderBar(){
+    const bar=$("pmBar"), n=visBlanks().length;
+    if(mode==="sheet"){
+      const shown=document.querySelectorAll(".pm-sb.show").length;
+      bar.innerHTML='<div class="pm-score"><b>'+shown+' / '+n+'</b>정답을 본 칸</div><button type="button" class="pm-btn" id="pmHide">모두 가리기</button><button type="button" class="pm-btn main" id="pmShow">정답 모두 보기</button>';
+      $("pmShow").onclick=()=>{ document.querySelectorAll(".pm-sb").forEach(e=>e.classList.add("show")); renderBar(); };
+      $("pmHide").onclick=()=>{ document.querySelectorAll(".pm-sb").forEach(e=>e.classList.remove("show")); renderBar(); };
+      return;
+    }
+    let label='<b>— / '+n+'</b>채점 전';
+    if(graded){ let ok=0, near=0; visBlanks().forEach(s=>{ const r=check(s); if(r==="ok") ok++; else if(r==="near") near++; });
+      label='<b>'+ok+' / '+n+'</b>'+(mode==="type"&&near ? '맞음 · 거의 맞음 '+near+'칸' : '맞음'); }
+    bar.innerHTML='<div class="pm-score">'+label+'</div>'+(mode==="type"?'<button type="button" class="pm-btn" id="pmWrong">틀린 칸 지우기</button>':'')+
+      '<button type="button" class="pm-btn" id="pmReset">처음부터</button><button type="button" class="pm-btn main" id="pmGrade">채점하기</button>';
+    $("pmGrade").onclick=grade;
+    $("pmReset").onclick=()=>{ visBlanks().forEach(s=> delete state[s.id]); render(); };
+    const w=$("pmWrong");
+    if(w) w.onclick=()=>{ if(!graded) grade();
+      visBlanks().forEach(s=>{ if(check(s)!=="ok"){ state[s.id]=""; const t=$("pmtb"+s.id); t.value=""; t.className="pm-tb"; grow(t); } });
+      document.querySelectorAll(".pm-ans").forEach(e=>e.remove()); document.querySelectorAll(".pm-qs").forEach(e=>e.textContent="");
+      graded=false; renderBar(); const first=document.querySelector(".pm-tb:not(.ok)"); if(first) first.focus(); };
+  }
+  function grade(){
+    graded=true; document.querySelectorAll(".pm-ans").forEach(e=>e.remove());
+    visBlanks().forEach(s=>{ const r=check(s);
+      if(mode==="drag"){ const el=document.querySelector('.pm-db[data-id="'+s.id+'"]'); el.classList.remove("ok","bad"); el.classList.add(r); }
+      else { const t=$("pmtb"+s.id); t.className="pm-tb "+r;
+        if(r!=="ok"){ const a=document.createElement("span"); a.className="pm-ans"+(r==="near"?" near":""); a.innerHTML=(r==="near"?"거의 맞았어요 · ":"")+'정답 '+CIR[s.n-1]+' <b>'+esc(s.a)+'</b>'; t.after(a); } } });
+    visible().forEach(i=>{ const bs=ALL.filter(s=>s.q===i), ok=bs.filter(s=>check(s)==="ok").length;
+      const el=document.querySelector('.pm-qs[data-q="'+i+'"]'); if(el) el.innerHTML='맞음 <b>'+ok+' / '+bs.length+'</b>'; });
+    renderBar();
+  }
+  function bindSheet(){ document.querySelectorAll(".pm-sb").forEach(e=>{ const t=()=>{ e.classList.toggle("show"); renderBar(); };
+    e.onclick=t; e.onkeydown=ev=>{ if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); t(); } }; }); }
+  function grow(t){ t.style.height="auto"; t.style.height=t.scrollHeight+"px"; }
+  function bindType(){
+    const list=[...document.querySelectorAll(".pm-tb")];
+    list.forEach((t,k)=>{ grow(t);
+      t.oninput=()=>{ state[t.dataset.id]=t.value.replace(/\n/g,""); grow(t);
+        if(graded){ t.className="pm-tb"; const n=t.nextElementSibling; if(n && n.classList.contains("pm-ans")) n.remove(); } };
+      t.onkeydown=ev=>{ if(ev.key==="Enter" && !ev.isComposing){ ev.preventDefault(); const nx=list[k+1]; if(nx) nx.focus(); else grade(); } }; });
+  }
+  function bindDrag(){
+    document.querySelectorAll(".pm-chip").forEach(bindChip);
+    document.querySelectorAll(".pm-db").forEach(b=> b.onclick=()=>{ const id=+b.dataset.id;
+      if(selChip!=null){ place(id, selChip); selChip=null; return; } if(state[id]!=null) unplace(id); });
+  }
+  function bindChip(c){
+    let sx=0, sy=0, moved=false, ghost=null, over=null;
+    c.onpointerdown=ev=>{ if(ev.button>0) return; ev.preventDefault();
+      sx=ev.clientX; sy=ev.clientY; moved=false; try{ c.setPointerCapture(ev.pointerId); }catch(e){}
+      c.onpointermove=e=>{
+        if(!moved && Math.hypot(e.clientX-sx,e.clientY-sy)<7) return;
+        if(!moved){ moved=true; ghost=c.cloneNode(true); ghost.classList.add("pm-ghost"); document.body.appendChild(ghost); c.classList.add("dragging"); }
+        ghost.style.left=e.clientX+"px"; ghost.style.top=e.clientY+"px";
+        const el=document.elementFromPoint(e.clientX,e.clientY), t=el && el.closest(".pm-db");
+        if(over && over!==t) over.classList.remove("target"); over=t; if(t) t.classList.add("target");
+        if(e.clientY<110) window.scrollBy(0,-14); else if(e.clientY>innerHeight-110) window.scrollBy(0,14);
+      };
+      c.onpointerup=c.onpointercancel=e=>{
+        c.onpointermove=null; c.onpointerup=c.onpointercancel=null;
+        if(ghost){ ghost.remove(); ghost=null; } c.classList.remove("dragging"); if(over) over.classList.remove("target");
+        if(moved){ if(over && e.type==="pointerup") place(+over.dataset.id, +c.dataset.a); over=null; return; }
+        const a=+c.dataset.a; document.querySelectorAll(".pm-chip.sel").forEach(x=>x.classList.remove("sel"));
+        if(selChip===a) selChip=null; else { selChip=a; c.classList.add("sel"); }
+      };
+    };
+  }
+  function place(blankId, ansId){ const prev=state[blankId]; if(prev!=null) returnChip(prev);
+    state[blankId]=ansId; const chip=document.querySelector('.pm-chip[data-a="'+ansId+'"]'); if(chip) chip.remove();
+    const b=document.querySelector('.pm-db[data-id="'+blankId+'"]'); b.textContent=ALL[ansId].a; b.className="pm-db filled"; clearGrade(); }
+  function unplace(blankId){ const a=state[blankId]; delete state[blankId];
+    const b=document.querySelector('.pm-db[data-id="'+blankId+'"]'); b.textContent=""; b.className="pm-db"; returnChip(a); clearGrade(); }
+  function returnChip(ansId){ const bank=document.querySelector('.pm-bank[data-q="'+ALL[ansId].q+'"]'); if(!bank) return;
+    bank.insertAdjacentHTML("beforeend", chipHTML(ansId)); bindChip(bank.lastElementChild); }
+  function clearGrade(){ if(!graded) return; graded=false; document.querySelectorAll(".pm-db").forEach(b=>b.classList.remove("ok","bad")); document.querySelectorAll(".pm-qs").forEach(e=>e.textContent=""); renderBar(); }
+
+  document.querySelectorAll(".pm-modes button").forEach(b=> b.onclick=()=>{ if(mode===b.dataset.mode) return; mode=b.dataset.mode; put("seoik_pm_mode",mode); state={}; render(); });
+  $("pmBack").onclick=()=>{ goTab(activeTab||"home"); window.scrollTo(0,0); };
+  return function(m, f){
+    if(m && ["sheet","drag","type"].includes(m)){ if(m!==mode) state={}; mode=m; put("seoik_pm_mode",mode); }
+    filter = (f!=null && (f==="all" || Q[+f])) ? String(f) : "all";
+    render(); showView("pememo"); window.scrollTo(0,0);
+  };
+})();
 function openArchiveDrawer(){ openDrawer(); }
 const PROMO_KEY = "seoik_promo_hide_until";
 function showPromo(force){
@@ -2497,10 +2751,10 @@ function renderHomeExtras(){
   document.getElementById("zbTotalTag").textContent = totalQ ? "#"+totalQ.toLocaleString()+"문항" : "#준비 중";
   const tabs = document.getElementById("zbSubjTabs");
   tabs.innerHTML = SUBJECTS.map(s=>{ const e = examOf(s.id), n = e ? dayDiff(e.date) : null;
-    return '<button type="button" data-sid="'+s.id+'"><b>'+escapeHtml(s.name)+'</b>'+(e && n>=0 ? '<small>'+fmtDay(e.date)+' '+ddText(n)+'</small>' : '<small>'+(s.quiz.length ? subjectTotalQ(s)+'문항' : '준비 중')+'</small>')+'</button>'; }).join("");
+    return '<button type="button" data-sid="'+s.id+'"><b>'+escapeHtml(s.name)+'</b>'+(e && n>=0 ? '<small>'+fmtDay(e.date)+' '+ddText(n)+'</small>' : '<small>'+(s.memo ? '암기장' : s.quiz.length ? subjectTotalQ(s)+'문항' : '준비 중')+'</small>')+'</button>'; }).join("");
   tabs.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ studySubjectId = b.dataset.sid; studyUnitIdx = 0; goTab("study"); window.scrollTo(0,0); });
   const posts = allPosts().sort((a,b)=> b.ts-a.ts).slice(0,4);
-  const defaults = [["안내","한국사 6단원(냉전 체제와 대한민국 정부 수립) 120문항 · 개념노트가 추가되었어요"],["안내","기말대비도 서익닷컴과 함께! 2학기 2차고사 대비 오픈"],["안내","지난 1차고사 문제는 메뉴(☰) 위쪽 학기 선택에서 볼 수 있어요"],["안내","오답노트 · 실전 모의고사 기능이 추가되었어요"],["안내","정보 개념노트(Ⅰ~Ⅳ단원)가 추가되었어요"],["안내","9월 모의고사 영어 41~45번 장문 세트가 추가되었어요"]];
+  const defaults = [["안내","체육2 서논술 암기장이 추가되었어요 (☰ › 체육)"],["안내","한국사 6단원(냉전 체제와 대한민국 정부 수립) 120문항 · 개념노트가 추가되었어요"],["안내","기말대비도 서익닷컴과 함께! 2학기 2차고사 대비 오픈"],["안내","지난 1차고사 문제는 메뉴(☰) 위쪽 학기 선택에서 볼 수 있어요"],["안내","오답노트 · 실전 모의고사 기능이 추가되었어요"],["안내","정보 개념노트(Ⅰ~Ⅳ단원)가 추가되었어요"],["안내","9월 모의고사 영어 41~45번 장문 세트가 추가되었어요"]];
   const rows = posts.length ? posts.map(p=>['<span class="nt-c">['+escapeHtml(p.cat)+']</span> '+escapeHtml(p.title), p.id]) : defaults.map(d=>['<span class="nt-c">['+d[0]+']</span> '+d[1], null]);
   const nb = document.getElementById("zbNotice");
   nb.innerHTML = rows.map(r=>'<button type="button" data-id="'+(r[1]||"")+'">'+r[0]+'</button>').join("");
@@ -2624,7 +2878,9 @@ function renderStudy(){
   const list = document.getElementById("studyUnitList");
   list.innerHTML = "";
 
-  if(!subject.units.length) list.innerHTML = '<div class="empty-note">'+escapeHtml(curTerm.label)+' 범위 문제를 준비하고 있어요.<br>지난 '+escapeHtml(TERMS.mid.label)+' 문제는 왼쪽 메뉴(☰) 위쪽에서 1차고사를 고르면 풀 수 있어요.</div>';
+  if(subject.memo){ list.innerHTML = '<div class="pm-cards">'+[["sheet","시험지","빈칸을 보고 손으로 써 보기"],["drag","끌어넣기","카드를 끌어서 빈칸에 넣기"],["type","직접 쓰기","빈칸에 입력하고 채점하기"]].map(m=>'<button type="button" class="pm-card" data-pm="'+m[0]+'"><span><b>'+m[1]+'</b><small>서논술 3문항 · 밑줄 빈칸 17칸 · '+m[2]+'</small></span><i>›</i></button>').join("")+'</div>';
+    list.querySelectorAll("[data-pm]").forEach(b=> b.onclick = ()=> openMemo(b.dataset.pm, "all")); }
+  else if(!subject.units.length) list.innerHTML = '<div class="empty-note">'+escapeHtml(curTerm.label)+' 범위 문제를 준비하고 있어요.<br>지난 '+escapeHtml(TERMS.mid.label)+' 문제는 왼쪽 메뉴(☰) 위쪽에서 1차고사를 고르면 풀 수 있어요.</div>';
   subject.units.forEach((unit, ui)=>{
     const basicIdx = unit.indices.filter(i=>!isAdvanced(subject,i));
     const advIdx = unit.indices.filter(i=>isAdvanced(subject,i));
