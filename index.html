@@ -951,8 +951,8 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
 .pm-foot{ display:flex; justify-content:space-between; gap:8px; margin-top:12px; padding-top:10px; border-top:1px dashed var(--border); font-size:13px; color:var(--ink-faint); }
 .pm-foot b{ color:var(--ink); font-variant-numeric:tabular-nums; }
 .pm-no{ display:inline-block; font-size:11px; font-weight:700; color:#D2561E; vertical-align:super; line-height:1; margin-right:2px; }
-.pm-sb{ display:inline-block; vertical-align:baseline; min-height:1.5em; min-width:4em; max-width:100%; border-bottom:2px solid var(--ink); cursor:pointer; color:transparent; user-select:none; }
-.pm-sb.show{ display:inline; color:var(--blue); font-family:"Nanum Pen Script", var(--sans), cursive; font-size:1.32em; line-height:1.3; border-bottom-color:var(--blue); }
+.pm-sb{ display:inline; padding:0 3px; border-bottom:2px solid var(--ink); -webkit-box-decoration-break:clone; box-decoration-break:clone; cursor:pointer; color:transparent; user-select:none; }
+.pm-sb.show{ color:var(--blue); border-bottom-color:var(--blue); }
 .pm-db{ display:inline-block; vertical-align:middle; min-height:1.9em; min-width:5.5em; max-width:100%; padding:1px 8px; margin:2px 0; border:2px dashed var(--border); border-radius:8px; background:var(--bg); color:var(--ink); font-size:14px; line-height:1.5; cursor:pointer; text-align:left; }
 .pm-db.target{ border-color:var(--blue); background:var(--blue-soft); }
 .pm-db.filled{ border-style:solid; border-color:var(--blue); background:var(--card); }
@@ -2246,7 +2246,7 @@ const openMemo = (function(){
 
   function blankHTML(s){
     const no = '<span class="pm-no">'+CIR[s.n-1]+'</span>';
-    if(mode==="sheet") return no+'<span class="pm-sb" data-id="'+s.id+'" role="button" tabindex="0" aria-label="'+s.n+'번 빈칸, 눌러서 정답 보기" style="width:'+Math.min(s.a.length*0.95+1,22)+'em">'+esc(s.a)+'</span>';
+    if(mode==="sheet") return no+'<span class="pm-sb" data-id="'+s.id+'" role="button" tabindex="0" aria-label="'+s.n+'번 빈칸, 눌러서 정답 보기">'+esc(s.a)+'</span>';
     if(mode==="drag"){ const v=state[s.id]; return no+'<button type="button" class="pm-db'+(v!=null?" filled":"")+'" data-id="'+s.id+'" aria-label="'+s.n+'번 빈칸">'+(v==null?"":esc(ALL[v].a))+'</button>'; }
     return no+'<textarea class="pm-tb" id="pmtb'+s.id+'" data-id="'+s.id+'" rows="1" spellcheck="false" autocomplete="off" aria-label="'+s.n+'번 빈칸" style="width:'+Math.min(s.a.length*1.05+1.6,60)+'em">'+esc(state[s.id]||"")+'</textarea>';
   }
