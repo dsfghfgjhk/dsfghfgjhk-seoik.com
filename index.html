@@ -1964,7 +1964,7 @@ const FINAL_SUBJECTS = [
   { id: "en_f", name: "영어", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
   { id: "sci_f", name: "통합과학", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
   { id: "kr_f", name: "공통국어", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
-  { id: "pe_f", name: "체육", desc: "체육2 서논술 암기장 — 밑줄 친 부분 빈칸 17칸", quiz: [], titles: [], units: [], topics: {}, memo: true }
+  { id: "pe_f", name: "체육", desc: "체육2 서논술 암기장 — 밑줄 친 부분 빈칸 21칸", quiz: [], titles: [], units: [], topics: {}, memo: true }
 ];
 /* 시험별 묶음: final = 메인(지금 대비 중인 시험), mid = 지난 시험 · 왼쪽 메뉴 상단에서 선택 */
 const TERMS = {
@@ -2220,7 +2220,17 @@ const PE_MEMO = [
         {a:"이는 무게 중심이 있는 앞쪽을 뒤쪽이 앞서려고 하기 때문에 일어난다"},
         ". 따라서 화살대의 강도가 낮을수록, 길이가 짧을수록, 날아가는 속도가 느릴수록 화살이 많이 흔들리게 된다." ],
       [ {a:"자이로 효과"}, ": ", {a:"적당한 회전이 물체의 안정적인 상태를 유지해 주는 현상을 말한다"},
-        ". 화살 끝의 깃은 흔들림을 잡아 주고, 안정적으로 회전하도록 돕는다." ] ] }
+        ". 화살 끝의 깃은 흔들림을 잡아 주고, 안정적으로 회전하도록 돕는다." ] ] },
+  { title:"다음 글을 읽고, 문화의 세계화에 따른 긍정적 측면과 부정적 측면을 각각 서술하시오.", tag:"문화의 세계화",
+    box:"[문화의 세계화(The Globalization of Culture)] 파리에서는 아르헨티나의 탱고를 추고, 로스앤젤레스에서는 쿠바의 살사를 춘다. 맥도널드 사는 베이징에서 햄버거를 팔고, 중국의 광동요리는 런던의 소호 거리에서 팔린다. 선(禪)을 이용한 궁도(弓道)가 게르만족의 정신을 뒤흔들고, 파리의 바게트 빵은 서아프리카를 정복했다. 인도 봄베이에서는 위성 중계로 교황의 모습을 보고, 필리핀에서는 생중계되는 영국 왕세자비였던 다이애나의 장례식을 보여준다.",
+    paras:[
+      [ "우리는 전 세계가 서로 연결되어 문화를 주고받는, 문화의 세계화 시대에 살고 있다. 이러한 문화의 세계화는 ",
+        {a:"세계 각국의 문화가 만나면서 각국의 전통문화가 한 단계 발전할 수 있는 계기가 되며"}, ", ",
+        {a:"서로 다른 문화들이 만나 새로운 형태의 문화가 만들어지기도 한다"}, ". 반면, ",
+        {a:"세계화가 선진국의 문화를 일방적으로 전달하는 수단이 될 수도 있다"},
+        ". 선진국의 거대 자본을 이용한 영화나 음악, 패션, 식문화 등이 전 세계를 장악함에 따라, ",
+        {a:"전통문화가 소멸되고 문화가 획일화될 우려가 있다"},
+        ". 따라서 무차별적인 문화 수용을 경계하고, 문화의 자율성과 다양성, 문화 정체성을 보호하는 균형적 관점이 요구된다." ] ] }
 ];
 (function(){ let g=0; PE_MEMO.forEach((q,qi)=>{ let n=0; q.paras.forEach(p=>p.forEach(s=>{ if(typeof s!=="string"){ s.id=g++; s.q=qi; s.n=++n; } })); q.count=n; }); })();
 const openMemo = (function(){
@@ -2754,7 +2764,7 @@ function renderHomeExtras(){
     return '<button type="button" data-sid="'+s.id+'"><b>'+escapeHtml(s.name)+'</b>'+(e && n>=0 ? '<small>'+fmtDay(e.date)+' '+ddText(n)+'</small>' : '<small>'+(s.memo ? '암기장' : s.quiz.length ? subjectTotalQ(s)+'문항' : '준비 중')+'</small>')+'</button>'; }).join("");
   tabs.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ studySubjectId = b.dataset.sid; studyUnitIdx = 0; goTab("study"); window.scrollTo(0,0); });
   const posts = allPosts().sort((a,b)=> b.ts-a.ts).slice(0,4);
-  const defaults = [["안내","체육2 서논술 암기장이 추가되었어요 (☰ › 체육)"],["안내","한국사 6단원(냉전 체제와 대한민국 정부 수립) 120문항 · 개념노트가 추가되었어요"],["안내","기말대비도 서익닷컴과 함께! 2학기 2차고사 대비 오픈"],["안내","지난 1차고사 문제는 메뉴(☰) 위쪽 학기 선택에서 볼 수 있어요"],["안내","오답노트 · 실전 모의고사 기능이 추가되었어요"],["안내","정보 개념노트(Ⅰ~Ⅳ단원)가 추가되었어요"],["안내","9월 모의고사 영어 41~45번 장문 세트가 추가되었어요"]];
+  const defaults = [["안내","체육2 서논술 암기장 4번(문화의 세계화) 추가 (☰ › 체육)"],["안내","한국사 6단원(냉전 체제와 대한민국 정부 수립) 120문항 · 개념노트가 추가되었어요"],["안내","기말대비도 서익닷컴과 함께! 2학기 2차고사 대비 오픈"],["안내","지난 1차고사 문제는 메뉴(☰) 위쪽 학기 선택에서 볼 수 있어요"],["안내","오답노트 · 실전 모의고사 기능이 추가되었어요"],["안내","정보 개념노트(Ⅰ~Ⅳ단원)가 추가되었어요"],["안내","9월 모의고사 영어 41~45번 장문 세트가 추가되었어요"]];
   const rows = posts.length ? posts.map(p=>['<span class="nt-c">['+escapeHtml(p.cat)+']</span> '+escapeHtml(p.title), p.id]) : defaults.map(d=>['<span class="nt-c">['+d[0]+']</span> '+d[1], null]);
   const nb = document.getElementById("zbNotice");
   nb.innerHTML = rows.map(r=>'<button type="button" data-id="'+(r[1]||"")+'">'+r[0]+'</button>').join("");
@@ -2878,7 +2888,7 @@ function renderStudy(){
   const list = document.getElementById("studyUnitList");
   list.innerHTML = "";
 
-  if(subject.memo){ list.innerHTML = '<div class="pm-cards">'+[["sheet","시험지","빈칸을 보고 손으로 써 보기"],["drag","끌어넣기","카드를 끌어서 빈칸에 넣기"],["type","직접 쓰기","빈칸에 입력하고 채점하기"]].map(m=>'<button type="button" class="pm-card" data-pm="'+m[0]+'"><span><b>'+m[1]+'</b><small>서논술 3문항 · 밑줄 빈칸 17칸 · '+m[2]+'</small></span><i>›</i></button>').join("")+'</div>';
+  if(subject.memo){ list.innerHTML = '<div class="pm-cards">'+[["sheet","시험지","빈칸을 보고 손으로 써 보기"],["drag","끌어넣기","카드를 끌어서 빈칸에 넣기"],["type","직접 쓰기","빈칸에 입력하고 채점하기"]].map(m=>'<button type="button" class="pm-card" data-pm="'+m[0]+'"><span><b>'+m[1]+'</b><small>서논술 4문항 · 밑줄 빈칸 21칸 · '+m[2]+'</small></span><i>›</i></button>').join("")+'</div>';
     list.querySelectorAll("[data-pm]").forEach(b=> b.onclick = ()=> openMemo(b.dataset.pm, "all")); }
   else if(!subject.units.length) list.innerHTML = '<div class="empty-note">'+escapeHtml(curTerm.label)+' 범위 문제를 준비하고 있어요.<br>지난 '+escapeHtml(TERMS.mid.label)+' 문제는 왼쪽 메뉴(☰) 위쪽에서 1차고사를 고르면 풀 수 있어요.</div>';
   subject.units.forEach((unit, ui)=>{
