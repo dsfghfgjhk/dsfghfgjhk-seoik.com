@@ -1478,7 +1478,6 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
 
   <!-- ============ HOME ============ -->
   <div data-view="home" class="show">
-    <a href="./math/index.html" style="display:block;margin:16px;padding:18px;border-radius:14px;background:#16233f;color:white;text-decoration:none;font-weight:700">수학 학습 → 공통수학 1 · 공통수학 2</a>
     <div class="topbar zb-top">
       <div class="left"><button class="icon-btn hamburger" data-open-drawer aria-label="전체 메뉴"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span class="logo zb-logo">SEOIK.COM</span></div>
       <div class="right"><button class="icon-btn" data-go-tab="my" aria-label="마이"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.3 7.5-5.3s6.3 1.7 7.5 5.3"/></svg></button><button class="icon-btn bell" data-go-tab="board" aria-label="게시판"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i class="bell-dot" id="bellDot" hidden></i></button></div>
@@ -1689,6 +1688,19 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
     </div>
   </div>
 
+  <!-- 수학 문제도 같은 시험지 틀을 사용한다. -->
+  <div data-view="mathquiz">
+    <button class="quiz-back" id="mathBack">‹ 목록으로</button>
+    <div class="paper">
+      <div class="quiz-header"><div class="quiz-crumb" id="mathCrumb"></div><div class="quiz-settitle" id="mathSetTitle"></div></div>
+      <div class="track" id="mathTrack"></div>
+      <div class="qnum" id="mathNumber"></div><div class="qstem" id="mathQuestion"></div>
+      <div class="choices" id="mathChoices"></div>
+      <div class="feedback" id="mathFeedback"><span class="stamp" id="mathFeedbackTitle"></span><div id="mathExplanation"></div></div>
+      <div class="quiz-controls"><button class="btn ghost" id="mathShowSolution">해설 보기</button> <button class="btn" id="mathNext">다음 문제</button></div>
+    </div>
+  </div>
+
   <!-- ============ 게시판 ============ -->
   <div data-view="board">
     <div class="topbar">
@@ -1788,6 +1800,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
 
 <script type="application/json" id="boardShared">[]</script>
 
+<script src="./math/data.js"></script>
 <script>
 (function(){
 "use strict";
@@ -2021,6 +2034,29 @@ const FINAL_SUBJECTS = [
   { id: "kr_f", name: "공통국어", desc: "2학기 2차고사 범위 — 문제 준비 중", quiz: [], titles: [], units: [], topics: {} },
   { id: "pe_f", name: "체육", desc: "체육2 서논술 암기장 — 밑줄 친 부분 빈칸 21칸", quiz: [], titles: [], units: [], topics: {}, memo: true }
 ];
+/* 수학은 기존 과목·단원 목록을 사용하고, 기출은 공식 해설로 직접 확인한다. */
+function makeMathSubject(course){
+  const source = window.SEOIK_MATH_DATA || {originals:[], variants:[]};
+  const originals = source.originals.filter(q=>q.course===course);
+  const sourceById = new Map(source.originals.map(q=>[q.id,q]));
+  const variants = source.variants.filter(q=>q.course===course).map(q=>Object.assign({},q,{year:sourceById.get(q.source).year,month:sourceById.get(q.source).month,number:sourceById.get(q.source).number,kind:"variant"}));
+  const subject = {id:"math"+course, name:"공통수학 "+course, desc:course===1?"다항식 · 방정식과 부등식 · 경우의 수 · 행렬":"도형의 방정식 · 집합·명제·함수 문제는 준비 중", quiz:[],titles:[],units:[],topics:{},math:true};
+  [...new Set(originals.map(q=>q.unit))].forEach(unit=>{
+    const indices=[];
+    const all=originals.filter(q=>q.unit===unit);
+    [...new Set(all.map(q=>q.year+"-"+q.month))].forEach(exam=>{
+      const list=all.filter(q=>q.year+"-"+q.month===exam);
+      for(let start=0;start<list.length;start+=10){const set=list.slice(start,start+10);indices.push(subject.quiz.length);subject.quiz.push(set);subject.titles.push(set[0].year+"년 "+set[0].month+"월 기출 · "+set.length+"문항");}
+    });
+    const extra=variants.filter(q=>q.unit===unit);
+    for(let start=0;start<extra.length;start+=10){const set=extra.slice(start,start+10);indices.push(subject.quiz.length);subject.quiz.push(set);subject.titles.push("변형 문제 "+(start+1)+"~"+(start+set.length)+"번");}
+    subject.units.push({name:unit,desc:"기출과 변형 문제",indices});
+  });
+  return subject;
+}
+const MATH_SUBJECTS = [makeMathSubject(1),makeMathSubject(2)];
+MID_SUBJECTS.push(...MATH_SUBJECTS);
+FINAL_SUBJECTS.push(...MATH_SUBJECTS);
 /* 시험별 묶음: final = 메인(지금 대비 중인 시험), mid = 지난 시험 · 왼쪽 메뉴 상단에서 선택 */
 const TERMS = {
   final: { key:"final", label:"2학기 2차고사", subjects: FINAL_SUBJECTS, schedule: [] },
@@ -2130,10 +2166,10 @@ function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").repl
 
 function showView(name){
   const wasQuiz = document.body.classList.contains("in-quiz");
-  document.body.classList.toggle("in-quiz", name==="quiz");
+  document.body.classList.toggle("in-quiz", name==="quiz" || name==="mathquiz");
   document.body.classList.toggle("view-home", name==="home");
   document.body.classList.toggle("in-memo", name==="pememo");
-  if(wasQuiz && name!=="quiz") window.dispatchEvent(new Event("pen:leave"));
+  if(wasQuiz && name!=="quiz" && name!=="mathquiz") window.dispatchEvent(new Event("pen:leave"));
   document.querySelectorAll("[data-view]").forEach(el=>{
     el.classList.toggle("show", el.getAttribute("data-view")===name);
   });
@@ -2166,6 +2202,8 @@ const SUBJECT_STYLE = {
   info:{ emoji:"정", color:"#6448C9", soft:"rgba(100,72,201,.12)" },
   en:{ emoji:"영", color:"#C9761A", soft:"rgba(201,118,26,.13)" },
   sci:{ emoji:"과", color:"#16839A", soft:"rgba(22,131,154,.12)" },
+  math1:{ emoji:"수", color:"#2350E6", soft:"rgba(35,80,230,.12)" },
+  math2:{ emoji:"수", color:"#7745CC", soft:"rgba(119,69,204,.12)" },
   pe:{ emoji:"체", color:"#D2561E", soft:"rgba(210,86,30,.12)" }
 };
 function subjStyle(id){ return SUBJECT_STYLE[String(id).replace(/_f$/,"")] || { emoji:"📚", color:"var(--blue)", soft:"var(--blue-soft)" }; }
@@ -2201,6 +2239,13 @@ function renderDrawer(){
   side.innerHTML = SUBJECTS.map(s=>'<button type="button" class="'+(s.id===drawerSel?"on":"")+'" data-sid="'+s.id+'">'+escapeHtml(s.name)+'</button>').join("") ;
   side.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ drawerSel = b.dataset.sid; renderDrawer(); document.getElementById("drawerBody").scrollTop = 0; });
   const s = subjById(drawerSel), ex = examOf(s.id), sw = wrongList(s.id).length;
+  if(s.math){
+    const body=document.getElementById("drawerBody");
+    body.innerHTML='<div class="mn-grp"><div class="mn-gh" data-math-study>단원별 학습<i>›</i></div>'+s.units.map((u,ui)=>'<button type="button" class="mn-it" data-math-unit="'+ui+'">'+escapeHtml(u.name)+'</button>').join("")+'</div>';
+    body.querySelector("[data-math-study]").onclick=()=>openSubjectStudy(s.id,-1);
+    body.querySelectorAll("[data-math-unit]").forEach(b=>b.onclick=()=>openSubjectStudy(s.id,+b.dataset.mathUnit));
+    return;
+  }
   if(s.memo){
     const body = document.getElementById("drawerBody");
     body.innerHTML = '<div class="mn-grp"><div class="mn-gh" data-pm="type">서논술 암기장<i>›</i></div>'+
@@ -2620,6 +2665,7 @@ function loadMockHist(){ try{ return JSON.parse(localStorage.getItem(MOCK_HIST) 
 function mockMinutes(n){ return Math.max(5, Math.round(n*50/26)); }
 function mockPool(sid){
   const s = subjById(sid), pool = [];
+  if(s.math) return pool;
   s.units.forEach((u,ui)=>{
     const arr = [];
     u.indices.forEach(set=>{ (s.quiz[set]||[]).forEach((q,qi)=>{ if(q.type!=="order") arr.push({sid, set, q:qi, ui}); }); });
@@ -2644,7 +2690,7 @@ function renderMock(){
   if(mockCount>total) mockCount = total;
   body.innerHTML =
     '<div class="mk-card"><div class="mk-row-t">과목</div><div class="sub-toggle mk-chips" id="mockSubj">'+
-      SUBJECTS.map(s=>'<button data-sid="'+s.id+'" class="'+(mockSid===s.id?"active":"")+'">'+escapeHtml(s.name)+'</button>').join("")+'</div>'+
+      SUBJECTS.filter(s=>!s.math).map(s=>'<button data-sid="'+s.id+'" class="'+(mockSid===s.id?"active":"")+'">'+escapeHtml(s.name)+'</button>').join("")+'</div>'+
     '<div class="mk-row-t">문항 수 <small>(전체 '+total+'문항에서 단원별로 고르게 뽑아요)</small></div><div class="mk-seg" id="mockCnt">'+
       [10,20,26].map(n=>'<button data-n="'+n+'" class="'+(mockCount===n?"active":"")+'">'+n+'문항</button>').join("")+'</div>'+
     '<div class="mk-row-t">시간</div><div class="mk-seg" id="mockTime">'+
@@ -2810,7 +2856,7 @@ function renderNoti(){
   card.onclick = ()=>{ if(first.sid && wc){ wrongFilter = first.sid; goTab("wrong"); } else if(first.sid){ studySubjectId = first.sid; goTab("study"); } };
 }
 function renderHomeExtras(){
-  const allQ = ALL_SUBJECTS.reduce((a,s)=>a+subjectTotalQ(s),0);
+  const allQ = ALL_SUBJECTS.reduce((a,s,i,all)=>a+(all.indexOf(s)===i?subjectTotalQ(s):0),0);
   document.getElementById("hmTagline").textContent = allQ.toLocaleString()+"문항으로 전과목 내신대비";
   const sr = document.getElementById("hmSubjRow");
   sr.innerHTML = SUBJECTS.map(s=>'<button type="button" data-sid="'+s.id+'">'+escapeHtml(s.name)+'</button>').join("");
@@ -3135,6 +3181,7 @@ document.getElementById("resetAllBtn").addEventListener("click", ()=>{
 const MARK_O = '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M24 5.5C13 4.6 5.2 11.8 5.6 22.4c.4 9.6 8.6 16.4 18.2 15.6 9.8-.8 15.4-8.6 14.4-17.6C37.2 11.6 30 6 20.5 7.4"/></svg>';
 const MARK_X = '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M9 37 L36 6"/></svg>';
 function enterQuiz(subject, globalIdx, fromTab){
+  if(subject.math){ openMathQuiz(subject,globalIdx,fromTab); return; }
   exitSheet();
   quizSubject = subject; quizSet = globalIdx; quizQ = 0; quizScore = 0;
   quizMode = "set"; stopMockTimer(); mockState = null;
@@ -3234,6 +3281,35 @@ function renderQuizQuestion(){
   }
   renderQuizTrack();
 }
+
+/* 기출은 수식 이미지를 보존하고 자기 점검, 변형은 정수 답안을 채점한다. */
+let mathSession=null;
+function mathSaved(){try{return JSON.parse(localStorage.getItem("seoik-math-progress-v1")||"{}")||{};}catch(e){return {};}}
+function mathSave(item){try{const d=mathSaved();d[item.id]=Object.assign({},d[item.id],{answer:document.getElementById("mathAnswer").value});localStorage.setItem("seoik-math-progress-v1",JSON.stringify(d));}catch(e){}}
+function mathImages(paths, label){return paths.map((p,i)=>'<img src="./math/'+escapeHtml(p)+'" alt="'+label+' '+(i+1)+'" loading="lazy" style="display:block;width:100%;height:auto;margin:8px auto">').join("");}
+function openMathQuiz(subject,set,from){
+  exitSheet(); stopMockTimer(); mockState=null;
+  mathSession={subject,set,from,index:0}; showView("mathquiz"); renderMathQuestion(); window.scrollTo(0,0);
+}
+function renderMathQuestion(){
+  const m=mathSession,q=m.subject.quiz[m.set][m.index],variant=q.kind==="variant",saved=mathSaved()[q.id]||{};
+  document.getElementById("mathCrumb").textContent=m.subject.name+" · "+(variant?"변형 문제":"기출 문제");
+  document.getElementById("mathSetTitle").textContent=m.subject.titles[m.set];
+  document.getElementById("mathTrack").innerHTML=m.subject.quiz[m.set].map((_,i)=>'<div class="cell'+(i===m.index?' now':'')+'">'+(i+1)+'</div>').join("");
+  document.getElementById("mathNumber").innerHTML='<span class="qn">'+(m.index+1)+'.</span><span class="qof">/ '+m.subject.quiz[m.set].length+'</span>';
+  document.getElementById("mathQuestion").innerHTML='<p style="color:var(--ink-soft);font-size:14px">'+q.year+'년 '+q.month+'월 '+q.number+'번'+(variant?' 유형 변형':'')+'</p>'+(variant?'<p>'+escapeHtml(q.problem)+'</p>':mathImages(q.question,'기출 문제'));
+  document.getElementById("mathChoices").innerHTML='<label for="mathAnswer">내 답안</label><input id="mathAnswer" type="text" autocomplete="off" placeholder="'+(variant?'정수 답안':'답안을 입력하세요')+'" style="display:block;width:100%;padding:12px;margin:8px 0;border:1px solid var(--border);border-radius:10px;font:inherit">'+(variant?'<button class="btn ghost" id="mathCheck">정답 확인</button>':'<p style="color:var(--ink-soft);font-size:14px">공식 해설과 비교해 직접 확인하세요.</p>');
+  const input=document.getElementById("mathAnswer");input.value=saved.answer||"";input.addEventListener("input",()=>mathSave(q));
+  const feedback=document.getElementById("mathFeedback"); feedback.className="feedback";feedback.style.display="none";
+  document.getElementById("mathExplanation").innerHTML=variant?'<p>'+escapeHtml("정답: "+q.answer+" · "+q.explanation)+'</p>':'<p>'+escapeHtml(q.hint)+'</p>'+mathImages(q.solution,'공식 해설');
+  document.getElementById("mathShowSolution").onclick=()=>{feedback.className="feedback show";feedback.style.display="";document.getElementById("mathFeedbackTitle").textContent=variant?"정답과 풀이":"공식 해설";};
+  if(variant)document.getElementById("mathCheck").onclick=()=>{const v=input.value.trim().replace(/−/g,"-");feedback.className="feedback show";feedback.style.display="";document.getElementById("mathFeedbackTitle").textContent=!/^[+-]?\d+$/.test(v)?"정수로 입력해 주세요":Number(v)===Number(q.answer)?"정답이에요":"다시 풀어 보세요";document.getElementById("mathExplanation").hidden=true;};
+  document.getElementById("mathExplanation").hidden=false;
+  const show=document.getElementById("mathShowSolution");const showAnswer=show.onclick;show.onclick=()=>{document.getElementById("mathExplanation").hidden=false;showAnswer();};
+  document.getElementById("mathNext").textContent=m.index===m.subject.quiz[m.set].length-1?"학습 완료":"다음 문제";
+}
+document.getElementById("mathBack").onclick=()=>{if(!mathSession)return;goTab(mathSession.from);window.scrollTo(0,0);};
+document.getElementById("mathNext").onclick=()=>{const m=mathSession;if(m.index+1<m.subject.quiz[m.set].length){m.index++;renderMathQuestion();window.scrollTo(0,0);}else{progress[m.subject.id][m.set]=true;saveProgress(progress);goTab(m.from);window.scrollTo(0,0);}};
 
 /* ================= 문장 배열 문제 ================= */
 let ordState = null;
