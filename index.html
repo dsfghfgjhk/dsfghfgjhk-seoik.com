@@ -1388,6 +1388,37 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
   body.print-notes .mk-block li{ font-size:9.2pt !important; break-inside:avoid; }
   body.print-notes #notesBody[data-subj="info"] li b, body.print-notes #notesBody[data-subj="info"] td b, body.print-notes #notesBody[data-subj="info"] p b{ background:none !important; }
 }
+  /* ---------- 계정(로그인) ---------- */
+  .acc-card{ margin:16px 16px 0; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px 16px; }
+  .acc-card:empty{ display:none; }
+  .acc-row{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .acc-ava{ width:40px; height:40px; border-radius:50%; background:var(--blue-soft); color:var(--blue); font-weight:700; font-size:17px; display:flex; align-items:center; justify-content:center; flex-shrink:0; text-transform:uppercase; }
+  .acc-txt{ flex:1 1 150px; min-width:0; }
+  .acc-txt b{ display:block; font-size:15px; font-weight:700; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .acc-txt span{ display:block; margin-top:3px; font-size:12.5px; line-height:1.45; color:var(--ink-soft); }
+  .acc-txt span.bad{ color:var(--red); }
+  .acc-btns{ display:flex; gap:6px; flex-shrink:0; }
+  .acc-btn{ min-height:40px; padding:0 14px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--ink); font-size:13.5px; font-weight:600; cursor:pointer; }
+  .acc-btn.pri{ background:var(--blue); border-color:var(--blue); color:#fff; }
+  .acc-dim{ position:fixed; inset:0; z-index:1300; background:rgba(6,10,24,.55); display:flex; align-items:flex-end; justify-content:center; }
+  .acc-dim[hidden]{ display:none; }
+  .acc-sheet{ position:relative; width:100%; max-width:520px; max-height:100%; overflow:auto; background:var(--card); color:var(--ink); border-radius:20px 20px 0 0; padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px)); }
+  @media (min-width:560px){ .acc-dim{ align-items:center; padding:20px; } .acc-sheet{ border-radius:20px; max-width:400px; } }
+  .acc-x{ position:absolute; top:10px; right:10px; width:40px; height:40px; border:0; background:none; color:var(--ink-soft); font-size:24px; line-height:1; cursor:pointer; border-radius:10px; }
+  .acc-title{ font-size:19px; font-weight:700; letter-spacing:-0.03em; }
+  .acc-sub{ margin:4px 0 0; font-size:13px; color:var(--ink-soft); }
+  .acc-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:4px; margin:16px 0 14px; padding:4px; background:var(--bg); border-radius:12px; }
+  .acc-tabs button{ min-height:38px; border:0; border-radius:9px; background:none; color:var(--ink-soft); font-size:14px; font-weight:600; cursor:pointer; }
+  .acc-tabs button.on{ background:var(--card); color:var(--ink); box-shadow:var(--shadow); }
+  .acc-sheet label{ display:block; margin-top:12px; font-size:13px; font-weight:600; color:var(--ink-soft); }
+  .acc-sheet label[hidden]{ display:none; }
+  .acc-sheet input{ display:block; width:100%; margin-top:6px; min-height:46px; padding:0 14px; border:1px solid var(--border); border-radius:11px; background:var(--card); color:var(--ink); font-size:16px; }
+  .acc-sheet input:focus{ outline:2px solid var(--blue); outline-offset:1px; border-color:var(--blue); }
+  .acc-note{ margin:12px 0 0; padding:10px 12px; border-radius:10px; background:var(--blue-soft); color:var(--ink); font-size:12.5px; line-height:1.5; }
+  .acc-note[hidden]{ display:none; }
+  .acc-err{ min-height:18px; margin:10px 0 0; font-size:13px; color:var(--red); }
+  .acc-go{ width:100%; min-height:48px; margin-top:8px; border:0; border-radius:12px; background:var(--blue); color:#fff; font-size:15.5px; font-weight:700; cursor:pointer; }
+  .acc-go:disabled{ opacity:.6; cursor:default; }
 </style>
 </head>
 <body>
@@ -4238,6 +4269,261 @@ document.getElementById("penClear").addEventListener("click", clearInk);
 document.querySelectorAll(".bottomnav button").forEach(function(b){
   b.addEventListener("click", function(){ clearInk(); setPenActive(false); });
 });
+})();
+</script>
+<!-- ============ 계정(로그인·회원가입) ============ -->
+<div class="acc-dim" id="accDim" hidden>
+  <div class="acc-sheet" role="dialog" aria-modal="true" aria-labelledby="accTitle">
+    <button type="button" class="acc-x" id="accX" aria-label="닫기">×</button>
+    <div class="acc-title" id="accTitle">서익닷컴 계정</div>
+    <p class="acc-sub">로그인하면 어느 기기에서든 진도와 오답노트가 이어져요.</p>
+    <div class="acc-tabs"><button type="button" id="accTabIn" class="on">로그인</button><button type="button" id="accTabUp">회원가입</button></div>
+    <form id="accForm" autocomplete="on" novalidate>
+      <label>아이디<input id="accId" name="username" type="text" inputmode="latin" autocapitalize="none" autocorrect="off" autocomplete="username" spellcheck="false" maxlength="20" placeholder="영문 소문자·숫자 4~20자"></label>
+      <label>비밀번호<input id="accPw" name="password" type="password" autocomplete="current-password" maxlength="64" placeholder="6자 이상"></label>
+      <label id="accPw2Wrap" hidden>비밀번호 확인<input id="accPw2" type="password" autocomplete="new-password" maxlength="64" placeholder="한 번 더 입력"></label>
+      <p class="acc-note" id="accNote" hidden>비밀번호를 잊으면 다시 찾을 수 없으니 꼭 기억해 두세요. 지금 이 기기에 있는 기록은 새 계정으로 옮겨져요.</p>
+      <p class="acc-err" id="accErr" role="alert"></p>
+      <button type="submit" class="acc-go" id="accGo">로그인</button>
+    </form>
+  </div>
+</div>
+<script>
+/* ================= 계정: 아이디·비밀번호 로그인 + 기록 동기화 (Firebase REST) ================= */
+(function(){
+"use strict";
+/* Firebase 설정값 — 비어 있으면 계정 기능이 꺼진 채로 동작한다 */
+const FB = { apiKey: "", projectId: "" };
+const ON = !!(FB.apiKey && FB.projectId);
+const ACC_KEY = "seoik_account_v1";
+/* 계정을 따라다니는 기록: 진도, 오답노트, 모의고사 기록 */
+const SYNC_KEYS = ["jokbo_app_progress_v2", "seoik_wrong_v1", "seoik_mock_hist_v1", "seoik_en_orig_v1"];
+const CLEAR_ALSO = ["jokbo_app_pending_v2"];
+const MAIL = "@seoik.example.com";   /* 실제 메일이 가지 않는 예약 도메인 */
+const AUTH = "https://identitytoolkit.googleapis.com/v1/accounts:";
+const TOKEN = "https://securetoken.googleapis.com/v1/token?key=";
+const docUrl = uid => "https://firestore.googleapis.com/v1/projects/" + FB.projectId + "/databases/(default)/documents/users/" + uid;
+
+const rawSet = Storage.prototype.setItem, rawRemove = Storage.prototype.removeItem;
+function ls(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function acc(){ try{ return JSON.parse(ls(ACC_KEY) || "null"); }catch(e){ return null; } }
+function setAcc(a){ try{ if(a) rawSet.call(localStorage, ACC_KEY, JSON.stringify(a)); else rawRemove.call(localStorage, ACC_KEY); }catch(e){} }
+
+const card = document.createElement("div");
+card.className = "acc-card"; card.id = "accCard";
+const myView = document.querySelector('[data-view="my"]');
+if(!ON || !myView) return;
+const tb = myView.querySelector(".topbar");
+if(tb && tb.nextSibling) myView.insertBefore(card, tb.nextSibling); else myView.appendChild(card);
+
+/* ---------- 서버 통신 ---------- */
+async function post(url, body, form){
+  let r;
+  try{
+    r = await fetch(url, { method:"POST", headers:{ "Content-Type": form ? "application/x-www-form-urlencoded" : "application/json" }, body: form ? body : JSON.stringify(body) });
+  }catch(e){ throw new Error("NETWORK"); }
+  const j = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error((j.error && (j.error.message || j.error.status)) || "UNKNOWN");
+  return j;
+}
+async function idToken(){
+  const a = acc(); if(!a) throw new Error("NO_ACCOUNT");
+  if(a.idToken && a.exp - 60000 > Date.now()) return a.idToken;
+  const j = await post(TOKEN + FB.apiKey, "grant_type=refresh_token&refresh_token=" + encodeURIComponent(a.refreshToken), true);
+  const b = acc() || a;
+  b.idToken = j.id_token; b.refreshToken = j.refresh_token || b.refreshToken; b.exp = Date.now() + (+j.expires_in || 3600) * 1000;
+  setAcc(b);
+  return b.idToken;
+}
+function snapshot(){ const o = {}; SYNC_KEYS.forEach(k=>{ const v = ls(k); if(v !== null) o[k] = v; }); return o; }
+function sameAsLocal(o){ const s = snapshot(); return SYNC_KEYS.every(k => (typeof o[k] === "string" ? o[k] : null) === (k in s ? s[k] : null)); }
+function applySnapshot(o){
+  SYNC_KEYS.forEach(k=>{ try{ if(o && typeof o[k] === "string") rawSet.call(localStorage, k, o[k]); else rawRemove.call(localStorage, k); }catch(e){} });
+  CLEAR_ALSO.forEach(k=>{ try{ rawRemove.call(localStorage, k); }catch(e){} });
+}
+async function cloudGet(){
+  const a = acc(), t = await idToken();
+  let r;
+  try{ r = await fetch(docUrl(a.uid), { headers:{ Authorization:"Bearer " + t } }); }catch(e){ throw new Error("NETWORK"); }
+  if(r.status === 404) return null;
+  const j = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error((j.error && (j.error.status || j.error.message)) || "UNKNOWN");
+  const f = j.fields || {};
+  let data = {};
+  try{ data = JSON.parse((f.data && f.data.stringValue) || "{}") || {}; }catch(e){}
+  return { data, updatedAt: +((f.updatedAt && f.updatedAt.integerValue) || 0) };
+}
+async function cloudPut(keepalive){
+  const a = acc(); if(!a) return;
+  const t = await idToken(), now = Date.now();
+  const body = { fields:{ id:{ stringValue:a.id }, data:{ stringValue: JSON.stringify(snapshot()) }, updatedAt:{ integerValue: String(now) } } };
+  let r;
+  try{ r = await fetch(docUrl(a.uid), { method:"PATCH", keepalive: !!keepalive, headers:{ Authorization:"Bearer " + t, "Content-Type":"application/json" }, body: JSON.stringify(body) }); }catch(e){ throw new Error("NETWORK"); }
+  if(!r.ok){ const j = await r.json().catch(()=>({})); throw new Error((j.error && (j.error.status || j.error.message)) || "UNKNOWN"); }
+  const b = acc(); if(b){ b.syncedAt = now; b.dirty = false; setAcc(b); }
+}
+
+/* ---------- 동기화 ---------- */
+let syncState = "ok", timer = null;
+function failState(e){
+  const m = String(e && e.message || "");
+  if(m === "NETWORK") return "off";
+  if(/TOKEN_EXPIRED|USER_NOT_FOUND|USER_DISABLED|INVALID_REFRESH_TOKEN|UNAUTHENTICATED|INVALID_ID_TOKEN/.test(m)) return "reauth";
+  return "err";
+}
+function markDirty(){
+  const a = acc(); if(!a) return;
+  if(!a.dirty){ a.dirty = true; setAcc(a); }
+  clearTimeout(timer); timer = setTimeout(pushNow, 2500);
+}
+async function pushNow(){
+  clearTimeout(timer); timer = null;
+  const a = acc(); if(!a || !a.dirty) return;
+  syncState = "syncing"; paint();
+  try{ await cloudPut(); syncState = "ok"; }catch(e){ syncState = failState(e); }
+  paint();
+}
+Storage.prototype.setItem = function(k, v){ rawSet.call(this, k, v); if(this === localStorage && SYNC_KEYS.indexOf(k) >= 0) markDirty(); };
+Storage.prototype.removeItem = function(k){ rawRemove.call(this, k); if(this === localStorage && SYNC_KEYS.indexOf(k) >= 0) markDirty(); };
+document.addEventListener("visibilitychange", ()=>{
+  if(document.visibilityState !== "hidden") return;
+  const a = acc();
+  if(a && a.dirty){ clearTimeout(timer); timer = null; cloudPut(true).catch(()=>{}); }
+});
+window.addEventListener("online", pushNow);
+
+/* 앱을 켤 때: 다른 기기에서 바뀐 기록이 있으면 받아 온다 */
+async function startSync(){
+  const a = acc(); if(!a) return;
+  try{
+    if(a.dirty){ syncState = "syncing"; paint(); await cloudPut(); }
+    else{
+      const c = await cloudGet();
+      if(c && c.updatedAt > (a.syncedAt || 0)){
+        if(sameAsLocal(c.data)){ const b = acc(); b.syncedAt = c.updatedAt; setAcc(b); }
+        else if(!document.body.classList.contains("in-quiz") && !document.body.classList.contains("in-memo")){
+          applySnapshot(c.data);
+          const b = acc(); b.syncedAt = c.updatedAt; b.dirty = false; setAcc(b);
+          location.reload(); return;
+        }
+      }
+    }
+    syncState = "ok";
+  }catch(e){ syncState = failState(e); }
+  paint();
+}
+
+/* ---------- 가입·로그인·로그아웃 ---------- */
+function newAcc(id, j, dirty){
+  setAcc({ id:id, uid:j.localId, idToken:j.idToken, refreshToken:j.refreshToken, exp: Date.now() + (+j.expiresIn || 3600) * 1000, syncedAt:0, dirty:dirty });
+}
+async function signUp(id, pw){
+  const j = await post(AUTH + "signUp?key=" + FB.apiKey, { email:id + MAIL, password:pw, returnSecureToken:true });
+  newAcc(id, j, true);
+  try{ await cloudPut(); syncState = "ok"; }catch(e){ syncState = failState(e); }
+  return false;
+}
+async function signIn(id, pw){
+  const j = await post(AUTH + "signInWithPassword?key=" + FB.apiKey, { email:id + MAIL, password:pw, returnSecureToken:true });
+  const hadLocal = Object.keys(snapshot()).some(k => k !== "seoik_en_orig_v1");
+  newAcc(id, j, false);
+  let c;
+  try{ c = await cloudGet(); }catch(e){ setAcc(null); throw e; }
+  if(c && Object.keys(c.data).length){
+    if(sameAsLocal(c.data)){ const b = acc(); b.syncedAt = c.updatedAt; setAcc(b); return false; }
+    if(hadLocal && !confirm("이 기기에 있던 기록은 '" + id + "' 계정에 저장된 기록으로 바뀌어요. 계속할까요?")){ setAcc(null); throw new Error("CANCELLED"); }
+    applySnapshot(c.data);
+    const b = acc(); b.syncedAt = c.updatedAt; setAcc(b);
+    return true;   /* 새 기록으로 화면을 다시 그려야 함 */
+  }
+  const b = acc(); b.dirty = true; setAcc(b);
+  try{ await cloudPut(); syncState = "ok"; }catch(e){ syncState = failState(e); }
+  return false;
+}
+async function signOut(){
+  const a = acc(); if(!a) return;
+  if(a.dirty){
+    try{ await cloudPut(); }
+    catch(e){ if(!confirm("아직 서버에 저장하지 못한 기록이 있어요. 지금 로그아웃하면 그 기록은 사라져요. 그래도 로그아웃할까요?")) return; }
+  }
+  applySnapshot(null); setAcc(null);
+  location.reload();
+}
+function errText(e){
+  const m = String(e && e.message || "");
+  if(m === "NETWORK") return "인터넷 연결을 확인해 주세요.";
+  if(/EMAIL_EXISTS/.test(m)) return "이미 사용 중인 아이디예요.";
+  if(/EMAIL_NOT_FOUND|INVALID_PASSWORD|INVALID_LOGIN_CREDENTIALS/.test(m)) return "아이디 또는 비밀번호가 맞지 않아요.";
+  if(/WEAK_PASSWORD/.test(m)) return "비밀번호는 6자 이상이어야 해요.";
+  if(/TOO_MANY_ATTEMPTS/.test(m)) return "시도가 너무 많아요. 잠시 뒤에 다시 해 주세요.";
+  if(/USER_DISABLED/.test(m)) return "사용이 중지된 계정이에요.";
+  if(/OPERATION_NOT_ALLOWED|CONFIGURATION_NOT_FOUND|API key not valid|PERMISSION_DENIED|NOT_FOUND/.test(m)) return "서버 설정이 아직 끝나지 않았어요. 관리자에게 알려 주세요.";
+  return "문제가 생겼어요. 잠시 뒤에 다시 해 주세요.";
+}
+
+/* ---------- 화면 ---------- */
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c])); }
+function paint(){
+  const a = acc();
+  if(!a){
+    card.innerHTML = '<div class="acc-row"><div class="acc-txt"><b>기록 이어가기</b><span>로그인하면 어느 기기에서든 진도와 오답노트가 따라와요</span></div>'
+      + '<div class="acc-btns"><button type="button" class="acc-btn" data-acc="up">회원가입</button><button type="button" class="acc-btn pri" data-acc="in">로그인</button></div></div>';
+    return;
+  }
+  const st = { ok:["기록이 계정에 저장돼요", ""], syncing:["저장하는 중…", ""], off:["인터넷이 연결되면 저장돼요", ""], err:["저장에 문제가 생겼어요. 잠시 뒤 다시 시도해요", "bad"], reauth:["다시 로그인해 주세요", "bad"] }[syncState] || ["", ""];
+  card.innerHTML = '<div class="acc-row"><div class="acc-ava" aria-hidden="true">' + esc(a.id.charAt(0)) + '</div><div class="acc-txt"><b>' + esc(a.id) + ' 님</b><span class="' + st[1] + '">' + st[0] + '</span></div>'
+    + '<div class="acc-btns"><button type="button" class="acc-btn" data-acc="out">로그아웃</button></div></div>';
+}
+const dim = document.getElementById("accDim"), form = document.getElementById("accForm");
+const fId = document.getElementById("accId"), fPw = document.getElementById("accPw"), fPw2 = document.getElementById("accPw2");
+const errEl = document.getElementById("accErr"), go = document.getElementById("accGo");
+let mode = "in", busy = false, lastFocus = null;
+function setMode(m){
+  mode = m;
+  document.getElementById("accTabIn").classList.toggle("on", m === "in");
+  document.getElementById("accTabUp").classList.toggle("on", m === "up");
+  document.getElementById("accPw2Wrap").hidden = m !== "up";
+  document.getElementById("accNote").hidden = m !== "up";
+  fPw.setAttribute("autocomplete", m === "up" ? "new-password" : "current-password");
+  go.textContent = m === "up" ? "회원가입" : "로그인";
+  errEl.textContent = "";
+}
+function openSheet(m){ lastFocus = document.activeElement; setMode(m); fPw.value = ""; fPw2.value = ""; dim.hidden = false; document.body.style.overflow = "hidden"; setTimeout(()=>fId.focus(), 50); }
+function closeSheet(){ dim.hidden = true; document.body.style.overflow = ""; if(lastFocus && lastFocus.focus) try{ lastFocus.focus(); }catch(e){} }
+card.addEventListener("click", e=>{
+  const b = e.target.closest("[data-acc]"); if(!b) return;
+  const k = b.getAttribute("data-acc");
+  if(k === "out"){ if(confirm("로그아웃할까요? 기록은 계정에 저장되어 있어서 다시 로그인하면 돌아와요.")) signOut(); }
+  else openSheet(k);
+});
+document.getElementById("accTabIn").addEventListener("click", ()=>setMode("in"));
+document.getElementById("accTabUp").addEventListener("click", ()=>setMode("up"));
+document.getElementById("accX").addEventListener("click", closeSheet);
+dim.addEventListener("click", e=>{ if(e.target === dim && !busy) closeSheet(); });
+document.addEventListener("keydown", e=>{ if(e.key === "Escape" && !dim.hidden && !busy) closeSheet(); });
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  if(busy) return;
+  const id = fId.value.trim().toLowerCase(), pw = fPw.value;
+  if(!/^[a-z0-9_]{4,20}$/.test(id)){ errEl.textContent = "아이디는 영문 소문자·숫자·밑줄(_)로 4~20자여야 해요."; fId.focus(); return; }
+  if(pw.length < 6){ errEl.textContent = "비밀번호는 6자 이상이어야 해요."; fPw.focus(); return; }
+  if(mode === "up" && pw !== fPw2.value){ errEl.textContent = "비밀번호 확인이 서로 달라요."; fPw2.focus(); return; }
+  busy = true; go.disabled = true; errEl.textContent = ""; go.textContent = mode === "up" ? "가입하는 중…" : "로그인하는 중…";
+  try{
+    const reload = mode === "up" ? await signUp(id, pw) : await signIn(id, pw);
+    if(reload){ location.reload(); return; }
+    closeSheet(); paint();
+  }catch(err){
+    if(err.message !== "CANCELLED") errEl.textContent = errText(err);
+  }
+  busy = false; go.disabled = false; go.textContent = mode === "up" ? "회원가입" : "로그인";
+});
+/* 안드로이드 뒤로가기: 로그인 창이 열려 있으면 먼저 닫는다 */
+const prevBack = window.__seoikBack;
+window.__seoikBack = function(){ if(!dim.hidden){ if(!busy) closeSheet(); return true; } return prevBack ? prevBack() : false; };
+
+paint();
+startSync();
 })();
 </script>
 </body>
