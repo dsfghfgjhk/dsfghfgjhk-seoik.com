@@ -2819,7 +2819,7 @@ function renderHomeExtras(){
     return '<button type="button" data-sid="'+s.id+'"><b>'+escapeHtml(s.name)+'</b>'+(e && n>=0 ? '<small>'+fmtDay(e.date)+' '+ddText(n)+'</small>' : '<small>'+(s.memo ? '암기장' : s.quiz.length ? subjectTotalQ(s)+'문항' : '준비 중')+'</small>')+'</button>'; }).join("");
   tabs.querySelectorAll("button").forEach(b=> b.onclick = ()=>{ studySubjectId = b.dataset.sid; studyUnitIdx = 0; goTab("study"); window.scrollTo(0,0); });
   const posts = allPosts().sort((a,b)=> b.ts-a.ts).slice(0,4);
-  const defaults = [["안내","통합사회 2차고사 범위 170문항 + 개념노트 추가 (기말 › 통합사회)"],["안내","통합과학 2차고사 범위 260문항 추가 (기말 › 통합과학)"],["안내","영어 10월 모의고사 순서·삽입·빈칸·불일치·배열 106문항 추가 (기말 › 영어)"],["안내","체육2 서논술 암기장 4번(문화의 세계화) 추가 (☰ › 체육)"],["안내","한국사 6단원(냉전 체제와 대한민국 정부 수립) 120문항 · 개념노트가 추가되었어요"],["안내","기말대비도 서익닷컴과 함께! 2학기 2차고사 대비 오픈"],["안내","지난 1차고사 문제는 메뉴(☰) 위쪽 학기 선택에서 볼 수 있어요"],["안내","오답노트 · 실전 모의고사 기능이 추가되었어요"],["안내","정보 개념노트(Ⅰ~Ⅳ단원)가 추가되었어요"],["안내","9월 모의고사 영어 41~45번 장문 세트가 추가되었어요"]];
+  const defaults = [["안내","로그인 기능 추가 — 마이 탭에서 회원가입하면 기록이 어느 기기에서든 이어져요"],["안내","통합사회 2차고사 범위 170문항 + 개념노트 추가 (기말 › 통합사회)"],["안내","통합과학 2차고사 범위 260문항 추가 (기말 › 통합과학)"],["안내","영어 10월 모의고사 순서·삽입·빈칸·불일치·배열 106문항 추가 (기말 › 영어)"],["안내","체육2 서논술 암기장 4번(문화의 세계화) 추가 (☰ › 체육)"],["안내","한국사 6단원(냉전 체제와 대한민국 정부 수립) 120문항 · 개념노트가 추가되었어요"],["안내","기말대비도 서익닷컴과 함께! 2학기 2차고사 대비 오픈"],["안내","지난 1차고사 문제는 메뉴(☰) 위쪽 학기 선택에서 볼 수 있어요"],["안내","오답노트 · 실전 모의고사 기능이 추가되었어요"],["안내","정보 개념노트(Ⅰ~Ⅳ단원)가 추가되었어요"],["안내","9월 모의고사 영어 41~45번 장문 세트가 추가되었어요"]];
   const rows = posts.length ? posts.map(p=>['<span class="nt-c">['+escapeHtml(p.cat)+']</span> '+escapeHtml(p.title), p.id]) : defaults.map(d=>['<span class="nt-c">['+d[0]+']</span> '+d[1], null]);
   const nb = document.getElementById("zbNotice");
   nb.innerHTML = rows.map(r=>'<button type="button" data-id="'+(r[1]||"")+'">'+r[0]+'</button>').join("");
@@ -4293,7 +4293,7 @@ document.querySelectorAll(".bottomnav button").forEach(function(b){
 (function(){
 "use strict";
 /* Firebase 설정값 — 비어 있으면 계정 기능이 꺼진 채로 동작한다 */
-const FB = { apiKey: "", projectId: "" };
+const FB = { apiKey: "AIzaSyAFtXIfigZwEWHlSm-4BGKw6BevlXq43lE", projectId: "seoik-9ac41" };
 const ON = !!(FB.apiKey && FB.projectId);
 const ACC_KEY = "seoik_account_v1";
 /* 계정을 따라다니는 기록: 진도, 오답노트, 모의고사 기록 */
