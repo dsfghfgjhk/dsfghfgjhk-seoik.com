@@ -1801,6 +1801,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
 <script type="application/json" id="boardShared">[]</script>
 
 <script src="./math/data.js"></script>
+<script src="./math/exam-sets.js"></script>
 <script>
 (function(){
 "use strict";
@@ -2052,6 +2053,8 @@ function makeMathSubject(course){
     for(let start=0;start<extra.length;start+=10){const set=extra.slice(start,start+10);indices.push(subject.quiz.length);subject.quiz.push(set);subject.titles.push("변형 문제 "+(start+1)+"~"+(start+set.length)+"번");}
     subject.units.push({name:unit,desc:"기출과 변형 문제",indices});
   });
+  const exam=(window.SEOIK_MATH_EXAMS||{})[String(course)]||[];
+  if(exam.length){const index=subject.quiz.length;subject.quiz.push(exam);subject.titles.push("기출 유형 종합 변형 · 25문항");subject.units.unshift({name:"종합 시험지",desc:"기출 유형을 바탕으로 만든 변형 문제",indices:[index]});}
   return subject;
 }
 const MATH_SUBJECTS = [makeMathSubject(1),makeMathSubject(2)];
@@ -2651,7 +2654,7 @@ function showWrongResult(){
   const n = quizN(), pct = Math.round(quizScore/n*100);
   const left = wrongList().length;
   ra.innerHTML = '<div class="result"><div class="score-line">오답 다시 풀기 · '+n+'문제</div>'+
-    '<div class="score"><b>'+pct+'</b><span>점</span><svg viewBox="0 0 200 18" preserveAspectRatio="none" aria-hidden="true"><path d="M4 7 C60 3,130 4,196 6 M14 14 C70 11,140 12,190 13"/></svg></div>'+
+    '<div class="score"><b>'+displayScore+'</b><span>점</span><svg viewBox="0 0 200 18" preserveAspectRatio="none" aria-hidden="true"><path d="M4 7 C60 3,130 4,196 6 M14 14 C70 11,140 12,190 13"/></svg></div>'+
     '<h2>'+quizScore+'문제 맞혔어요</h2><p class="msg">두 번 연속 맞혀서 오답노트에서 빠진 문제 '+wrongRemovedThisRound+'개 · 남은 오답 '+left+'개</p>'+
     '<div class="row"><button class="btn" id="wrBackBtn">오답노트로</button>'+(left? '<button class="btn ghost" id="wrAgainBtn">남은 오답 다시 풀기</button>':'')+'</div></div>';
   document.getElementById("wrBackBtn").onclick = ()=> goTab("wrong");
@@ -3181,7 +3184,7 @@ document.getElementById("resetAllBtn").addEventListener("click", ()=>{
 const MARK_O = '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M24 5.5C13 4.6 5.2 11.8 5.6 22.4c.4 9.6 8.6 16.4 18.2 15.6 9.8-.8 15.4-8.6 14.4-17.6C37.2 11.6 30 6 20.5 7.4"/></svg>';
 const MARK_X = '<svg viewBox="0 0 44 44" aria-hidden="true"><path d="M9 37 L36 6"/></svg>';
 function enterQuiz(subject, globalIdx, fromTab){
-  if(subject.math){ openMathQuiz(subject,globalIdx,fromTab); return; }
+  if(subject.math && !subject.quiz[globalIdx].every(q=>Array.isArray(q.choices))){ openMathQuiz(subject,globalIdx,fromTab); return; }
   exitSheet();
   quizSubject = subject; quizSet = globalIdx; quizQ = 0; quizScore = 0;
   quizMode = "set"; stopMockTimer(); mockState = null;
@@ -3476,11 +3479,12 @@ function showQuizResult(){
 
   const nextIdx = nextSetSameContext();
   const pct = Math.round((quizScore/quizN())*100);
+  const displayScore = sheetState && sheetState.items.every(st=>st.q.points) ? sheetScore() : pct;
   const msg = nextIdx!==null
     ? "다음 세트는 홈의 이어풀기에서도 열 수 있어요."
     : "이 단원의 마지막 세트까지 풀었어요. 다른 단원도 풀어 보세요.";
 
-  const verdict = quizScore>=9 ? "거의 완벽해요" : quizScore>=7 ? "잘했어요" : quizScore>=5 ? "틀린 문제 해설을 다시 읽어 보세요" : "이 세트는 한 번 더 풀어 보세요";
+  const verdict = pct>=90 ? "거의 완벽해요" : pct>=70 ? "잘했어요" : pct>=50 ? "틀린 문제 해설을 다시 읽어 보세요" : "이 세트는 한 번 더 풀어 보세요";
   document.getElementById("resultArea").innerHTML =
     '<div class="result">'+
       '<div class="score-line">SET '+(quizSet+1)+' · '+escapeHtml(quizSubject.titles[quizSet])+'</div>'+
@@ -3535,7 +3539,12 @@ function sqCols(q, posOnly){
   const m = Math.max.apply(null, q.choices.map(c=>String(c).length));
   return m <= 4 ? "c5" : m <= 7 ? "c3" : "";
 }
-function sheetPoints(){ const n = quizItems.length; return (n && 100 % n === 0) ? 100 / n : 0; }
+function sheetPoints(){ const n = quizItems.length; if(sheetState && sheetState.items.some(st=>st.q.points)) return 0; return (n && 100 % n === 0) ? 100 / n : 0; }
+function sheetScore(){
+ const n=quizItems.length, weighted=sheetState && sheetState.items.every(st=>Number.isFinite(st.q.points));
+ if(weighted){const total=sheetState.items.reduce((a,st)=>a+st.q.points,0), earned=sheetState.items.reduce((a,st,i)=>a+(quizCells[i]==="correct"?st.q.points:0),0);return earned+" / "+total;}
+ return String(Math.round(quizCells.filter(c=>c==="correct").length/n*100));
+}
 function sheetInfo(){
   const first = quizItems[0], sj = subjById(first.sid);
   const title = document.getElementById("quizSetTitle").textContent;
@@ -3549,7 +3558,7 @@ function sheetInfo(){
   return { title, subjName, range, kind };
 }
 function sqHTML(i){
-  const st = sheetState.items[i], q = st.q, pts = sheetPoints();
+  const st = sheetState.items[i], q = st.q, pts = q.points || sheetPoints();
   const posOnly = !!q.fixed && st.order.every((o,k)=> q.choices[o] === CIRCLED[k]);
   const ch = st.order.map((o,k)=>{
     const t = String(q.choices[o]);
@@ -3597,7 +3606,7 @@ function sheetHeaderHTML(info){
     '<div class="sh-idwrap"><table class="sh-id"><tr>'+
       '<th>학년</th><td>1</td><th class="opt">반</th><td class="opt"></td><th class="opt">번호</th><td class="opt"></td><th>이름</th><td class="w"></td><th>점수</th><td class="sh-score" id="shScore"></td>'+
     '</tr></table></div>'+
-    '<p class="sh-rules">※ 범위: '+escapeHtml(info.range)+' · 선택형 '+n+'문항'+(pts ? ' · 문항당 '+pts+'점' : '')+'<br>'+
+    '<p class="sh-rules">※ 범위: '+escapeHtml(info.range)+' · 선택형 '+n+'문항'+(pts ? ' · 문항당 '+pts+'점' : (sheetState.items.every(st=>st.q.points) ? ' · '+sheetState.items.reduce((a,st)=>a+st.q.points,0)+'점 만점' : ''))+'<br>'+
     '※ 답은 문제지의 번호를 누르거나 [답안지]에 표시하세요. 다 풀면 [채점하기]를 누르세요.</p>'+
   '</header>';
 }
@@ -3718,7 +3727,7 @@ function renderAnsState(){
   if(gb){
     if(sheetState.graded){
       const sc = quizCells.filter(c=>c==="correct").length;
-      gb.textContent = Math.round(sc/n*100) + "점 · 결과";
+      gb.textContent = sheetScore() + "점 · 결과";
     } else gb.textContent = quizMode === "mock" ? "제출" : "채점하기";
   }
 }
@@ -3741,7 +3750,7 @@ function paintGrade(i){
 function fillSheetScore(){
   const el = document.getElementById("shScore"); if(!el) return;
   const n = quizItems.length, sc = quizCells.filter(c=>c==="correct").length;
-  el.innerHTML = Math.round(sc/n*100) + '<small>점</small>';
+  el.innerHTML = sheetScore() + '<small>점</small>';
 }
 function answerKeyHTML(){
   const info = sheetInfo(), n = quizItems.length, sc = quizCells.filter(c=>c==="correct").length;
@@ -3772,7 +3781,7 @@ function answerKeyHTML(){
     (wrongN ? '<button type="button" class="btn" id="shRetryWrong">틀린 '+wrongN+'문제만 바로 다시 풀기</button>' : '')+
     '<button type="button" class="btn ghost" id="shPrint2">시험지·해설 인쇄 (PDF 저장)</button></div>';
   return '<article class="sh-page sh-key" data-page="0">'+
-    '<div class="sh-key-head">'+skLogo()+'<span class="sh-key-sub">'+escapeHtml(info.subjName+" · "+info.kind)+'</span><h2>정답 및 해설</h2><div class="sh-key-score">'+Math.round(sc/n*100)+'<small>점</small> <span>'+sc+' / '+n+' 문항</span></div>'+
+    '<div class="sh-key-head">'+skLogo()+'<span class="sh-key-sub">'+escapeHtml(info.subjName+" · "+info.kind)+'</span><h2>정답 및 해설</h2><div class="sh-key-score">'+sheetScore()+'<small>점</small> <span>'+sc+' / '+n+' 문항</span></div>'+
     (meta.length ? '<div class="sh-key-meta">'+escapeHtml(meta.join(" · "))+'</div>' : '')+'</div>'+
     acts+
     tbl+
@@ -3910,14 +3919,15 @@ function printDocHTML(withKey){
     '<h1 class="pd-title">'+escapeHtml(big)+'</h1>'+
     '<div class="pd-sub">'+escapeHtml(sub)+'</div>'+
     (topics && topics.length ? '<p class="pd-goal"><b>학습 목표</b>'+topics.map(t=>'<span>'+escapeHtml(t)+'</span>').join("")+'</p>' : '')+
-    '<div class="pd-name"><span>이름<i></i></span><span>점수<i></i>/ 100</span></div>'+
+    '<div class="pd-name"><span>이름<i></i></span><span>점수<i></i>/ '+(sheetState.items.every(st=>st.q.points)?sheetState.items.reduce((a,st)=>a+st.q.points,0):100)+'</span></div>'+
   '</header>';
   h += '<div class="pd-q">'+sheetState.items.map((st,i)=>{
     const q = st.q;
     const posOnly = !!q.fixed && st.order.every((o,k)=> q.choices[o] === CIRCLED[k]);
     let stem = q.q;
-    if(pts){
-      const cut = stem.indexOf("<div"), mark = ' <span class="pd-pt">['+pts+'점]</span>';
+    const questionPoints=q.points || pts;
+    if(questionPoints){
+      const cut = stem.indexOf("<div"), mark = ' <span class="pd-pt">['+questionPoints+'점]</span>';
       stem = cut >= 0 ? stem.slice(0,cut) + mark + stem.slice(cut) : stem + mark;
     }
     const ch = st.order.map((o,k)=>{
