@@ -2208,6 +2208,17 @@ function closeDrawer(){
   d.classList.remove("open"); d.setAttribute("aria-hidden","true");
   document.body.style.overflow = "";
 }
+/* 안드로이드 앱 뒤로가기: 메뉴·팝업 닫기 → 홈으로 → (홈이면) 앱 종료 */
+window.__seoikBack = function(){
+  const d = document.getElementById("subjectDrawer");
+  if(d && d.classList.contains("open")){ closeDrawer(); return true; }
+  const pd = document.getElementById("promoDim");
+  if(pd && !pd.hidden){ pd.hidden = true; return true; }
+  const ad = document.getElementById("adAllDim");
+  if(ad && !ad.hidden){ ad.hidden = true; return true; }
+  if(!document.body.classList.contains("view-home")){ goTab("home"); window.scrollTo(0,0); return true; }
+  return false;
+};
 /* ================= 체육 서논술 암기장 ================= */
 const PE_MEMO = [
   { title:"다음과 같은 상황에서 진수에게 취해야 할 응급 처치 방법을 서술하시오.", tag:"응급 처치",
