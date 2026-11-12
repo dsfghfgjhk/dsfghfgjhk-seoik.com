@@ -1429,6 +1429,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
   .acc-go{ width:100%; min-height:48px; margin-top:8px; border:0; border-radius:12px; background:var(--blue); color:#fff; font-size:15.5px; font-weight:700; cursor:pointer; }
   .acc-go:disabled{ opacity:.6; cursor:default; }
   .acc-skip{ display:block; width:100%; min-height:44px; margin-top:6px; border:0; background:none; color:var(--ink-soft); font-size:14px; font-weight:600; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+ .sq-source{display:inline-block;color:#66748a;font:500 11px var(--sans);margin-right:6px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -1802,6 +1803,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
 
 <script src="./math/data.js"></script>
 <script src="./math/exam-sets.js"></script>
+<script src="./math/transcribed-2026-06.js"></script>
 <script>
 (function(){
 "use strict";
@@ -2055,6 +2057,7 @@ function makeMathSubject(course){
   });
   const exam=(window.SEOIK_MATH_EXAMS||{})[String(course)]||[];
   if(exam.length){const index=subject.quiz.length;subject.quiz.push(exam);subject.titles.push("기출 유형 종합 변형 · 25문항");subject.units.unshift({name:"종합 시험지",desc:"기출 유형을 바탕으로 만든 변형 문제",indices:[index]});}
+  if(course===1 && Array.isArray(window.SEOIK_2026_06_TEXT) && window.SEOIK_2026_06_TEXT.length===25){const index=subject.quiz.length;subject.quiz.push(window.SEOIK_2026_06_TEXT);subject.titles.push("2026년 6월 텍스트 기출 · 객관식 21문항 + 변형 4문항");subject.units.unshift({name:"2026년 6월 텍스트 시험지",desc:"객관식 원문 21문항과 변형 4문항",indices:[index]});}
   return subject;
 }
 const MATH_SUBJECTS = [makeMathSubject(1),makeMathSubject(2)];
@@ -3565,7 +3568,7 @@ function sqHTML(i){
     const shown = (q.fixed && t === CIRCLED[k]) ? "" : escapeHtml(t);
     return '<li><button type="button" class="sq-c" data-i="'+i+'" data-k="'+k+'"><span class="sq-cn">'+CIRCLED[k]+'</span>'+(shown ? '<span class="sq-ct">'+shown+'</span>' : '')+'</button></li>';
   }).join("");
-  const tags = (q.hot ? '<span class="sq-tag">빈출</span>' : '') + (quizMode==="wrong" ? '<span class="sq-tag">오답</span>' : '');
+  const tags = (q.hot ? '<span class="sq-tag">빈출</span>' : '') + (quizMode==="wrong" ? '<span class="sq-tag">오답</span>' : '') + (q.source && (q.source.includes("년") || q.source==="기출 유형 변형") ? '<span class="sq-source">'+escapeHtml(q.source)+'</span>' : '');
   let stem = q.q;
   if(pts){
     const cut = stem.indexOf("<div");
