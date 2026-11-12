@@ -1419,6 +1419,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
   .acc-err{ min-height:18px; margin:10px 0 0; font-size:13px; color:var(--red); }
   .acc-go{ width:100%; min-height:48px; margin-top:8px; border:0; border-radius:12px; background:var(--blue); color:#fff; font-size:15.5px; font-weight:700; cursor:pointer; }
   .acc-go:disabled{ opacity:.6; cursor:default; }
+  .acc-skip{ display:block; width:100%; min-height:44px; margin-top:6px; border:0; background:none; color:var(--ink-soft); font-size:14px; font-weight:600; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -4285,6 +4286,7 @@ document.querySelectorAll(".bottomnav button").forEach(function(b){
       <p class="acc-note" id="accNote" hidden>비밀번호를 잊으면 다시 찾을 수 없으니 꼭 기억해 두세요. 지금 이 기기에 있는 기록은 새 계정으로 옮겨져요.</p>
       <p class="acc-err" id="accErr" role="alert"></p>
       <button type="submit" class="acc-go" id="accGo">로그인</button>
+      <button type="button" class="acc-skip" id="accSkip">로그인 없이 둘러보기</button>
     </form>
   </div>
 </div>
@@ -4296,6 +4298,7 @@ document.querySelectorAll(".bottomnav button").forEach(function(b){
 const FB = { apiKey: "AIzaSyAFtXIfigZwEWHlSm-4BGKw6BevlXq43lE", projectId: "seoik-9ac41" };
 const ON = !!(FB.apiKey && FB.projectId);
 const ACC_KEY = "seoik_account_v1";
+const PROMPT_KEY = "seoik_acc_prompted";
 /* 계정을 따라다니는 기록: 진도, 오답노트, 모의고사 기록 */
 const SYNC_KEYS = ["jokbo_app_progress_v2", "seoik_wrong_v1", "seoik_mock_hist_v1", "seoik_en_orig_v1"];
 const CLEAR_ALSO = ["jokbo_app_pending_v2"];
@@ -4447,6 +4450,7 @@ async function signOut(){
     catch(e){ if(!confirm("아직 서버에 저장하지 못한 기록이 있어요. 지금 로그아웃하면 그 기록은 사라져요. 그래도 로그아웃할까요?")) return; }
   }
   applySnapshot(null); setAcc(null);
+  try{ sessionStorage.removeItem(PROMPT_KEY); }catch(e){}
   location.reload();
 }
 function errText(e){
@@ -4488,7 +4492,7 @@ function setMode(m){
   go.textContent = m === "up" ? "회원가입" : "로그인";
   errEl.textContent = "";
 }
-function openSheet(m){ lastFocus = document.activeElement; setMode(m); fPw.value = ""; fPw2.value = ""; dim.hidden = false; document.body.style.overflow = "hidden"; setTimeout(()=>fId.focus(), 50); }
+function openSheet(m, quiet){ lastFocus = document.activeElement; setMode(m); fPw.value = ""; fPw2.value = ""; dim.hidden = false; document.body.style.overflow = "hidden"; if(!quiet) setTimeout(()=>fId.focus(), 50); }
 function closeSheet(){ dim.hidden = true; document.body.style.overflow = ""; if(lastFocus && lastFocus.focus) try{ lastFocus.focus(); }catch(e){} }
 card.addEventListener("click", e=>{
   const b = e.target.closest("[data-acc]"); if(!b) return;
@@ -4499,6 +4503,7 @@ card.addEventListener("click", e=>{
 document.getElementById("accTabIn").addEventListener("click", ()=>setMode("in"));
 document.getElementById("accTabUp").addEventListener("click", ()=>setMode("up"));
 document.getElementById("accX").addEventListener("click", closeSheet);
+document.getElementById("accSkip").addEventListener("click", ()=>{ if(!busy) closeSheet(); });
 dim.addEventListener("click", e=>{ if(e.target === dim && !busy) closeSheet(); });
 document.addEventListener("keydown", e=>{ if(e.key === "Escape" && !dim.hidden && !busy) closeSheet(); });
 form.addEventListener("submit", async e=>{
@@ -4524,6 +4529,14 @@ window.__seoikBack = function(){ if(!dim.hidden){ if(!busy) closeSheet(); return
 
 paint();
 startSync();
+/* 처음 들어왔을 때: 로그인하지 않았으면 시작 화면이 끝난 뒤 로그인 창을 띄운다 (한 번 닫으면 그 접속 동안은 다시 안 뜸) */
+(function prompt(){
+  if(acc()) return;
+  try{ if(sessionStorage.getItem(PROMPT_KEY)) return; }catch(e){}
+  if(document.getElementById("splash")) return setTimeout(prompt, 150);
+  try{ sessionStorage.setItem(PROMPT_KEY, "1"); }catch(e){}
+  if(dim.hidden) openSheet("in", true);
+})();
 })();
 </script>
 </body>
