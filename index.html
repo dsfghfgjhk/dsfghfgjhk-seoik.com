@@ -1279,8 +1279,15 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
   .pd-goal span + span::before{ content:"·"; margin:0 2mm; }
   .pd-name{ display:flex; justify-content:flex-end; gap:8mm; margin:3mm 0 5mm; padding-bottom:3mm; border-bottom:0.6pt solid #000; font:600 9pt var(--sans); }
   .pd-name i{ display:inline-block; width:28mm; height:4mm; border-bottom:0.6pt solid #000; margin:0 2mm; vertical-align:-1mm; }
-  .pd-q{ column-count:2; column-gap:9mm; column-rule:0.5pt solid #000; }
-  .pd-item{ break-inside:avoid; page-break-inside:avoid; margin:0 0 7mm; }
+  .pd-page + .pd-page{ break-before:page; page-break-before:always; }
+  .pd-q{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:0; align-items:start; }
+  .pd-item{ break-inside:avoid; page-break-inside:avoid; box-sizing:border-box; min-height:165mm; padding:2mm 6mm 12mm 0; }
+  .pd-item:nth-child(2){ border-left:0.5pt solid #000; padding:2mm 0 12mm 6mm; }
+  .pd-item .sq{ margin:0 !important; }
+  .pd-runhead{ margin-bottom:6mm; }
+  .pd-graded-key{ break-before:page; page-break-before:always; }
+  .pd-graded-key .sh-page{ break-before:auto !important; page-break-before:auto !important; }
+  .pd-graded-key .sh-key-acts{ display:none !important; }
   .pd-qhead{ display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:1.6mm; }
   .pd-n{ font:700 11pt/1.55 var(--sans); }
   .pd-stem{ font-size:10pt; line-height:1.6; word-break:keep-all; color:#000; }
@@ -3965,15 +3972,15 @@ function doPrint(mode){
   document.body.classList.remove("pmenu-open", "ans-open", "print-doc", "print-graded");
   window.dispatchEvent(new Event("pen:leave"));
   const doc = document.getElementById("shPrintDoc");
-  if(mode === "graded"){ doc.innerHTML = ""; document.body.classList.add("print-graded"); }
-  else { doc.innerHTML = printDocHTML(mode === "doc-key"); document.body.classList.add("print-doc"); }
+  doc.innerHTML = printDocHTML(mode === "doc-key", mode === "graded");
+  document.body.classList.add("print-doc");
   setTimeout(()=> window.print(), 80);
 }
 window.addEventListener("afterprint", ()=>{
   document.body.classList.remove("print-doc", "print-graded");
   const doc = document.getElementById("shPrintDoc"); if(doc) doc.innerHTML = "";
 });
-function printDocHTML(withKey){
+function printDocHTML(withKey, graded){
   const info = sheetInfo(), n = quizItems.length, pts = sheetPoints();
   const ex = {label: (curTerm && curTerm.label) || ""};
   const year = new Date().getFullYear();
@@ -3987,7 +3994,14 @@ function printDocHTML(withKey){
     (topics && topics.length ? '<p class="pd-goal"><b>학습 목표</b>'+topics.map(t=>'<span>'+escapeHtml(t)+'</span>').join("")+'</p>' : '')+
     '<div class="pd-name"><span>이름<i></i></span><span>점수<i></i>/ '+(sheetState.items.every(st=>st.q.points)?sheetState.items.reduce((a,st)=>a+st.q.points,0):100)+'</span></div>'+
   '</header>';
-  h += '<div class="pd-q">'+sheetState.items.map((st,i)=>{
+  const header = h;
+  const questions = sheetState.items.map((st,i)=>{
+    if(graded){
+      const clone = document.getElementById("sq"+i).cloneNode(true);
+      clone.querySelectorAll("input").forEach(input=>input.setAttribute("value",input.value));
+      clone.removeAttribute("id"); clone.querySelectorAll("[id]").forEach(el=>el.removeAttribute("id"));
+      return '<div class="pd-item">'+clone.outerHTML+'</div>';
+    }
     const q = st.q;
     const posOnly = !!q.fixed && st.order.every((o,k)=> q.choices[o] === CIRCLED[k]);
     let stem = q.q;
@@ -4004,7 +4018,16 @@ function printDocHTML(withKey){
     return '<div class="pd-item"><div class="pd-qhead"><b class="pd-n">'+(i+1)+'.</b><div class="pd-stem">'+
       (q.hot ? '<span class="pd-star" title="자주 나오는 문제">★</span> ' : '')+stem+'</div></div>'+
       (q.type==="short" ? '<p>답: ____________________</p>' : '<ol class="pd-ch '+pdCols(q, posOnly)+'">'+ch+'</ol>')+'</div>';
-  }).join("")+'</div>';
+  });
+  h = '';
+  for(let start=0;start<questions.length;start+=2){
+    const pageHead = start===0 ? header : '<div class="pd-top pd-runhead">'+skLogo()+'<span>'+escapeHtml(info.subjName)+' · '+escapeHtml(info.title)+'</span></div>';
+    h += '<section class="pd-page">'+pageHead+'<div class="pd-q">'+questions.slice(start,start+2).join("")+'</div></section>';
+  }
+  if(graded){
+    const key=document.getElementById("shKeySlot");
+    if(key && key.innerHTML.trim()) h+='<section class="pd-graded-key">'+key.innerHTML+'</section>';
+  }
   if(withKey){
     let tbl = '';
     for(let s=0; s<n; s+=10){

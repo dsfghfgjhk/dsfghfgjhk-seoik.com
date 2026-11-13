@@ -126,7 +126,7 @@ test("activation removes only old app caches and claims clients", async () => {
   await w.caches.open("seoik-app-old");
   await w.caches.open("another-app");
   await w.lifecycle("activate");
-  assert(w.stores.has("seoik-app-v17"));
+  assert(w.stores.has("seoik-app-v18"));
   assert(w.stores.has("another-app"));
   assert(!w.stores.has("seoik-app-old"));
   assert(w.claimed);
