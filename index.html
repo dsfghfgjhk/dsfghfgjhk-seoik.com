@@ -2128,11 +2128,13 @@ function makeMathSubject(course){
     if(!questions.length) return;
     const unit=subject.units.find(u=>u.name===name);
     if(!unit) return;
+    const addedIndices=[];
     splitEvenly(questions,25).forEach((set,i)=>{
-      unit.indices.push(subject.quiz.length);
+      addedIndices.push(subject.quiz.length);
       subject.quiz.push(set);
-      subject.titles.push("2026년 3월 고2 포함 · "+name+" · "+set.length+"문항"+(i ? " · "+(i+1) : ""));
+      subject.titles.push("2026년 3월 고2 추가 · "+name+" · "+set.length+"문항"+(i ? " · "+(i+1) : ""));
     });
+    unit.indices.unshift(...addedIndices);
   }
   [2,3,4].forEach(points=>{
     const fresh=added.filter(q=>q.points===points);
