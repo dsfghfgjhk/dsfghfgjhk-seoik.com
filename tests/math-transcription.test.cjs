@@ -74,3 +74,14 @@ test('2026 June short answers match the supplied answer key and are included in 
   assert(shorts.every((q,i)=>q.type==='short'&&q.source===`2026년 6월 고1 ${i+22}번`&&q.choices.length===0&&!/<img\b/i.test(q.q)));
   assert.deepEqual(mixed.slice(16),shorts);assert.match(shorts[5].q,/<svg\b/);
 });
+
+test('2025 June short answers match the supplied answer key and mixed paper', () => {
+  const shorts=JSON.parse(readFileSync(path.join(root,'math/transcriptions/2025-06-short-text.json'),'utf8'));
+  const ctx={window:{}};vm.runInNewContext(readFileSync(path.join(root,'math/transcribed-2025-06-mixed.js'),'utf8'),ctx);
+  const mixed=JSON.parse(JSON.stringify(ctx.window.SEOIK_2025_06_MIXED));
+  assert.equal(mixed.length,25);
+  assert.deepEqual(shorts.map(q=>q.answer),[17,3,270,7,21,23,8,65,114]);
+  assert.deepEqual(shorts.map(q=>q.points),[3,3,3,3,4,4,4,4,4]);
+  assert(shorts.every((q,i)=>q.type==='short'&&q.source===`2025년 6월 고1 ${i+22}번`&&!/<img\b/i.test(q.q)));
+  assert.deepEqual(mixed.slice(16),shorts);
+});
