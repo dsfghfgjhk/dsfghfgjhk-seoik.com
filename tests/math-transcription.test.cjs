@@ -129,3 +129,23 @@ test('2025 October algebra matches the official answers and mixed paper', () => 
   assert.deepEqual(mixed.slice(0,15),items.slice(0,15));assert.deepEqual(mixed.slice(18),items.slice(15));
   assert(mixed.every(q=>!/<img\b/i.test(q.q)));assert.match(items[20].q,/<svg\b/);
 });
+
+test('2026 October algebra matches the official answers and mixed paper', () => {
+  const items=JSON.parse(readFileSync(path.join(root,'math/transcriptions/2026-10-algebra-text.json'),'utf8'));
+  const ctx={window:{}};vm.runInNewContext(readFileSync(path.join(root,'math/transcribed-2026-10-algebra.js'),'utf8'),ctx);
+  const mixed=JSON.parse(JSON.stringify(ctx.window.SEOIK_2026_10_ALGEBRA));
+  assert.equal(items.length,23);assert.equal(mixed.length,25);
+  assert.deepEqual(items.slice(0,16).map(q=>q.correct+1),[3,2,2,2,3,5,4,5,5,3,3,2,1,4,5,2]);
+  assert.deepEqual(items.slice(16).map(q=>q.answer),[8,4,48,630,39,32,72]);
+  assert.deepEqual(mixed.slice(0,16),items.slice(0,16));assert.deepEqual(mixed.slice(18),items.slice(16));
+  assert(mixed.every(q=>!/<img\b/i.test(q.q)));assert.match(items[13].q,/<svg\b/);
+});
+
+test('all six uploaded exams have every original problem transcribed as text', () => {
+  const files=['2025-06-text','2025-06-short-text','2025-09-text','2025-09-short-text','2026-06-text','2026-06-short-text','2026-09-text','2026-09-short-text','october-geometry-text','2025-10-algebra-text','2026-10-algebra-text'];
+  const originals=files.flatMap(name=>JSON.parse(readFileSync(path.join(root,`math/transcriptions/${name}.json`),'utf8'))).filter(q=>/^20\d\d년 (6|9|10)월 고1 \d+번$/.test(q.source||''));
+  const sources=new Set(originals.map(q=>q.source));
+  assert.equal(sources.size,180);
+  for(const year of [2025,2026]) for(const month of [6,9,10]) for(let n=1;n<=30;n++) assert(sources.has(`${year}년 ${month}월 고1 ${n}번`),`${year}-${month} #${n}`);
+  assert(originals.every(q=>!/<img\b/i.test(q.q)));
+});
