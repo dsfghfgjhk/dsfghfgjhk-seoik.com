@@ -1447,9 +1447,24 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
   .acc-go{ width:100%; min-height:48px; margin-top:8px; border:0; border-radius:12px; background:var(--blue); color:#fff; font-size:15.5px; font-weight:700; cursor:pointer; }
   .acc-go:disabled{ opacity:.6; cursor:default; }
   .acc-skip{ display:block; width:100%; min-height:44px; margin-top:6px; border:0; background:none; color:var(--ink-soft); font-size:14px; font-weight:600; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+  .acc-opts{ display:flex; flex-wrap:wrap; gap:4px 18px; margin-top:12px; }
+  .acc-sheet label.acc-chk{ display:inline-flex; align-items:center; gap:8px; margin:0; min-height:36px; font-size:14px; font-weight:600; color:var(--ink); cursor:pointer; }
+  .acc-sheet .acc-chk input{ width:20px; height:20px; min-height:0; margin:0; padding:0; border:0; accent-color:var(--blue); flex-shrink:0; cursor:pointer; }
+  .acc-sheet .acc-chk input:focus{ outline-offset:2px; }
  .sq-short{width:100%;max-width:140px;padding:8px;border:1px solid var(--border);border-radius:6px;font:inherit} .sh-short{width:95px;min-width:0;padding:4px;border:1px solid var(--border);border-radius:5px;font:inherit} .sq-short:disabled{background:var(--bg)}
  .sq-source{display:inline-block;color:#66748a;font:500 11px var(--sans);margin-right:6px;vertical-align:middle}
 </style>
+<script>
+/* 로그인 상태 유지를 끄고 로그인한 경우: 앱이나 창을 새로 열면 이 기기에서 로그아웃한다 (서버 기록은 그대로) */
+(function(){
+  try{
+    var a = JSON.parse(localStorage.getItem("seoik_account_v1") || "null");
+    if(!a || a.keep !== false || a.dirty) return;   /* 아직 못 올린 기록이 있으면 아래 계정 스크립트가 올린 뒤 처리 */
+    if(sessionStorage.getItem("seoik_acc_live")) return;
+    ["seoik_account_v1","jokbo_app_progress_v2","seoik_wrong_v1","seoik_mock_hist_v1","seoik_en_orig_v1","jokbo_app_pending_v2"].forEach(function(k){ localStorage.removeItem(k); });
+  }catch(e){}
+})();
+</script>
 </head>
 <body>
 
@@ -4566,6 +4581,10 @@ document.querySelectorAll(".bottomnav button").forEach(function(b){
       <label>아이디<input id="accId" name="username" type="text" inputmode="latin" autocapitalize="none" autocorrect="off" autocomplete="username" spellcheck="false" maxlength="20" placeholder="영문 소문자·숫자 4~20자"></label>
       <label>비밀번호<input id="accPw" name="password" type="password" autocomplete="current-password" maxlength="64" placeholder="6자 이상"></label>
       <label id="accPw2Wrap" hidden>비밀번호 확인<input id="accPw2" type="password" autocomplete="new-password" maxlength="64" placeholder="한 번 더 입력"></label>
+      <div class="acc-opts">
+        <label class="acc-chk"><input type="checkbox" id="accKeep" checked>로그인 상태 유지</label>
+        <label class="acc-chk"><input type="checkbox" id="accSaveId" checked>아이디 저장</label>
+      </div>
       <p class="acc-note" id="accNote" hidden>비밀번호를 잊으면 다시 찾을 수 없으니 꼭 기억해 두세요. 지금 이 기기에 있는 기록은 새 계정으로 옮겨져요.</p>
       <p class="acc-err" id="accErr" role="alert"></p>
       <button type="submit" class="acc-go" id="accGo">로그인</button>
@@ -4582,6 +4601,9 @@ const FB = { apiKey: "AIzaSyAFtXIfigZwEWHlSm-4BGKw6BevlXq43lE", projectId: "seoi
 const ON = !!(FB.apiKey && FB.projectId);
 const ACC_KEY = "seoik_account_v1";
 const PROMPT_KEY = "seoik_acc_prompted";
+const LIVE_KEY = "seoik_acc_live";      /* 이번 접속(창) 동안 로그인 유지 표시 */
+const LASTID_KEY = "seoik_last_id";     /* 아이디 저장 */
+const OPT_KEY = "seoik_login_opt_v1";   /* 체크박스 선택 기억 {keep, saveId} */
 /* 계정을 따라다니는 기록: 진도, 오답노트, 모의고사 기록 */
 const SYNC_KEYS = ["jokbo_app_progress_v2", "seoik_wrong_v1", "seoik_mock_hist_v1", "seoik_en_orig_v1"];
 const CLEAR_ALSO = ["jokbo_app_pending_v2"];
@@ -4701,7 +4723,8 @@ async function startSync(){
 
 /* ---------- 가입·로그인·로그아웃 ---------- */
 function newAcc(id, j, dirty){
-  setAcc({ id:id, uid:j.localId, idToken:j.idToken, refreshToken:j.refreshToken, exp: Date.now() + (+j.expiresIn || 3600) * 1000, syncedAt:0, dirty:dirty });
+  setAcc({ id:id, uid:j.localId, idToken:j.idToken, refreshToken:j.refreshToken, exp: Date.now() + (+j.expiresIn || 3600) * 1000, syncedAt:0, dirty:dirty, keep: keepBox ? keepBox.checked : true });
+  try{ sessionStorage.setItem(LIVE_KEY, "1"); }catch(e){}
 }
 async function signUp(id, pw){
   const j = await post(AUTH + "signUp?key=" + FB.apiKey, { email:id + MAIL, password:pw, returnSecureToken:true });
@@ -4712,6 +4735,12 @@ async function signUp(id, pw){
 async function signIn(id, pw){
   const j = await post(AUTH + "signInWithPassword?key=" + FB.apiKey, { email:id + MAIL, password:pw, returnSecureToken:true });
   const hadLocal = Object.keys(snapshot()).some(k => k !== "seoik_en_orig_v1");
+  const prev = acc();
+  if(prev && prev.uid === j.localId){
+    newAcc(id, j, true);
+    try{ await cloudPut(); syncState = "ok"; }catch(e){ syncState = failState(e); }
+    return false;
+  }
   newAcc(id, j, false);
   let c;
   try{ c = await cloudGet(); }catch(e){ setAcc(null); throw e; }
@@ -4733,7 +4762,7 @@ async function signOut(){
     catch(e){ if(!confirm("아직 서버에 저장하지 못한 기록이 있어요. 지금 로그아웃하면 그 기록은 사라져요. 그래도 로그아웃할까요?")) return; }
   }
   applySnapshot(null); setAcc(null);
-  try{ sessionStorage.removeItem(PROMPT_KEY); }catch(e){}
+  try{ sessionStorage.removeItem(PROMPT_KEY); sessionStorage.removeItem(LIVE_KEY); }catch(e){}
   location.reload();
 }
 function errText(e){
@@ -4759,7 +4788,9 @@ function paint(){
   }
   const st = { ok:["기록이 계정에 저장돼요", ""], syncing:["저장하는 중…", ""], off:["인터넷이 연결되면 저장돼요", ""], err:["저장에 문제가 생겼어요. 잠시 뒤 다시 시도해요", "bad"], reauth:["다시 로그인해 주세요", "bad"] }[syncState] || ["", ""];
   card.innerHTML = '<div class="acc-row"><div class="acc-ava" aria-hidden="true">' + esc(a.id.charAt(0)) + '</div><div class="acc-txt"><b>' + esc(a.id) + ' 님</b><span class="' + st[1] + '">' + st[0] + '</span></div>'
-    + '<div class="acc-btns"><button type="button" class="acc-btn" data-acc="out">로그아웃</button></div></div>';
+    + '<div class="acc-btns">' + (syncState === "reauth" ? '<button type="button" class="acc-btn pri" data-acc="re">다시 로그인</button>' : '')
+    + '<button type="button" class="acc-btn" data-acc="out">로그아웃</button></div></div>';
+  if(a.keep === false && syncState !== "reauth"){ const sp = card.querySelector(".acc-txt span"); if(sp) sp.textContent += " · 앱을 닫으면 로그아웃돼요"; }
 }
 const dim = document.getElementById("accDim"), form = document.getElementById("accForm");
 const fId = document.getElementById("accId"), fPw = document.getElementById("accPw"), fPw2 = document.getElementById("accPw2");
@@ -4775,17 +4806,37 @@ function setMode(m){
   go.textContent = m === "up" ? "회원가입" : "로그인";
   errEl.textContent = "";
 }
-function openSheet(m, quiet){ lastFocus = document.activeElement; setMode(m); fPw.value = ""; fPw2.value = ""; dim.hidden = false; document.body.style.overflow = "hidden"; if(!quiet) setTimeout(()=>fId.focus(), 50); }
+const keepBox = document.getElementById("accKeep"), saveIdBox = document.getElementById("accSaveId");
+function loadOpt(){ try{ return JSON.parse(ls(OPT_KEY) || "{}") || {}; }catch(e){ return {}; } }
+function openSheet(m, quiet, id){
+  lastFocus = document.activeElement; setMode(m); fPw.value = ""; fPw2.value = "";
+  const o = loadOpt();
+  keepBox.checked = o.keep !== false; saveIdBox.checked = o.saveId !== false;
+  const saved = id || (m === "in" && saveIdBox.checked ? (ls(LASTID_KEY) || "") : "");
+  if(saved) fId.value = saved; else if(m === "up") fId.value = "";
+  dim.hidden = false; document.body.style.overflow = "hidden";
+  if(!quiet) setTimeout(()=> (fId.value ? fPw : fId).focus(), 50);
+}
+function rememberLogin(id, pw){
+  try{ rawSet.call(localStorage, OPT_KEY, JSON.stringify({ keep: keepBox.checked, saveId: saveIdBox.checked })); }catch(e){}
+  try{ if(saveIdBox.checked) rawSet.call(localStorage, LASTID_KEY, id); else rawRemove.call(localStorage, LASTID_KEY); }catch(e){}
+  /* 크롬 등 브라우저의 '비밀번호 저장' 창 (지원하는 브라우저에서만) */
+  if(saveIdBox.checked && window.PasswordCredential && navigator.credentials && navigator.credentials.store){
+    try{ navigator.credentials.store(new PasswordCredential({ id: id, password: pw, name: id })).catch(()=>{}); }catch(e){}
+  }
+}
 function closeSheet(){ dim.hidden = true; document.body.style.overflow = ""; if(lastFocus && lastFocus.focus) try{ lastFocus.focus(); }catch(e){} }
 card.addEventListener("click", e=>{
   const b = e.target.closest("[data-acc]"); if(!b) return;
   const k = b.getAttribute("data-acc");
   if(k === "out"){ if(confirm("로그아웃할까요? 기록은 계정에 저장되어 있어서 다시 로그인하면 돌아와요.")) signOut(); }
+  else if(k === "re"){ const a = acc(); openSheet("in", false, a && a.id); }
   else openSheet(k);
 });
 document.getElementById("accTabIn").addEventListener("click", ()=>setMode("in"));
 document.getElementById("accTabUp").addEventListener("click", ()=>setMode("up"));
 document.getElementById("accX").addEventListener("click", closeSheet);
+saveIdBox.addEventListener("change", ()=>{ if(!saveIdBox.checked) try{ rawRemove.call(localStorage, LASTID_KEY); }catch(e){} });
 document.getElementById("accSkip").addEventListener("click", ()=>{ if(!busy) closeSheet(); });
 dim.addEventListener("click", e=>{ if(e.target === dim && !busy) closeSheet(); });
 document.addEventListener("keydown", e=>{ if(e.key === "Escape" && !dim.hidden && !busy) closeSheet(); });
@@ -4799,6 +4850,7 @@ form.addEventListener("submit", async e=>{
   busy = true; go.disabled = true; errEl.textContent = ""; go.textContent = mode === "up" ? "가입하는 중…" : "로그인하는 중…";
   try{
     const reload = mode === "up" ? await signUp(id, pw) : await signIn(id, pw);
+    rememberLogin(id, pw);
     if(reload){ location.reload(); return; }
     closeSheet(); paint();
   }catch(err){
@@ -4810,8 +4862,18 @@ form.addEventListener("submit", async e=>{
 const prevBack = window.__seoikBack;
 window.__seoikBack = function(){ if(!dim.hidden){ if(!busy) closeSheet(); return true; } return prevBack ? prevBack() : false; };
 
-paint();
-startSync();
+(async function(){
+  const a = acc();
+  let live = false; try{ live = !!sessionStorage.getItem(LIVE_KEY); }catch(e){}
+  if(a && a.keep === false && !live){
+    /* 지난번에 '로그인 상태 유지'를 끄고 썼고, 저장 못 한 기록이 남아 있음: 올리고 나서 로그아웃 */
+    try{ await cloudPut(); }catch(e){ try{ sessionStorage.setItem(LIVE_KEY, "1"); }catch(_){} paint(); startSync(); return; }
+    applySnapshot(null); setAcc(null); location.reload(); return;
+  }
+  if(a){ try{ sessionStorage.setItem(LIVE_KEY, "1"); }catch(e){} }
+  paint();
+  startSync();
+})();
 /* 처음 들어왔을 때: 로그인하지 않았으면 시작 화면이 끝난 뒤 로그인 창을 띄운다 (한 번 닫으면 그 접속 동안은 다시 안 뜸) */
 (function prompt(){
   if(acc()) return;
