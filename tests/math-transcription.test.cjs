@@ -149,3 +149,16 @@ test('all six uploaded exams have every original problem transcribed as text', (
   for(const year of [2025,2026]) for(const month of [6,9,10]) for(let n=1;n<=30;n++) assert(sources.has(`${year}년 ${month}월 고1 ${n}번`),`${year}-${month} #${n}`);
   assert(originals.every(q=>!/<img\b/i.test(q.q)));
 });
+
+test('practice pools preserve all original questions and extra variants are unique', () => {
+  const ctx={window:{}};
+  for(const f of ['practice-pools.js','practice-extra.js']) vm.runInNewContext(readFileSync(path.join(root,'math',f),'utf8'),ctx);
+  for(const [course,count] of [['1',165],['2',15]]) {
+    const pool=ctx.window.SEOIK_PRACTICE_POOLS[course], sets=ctx.window.SEOIK_PRACTICE_EXTRA[course];
+    assert.equal(pool.length,count);assert.equal(new Set(pool.map(q=>q.source)).size,count);
+    assert(pool.every(q=>[2,3,4].includes(q.points)));
+    assert.equal(sets.length,2);assert(sets.every(s=>s.length===25));
+    const variants=sets.flat();assert.equal(new Set(variants.map(q=>q.q)).size,50);
+    assert(variants.every(q=>q.choices.length===5&&new Set(q.choices).size===5&&q.explain&&q.source.startsWith('변형')));
+  }
+});

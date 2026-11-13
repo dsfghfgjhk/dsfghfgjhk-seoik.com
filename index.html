@@ -1815,6 +1815,8 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
 <script src="./math/transcribed-oct-geometry.js"></script>
 <script src="./math/transcribed-2025-10-algebra.js"></script>
 <script src="./math/transcribed-2026-10-algebra.js"></script>
+<script src="./math/practice-pools.js"></script>
+<script src="./math/practice-extra.js"></script>
 <script>
 (function(){
 "use strict";
@@ -2081,6 +2083,26 @@ function makeMathSubject(course){
   if(course===2 && Array.isArray(window.SEOIK_OCT_GEOMETRY) && window.SEOIK_OCT_GEOMETRY.length===25){const index=subject.quiz.length;subject.quiz.push(window.SEOIK_OCT_GEOMETRY);subject.titles.push("2025·2026년 10월 도형 기출 15문항 + 변형 10문항");subject.units.unshift({name:"10월 도형 텍스트 시험지",desc:"객관식과 단답형 기출 15문항 및 변형 10문항",indices:[index]});}
   if(course===1 && Array.isArray(window.SEOIK_2025_10_ALGEBRA) && window.SEOIK_2025_10_ALGEBRA.length===25){const index=subject.quiz.length;subject.quiz.push(window.SEOIK_2025_10_ALGEBRA);subject.titles.push("2025년 10월 공통수학 1 기출 22문항 + 변형 3문항");subject.units.unshift({name:"2025년 10월 공통수학 1 시험지",desc:"객관식·단답형 기출 22문항과 변형 3문항",indices:[index]});}
   if(course===1 && Array.isArray(window.SEOIK_2026_10_ALGEBRA) && window.SEOIK_2026_10_ALGEBRA.length===25){const index=subject.quiz.length;subject.quiz.push(window.SEOIK_2026_10_ALGEBRA);subject.titles.push("2026년 10월 공통수학 1 기출 23문항 + 변형 2문항");subject.units.unshift({name:"2026년 10월 공통수학 1 시험지",desc:"객관식·단답형 기출 23문항과 변형 2문항",indices:[index]});}
+  // Keep earlier quiz indices intact for saved attempts; replace only the visible list.
+  subject.units = [];
+  const pool = ((window.SEOIK_PRACTICE_POOLS || {})[String(course)] || []);
+  function splitEvenly(items, limit){
+    if(!items.length) return [];
+    const count=Math.ceil(items.length/limit), size=Math.floor(items.length/count), extra=items.length%count;
+    let start=0; return Array.from({length:count},(_,i)=>{const n=size+(i<extra?1:0);return items.slice(start,start+=n);});
+  }
+  function addSets(name, desc, sets){
+    const indices=[];
+    sets.forEach((set,i)=>{if(!set.length)return;indices.push(subject.quiz.length);subject.quiz.push(set);subject.titles.push(name+" · SET "+(i+1)+" · "+set.length+"문항");});
+    if(indices.length)subject.units.push({name,desc,indices});
+  }
+  [2,3,4].forEach(points=>addSets(points+"점 기출",points+"점 모의고사 기출 문제",splitEvenly(pool.filter(q=>q.points===points),25)));
+  // Interleave scores for each mixed paper while using every original once.
+  const mixedCount=Math.ceil(pool.length/25), mixed=Array.from({length:mixedCount},()=>[]);
+  let offset=0;
+  [2,3,4].forEach(points=>pool.filter(q=>q.points===points).forEach(q=>{mixed[offset%mixedCount].push(q);offset++;}));
+  addSets("기출 혼합 시험지","2·3·4점 기출을 섞은 시험지",mixed);
+  addSets("변형 문제 시험지","기출 유형을 바탕으로 새로 만든 문제",((window.SEOIK_PRACTICE_EXTRA||{})[String(course)]||[]));
   return subject;
 }
 const MATH_SUBJECTS = [makeMathSubject(1),makeMathSubject(2)];
