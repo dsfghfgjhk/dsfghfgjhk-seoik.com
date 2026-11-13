@@ -1810,6 +1810,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
 <script src="./math/transcribed-2026-09.js"></script>
 <script src="./math/transcribed-2026-06-mixed.js"></script>
 <script src="./math/transcribed-2025-06-mixed.js"></script>
+<script src="./math/transcribed-2025-09-mixed.js"></script>
 <script>
 (function(){
 "use strict";
@@ -2069,6 +2070,7 @@ function makeMathSubject(course){
   if(course===1 && Array.isArray(window.SEOIK_2026_09_TEXT) && window.SEOIK_2026_09_TEXT.length===25){const index=subject.quiz.length;subject.quiz.push(window.SEOIK_2026_09_TEXT);subject.titles.push("2026년 9월 텍스트 기출 · 객관식 21문항 + 변형 4문항");subject.units.unshift({name:"2026년 9월 텍스트 시험지",desc:"객관식 원문 21문항과 변형 4문항",indices:[index]});}
   if(course===1 && Array.isArray(window.SEOIK_2026_06_MIXED) && window.SEOIK_2026_06_MIXED.length===25){const index=subject.quiz.length;subject.quiz.push(window.SEOIK_2026_06_MIXED);subject.titles.push("2026년 6월 텍스트 · 객관식 16문항 + 단답형 9문항");subject.units.unshift({name:"2026년 6월 단답형 포함 시험지",desc:"객관식 16문항과 단답형 9문항",indices:[index]});}
   if(course===1 && Array.isArray(window.SEOIK_2025_06_MIXED) && window.SEOIK_2025_06_MIXED.length===25){const index=subject.quiz.length;subject.quiz.push(window.SEOIK_2025_06_MIXED);subject.titles.push("2025년 6월 텍스트 · 객관식 16문항 + 단답형 9문항");subject.units.unshift({name:"2025년 6월 단답형 포함 시험지",desc:"객관식 16문항과 단답형 9문항",indices:[index]});}
+  if(course===1 && Array.isArray(window.SEOIK_2025_09_MIXED) && window.SEOIK_2025_09_MIXED.length===25){const index=subject.quiz.length;subject.quiz.push(window.SEOIK_2025_09_MIXED);subject.titles.push("2025년 9월 텍스트 · 객관식 16문항 + 단답형 9문항");subject.units.unshift({name:"2025년 9월 단답형 포함 시험지",desc:"객관식 16문항과 단답형 9문항",indices:[index]});}
   return subject;
 }
 const MATH_SUBJECTS = [makeMathSubject(1),makeMathSubject(2)];
