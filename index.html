@@ -1130,6 +1130,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
   .math-matrix-rows{ display:inline-table; border-collapse:collapse; margin:0 .12em; }
   .math-matrix-row{ display:table-row; }
   .math-matrix-row > span{ display:table-cell; padding:0 .36em; min-width:1em; text-align:center; }
+  .math-expression{ display:inline-block; white-space:nowrap; vertical-align:baseline; }
   .math-root{ display:inline-flex; align-items:stretch; white-space:nowrap; vertical-align:baseline; font-family:var(--serif); line-height:1.25; }
   .math-root-sign{ font-size:1.15em; line-height:1; }
   .math-root-body{ border-top:1px solid currentColor; padding:0 .1em; margin-top:.12em; }
@@ -1246,7 +1247,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
     body.sheet-mode [data-view="quiz"] .paper > *:not(#sheet){ display:none !important; }
     body.sheet-mode [data-view="quiz"] .paper{ padding:0 !important; margin:0 !important; }
     body.print-doc #sheet > *:not(#shPrintDoc){ display:none !important; }
-    body.print-doc #shPrintDoc{ display:block !important; }
+    body.print-doc #shPrintDoc{ display:block !important; width:188mm !important; max-width:none !important; }
     body.sheet-mode .sh-bar, body.sheet-mode .sh-ans, body.sheet-mode .sh-submit, body.sheet-mode .sh-key-acts,
     body.sheet-mode .sq-flag:not(.on), body.sheet-mode .sh-key-note, body.sheet-mode .sh-key-go i{ display:none !important; }
     .sheet{ --pp:#fff !important; --pi:#000 !important; --pm:#444 !important; --pr:#999 !important; --red-pen:#D12B2B !important; --pencil:#333 !important; }
@@ -3698,11 +3699,53 @@ function sheetInfo(){
   else { subjName = "오답노트"; range = "틀렸던 문제"; kind = "오답 다시 풀기"; }
   return { title, subjName, range, kind };
 }
+// Keep each mathematical expression together so it wraps before the expression.
+function wrapMathExpressions(target){
+  const par='\\((?:[^()]|\\([^()]*\\))*\\)';
+  const symbols='[0-9A-Za-zα-ωΑ-Ω₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿᵢⱼ¼½¾]';
+  const brace='\\{(?:[^{}]|\\{[^{}]*\\})*\\}';
+  const root='√(?:'+par+'|'+brace+'|[−-]?[0-9A-Za-zα-ω]+)';
+  const matrix='\\[\\[[^\\[\\]]+\\]\\s*,\\s*\\[[^\\[\\]]+\\]\\]';
+  const atom='[−-]?(?:'+matrix+'|'+root+'|'+par+'|'+symbols+')+';
+  const expression=new RegExp('(?:'+atom+'(?:\\s*[+−\\-×÷/=<>≤≥]\\s*'+atom+')+)|(?:'+root+')|(?:'+matrix+')','g');
+  const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT), nodes=[];
+  while(walker.nextNode()){
+    const node=walker.currentNode, parent=node.parentElement;
+    if(parent && !parent.closest('svg, .math-matrix, .math-root, .math-expression, script, style')) nodes.push(node);
+  }
+  nodes.forEach(node=>{
+    const value=node.data, fragment=document.createDocumentFragment(); let last=0, match;
+    expression.lastIndex=0;
+    while((match=expression.exec(value))){
+      fragment.append(document.createTextNode(value.slice(last,match.index)));
+      const span=document.createElement('span'); span.className='math-expression'; span.textContent=match[0]; fragment.append(span);
+      last=expression.lastIndex;
+    }
+    if(last){fragment.append(document.createTextNode(value.slice(last)));node.replaceWith(fragment);}
+  });
+}
+// Shrink only expressions wider than a column, including the A4 print column.
+function fitMathExpressions(container, forPrint){
+  const canvas=document.createElement('canvas'), context=canvas.getContext('2d');
+  if(!context) return;
+  container.querySelectorAll('.math-expression').forEach(el=>{
+    el.style.fontSize='';
+    const parent=el.closest('.sq-stem,.sq-ct,.sh-key-list p,.pd-stem,.pd-ch,.pd-exp,#qstem,#choices,#explainText,.mk-rv-q,.mk-rv-c,.mk-rv-e');
+    if(!parent) return;
+    const style=getComputedStyle(parent), size=parseFloat(style.fontSize)||15;
+    const available=forPrint ? 270 : parent.clientWidth;
+    if(!available) return;
+    context.font=style.fontWeight+' '+size+'px '+style.fontFamily;
+    const width=forPrint ? context.measureText(el.textContent).width : el.getBoundingClientRect().width;
+    if(width>available) el.style.fontSize=Math.max(6, size*available/width*.94).toFixed(2)+'px';
+  });
+}
 // Convert only text nodes, leaving diagrams, links and answer values intact.
 function formatMathNotation(container){
   const targets=container.querySelectorAll('.sq-stem,.sq-ct,.sh-key-list p,.pd-stem,.pd-ch,.pd-exp,#qstem,#choices,#explainText,.mk-rv-q,.mk-rv-c,.mk-rv-e');
   const re=/\[\[([^\[\]]+)\]\s*,\s*\[([^\[\]]+)\]\]|√/g;
   targets.forEach(target=>{
+    wrapMathExpressions(target);
     const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT), nodes=[];
     while(walker.nextNode()){
       const node=walker.currentNode, parent=node.parentElement;
@@ -3746,6 +3789,10 @@ function formatMathNotation(container){
     });
   });
 }
+window.addEventListener("resize", ()=>{
+  const sheet=document.getElementById("sheet");
+  if(sheet && !sheet.hidden) requestAnimationFrame(()=>fitMathExpressions(sheet,false));
+});
 function sqHTML(i){
   const st = sheetState.items[i], q = st.q, pts = sheetState.items.every(item=>Number.isFinite(item.q.points)) ? q.points : sheetPoints();
   const posOnly = !!q.fixed && st.order.every((o,k)=> q.choices[o] === CIRCLED[k]);
@@ -3866,6 +3913,8 @@ function renderSheet(){
   const sh = sheetEl();
   sh.innerHTML = html; sh.hidden = false;
   formatMathNotation(sh);
+  requestAnimationFrame(()=>fitMathExpressions(sh,false));
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ if(!sh.hidden) fitMathExpressions(sh,false); });
   if(quizMode === "mock"){
     const timer = document.getElementById("mockTimer");
     if(timer) document.getElementById("omrTimerSlot").appendChild(timer);
@@ -4116,6 +4165,7 @@ function doPrint(mode){
   const doc = document.getElementById("shPrintDoc");
   doc.innerHTML = printDocHTML(mode === "doc-key", mode === "graded");
   formatMathNotation(doc);
+  fitMathExpressions(doc,true);
   document.body.classList.add("print-doc");
   if (nativePrint) window.SeoikAndroid.print();
   else window.print();
