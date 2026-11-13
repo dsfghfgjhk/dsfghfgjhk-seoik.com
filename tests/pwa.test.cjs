@@ -11,6 +11,7 @@ function worker(base = "https://example.test/seoik.com/") {
   let offline = false;
   let body = "online";
   let claimed = false;
+  let skipped = false;
   const key = request => typeof request === "string" ? request : request.url;
   const fetch = async request => {
     requests.push(request);
@@ -37,7 +38,8 @@ function worker(base = "https://example.test/seoik.com/") {
     self: {
       location: { href: base + "sw.js" },
       addEventListener(name, listener) { listeners[name] = listener; },
-      clients: { async claim() { claimed = true; } }
+      clients: { async claim() { claimed = true; } },
+      async skipWaiting() { skipped = true; }
     },
     URL, Request, caches, fetch
   });
@@ -46,6 +48,7 @@ function worker(base = "https://example.test/seoik.com/") {
     setOffline(value) { offline = value; },
     setBody(value) { body = value; },
     get claimed() { return claimed; },
+    get skipped() { return skipped; },
     lifecycle(name) {
       let result;
       listeners[name]({ waitUntil(promise) { result = promise; } });
@@ -66,6 +69,7 @@ test("install precaches every declared file under the hosting subdirectory", asy
   const w = worker();
   await w.lifecycle("install");
   assert.equal(w.requests.length, 28);
+  assert(w.skipped);
   for (const request of w.requests) {
     assert(request.url.startsWith("https://example.test/seoik.com/"));
     assert.equal(request.cache, "reload");
@@ -76,6 +80,7 @@ test("failed precaching rejects installation", async () => {
   const w = worker();
   w.setOffline(true);
   await assert.rejects(w.lifecycle("install"), /Offline/);
+  assert.equal(w.skipped, false);
 });
 
 test("offline root and query navigation use the cached app shell", async () => {
@@ -126,7 +131,7 @@ test("activation removes only old app caches and claims clients", async () => {
   await w.caches.open("seoik-app-old");
   await w.caches.open("another-app");
   await w.lifecycle("activate");
-  assert(w.stores.has("seoik-app-v20"));
+  assert(w.stores.has("seoik-app-v21"));
   assert(w.stores.has("another-app"));
   assert(!w.stores.has("seoik-app-old"));
   assert(w.claimed);

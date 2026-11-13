@@ -69,8 +69,30 @@
     status.textContent = "홈 화면 설치와 오프라인 학습은 HTTPS 주소에서 사용할 수 있어요.";
     return;
   }
+  // Check for a new worker on launch and when the app returns to the foreground.
+  const hadController = !!navigator.serviceWorker.controller;
+  const startedAt = Date.now();
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    // Refresh only on the home screen shortly after launch, never during a quiz or editing.
+    if (hadController && !reloaded && Date.now() - startedAt < 15000 &&
+        document.visibilityState === "visible" && document.body.classList.contains("view-home")) {
+      reloaded = true;
+      window.location.reload();
+    }
+  });
   // A relative URL supports both a custom domain and GitHub Pages subdirectories.
-  navigator.serviceWorker.register("./sw.js").then(async registration => {
+  navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" }).then(async registration => {
+    let lastCheck = 0;
+    const checkUpdate = () => {
+      if (Date.now() - lastCheck < 60000) return;
+      lastCheck = Date.now();
+      registration.update().catch(() => {});
+    };
+    checkUpdate();
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") checkUpdate();
+    });
     const worker = registration.installing;
     if (!registration.active && worker) {
       await new Promise((resolve, reject) => {

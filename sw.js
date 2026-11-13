@@ -1,7 +1,7 @@
 /* Bump the version whenever an app-shell file changes. */
 "use strict";
 const CACHE_PREFIX = "seoik-app-";
-const CACHE_NAME = CACHE_PREFIX + "v20";
+const CACHE_NAME = CACHE_PREFIX + "v21";
 const BASE = new URL("./", self.location.href);
 const FILES = [
   "index.html",
@@ -36,10 +36,11 @@ const FILES = [
 const SHELL = new URL("index.html", BASE).href;
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache =>
-    cache.addAll(FILES.map(url => new Request(url, { cache: "reload" })))
-  ));
-  // Let an existing version finish in open tabs before activating an update.
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(FILES.map(url => new Request(url, { cache: "reload" })));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", event => {
