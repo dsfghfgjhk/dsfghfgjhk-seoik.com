@@ -118,3 +118,14 @@ test('October geometry paper has the official answers and text questions with va
   assert.deepEqual(mixed.slice(0,11),items.slice(0,11));assert.deepEqual(mixed.slice(21),items.slice(11));
   assert(mixed.every(q=>!/<img\b/i.test(q.q)));assert.match(items[10].q,/<svg\b/);
 });
+
+test('2025 October algebra matches the official answers and mixed paper', () => {
+  const items=JSON.parse(readFileSync(path.join(root,'math/transcriptions/2025-10-algebra-text.json'),'utf8'));
+  const ctx={window:{}};vm.runInNewContext(readFileSync(path.join(root,'math/transcribed-2025-10-algebra.js'),'utf8'),ctx);
+  const mixed=JSON.parse(JSON.stringify(ctx.window.SEOIK_2025_10_ALGEBRA));
+  assert.equal(items.length,22);assert.equal(mixed.length,25);
+  assert.deepEqual(items.slice(0,15).map(q=>q.correct+1),[4,3,1,2,5,3,5,4,4,3,2,5,4,2,5]);
+  assert.deepEqual(items.slice(15).map(q=>q.answer),[13,6,144,18,20,133,16]);
+  assert.deepEqual(mixed.slice(0,15),items.slice(0,15));assert.deepEqual(mixed.slice(18),items.slice(15));
+  assert(mixed.every(q=>!/<img\b/i.test(q.q)));assert.match(items[20].q,/<svg\b/);
+});

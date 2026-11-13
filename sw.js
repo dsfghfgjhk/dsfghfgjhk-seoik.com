@@ -1,7 +1,7 @@
 /* Bump the version whenever an app-shell file changes. */
 "use strict";
 const CACHE_PREFIX = "seoik-app-";
-const CACHE_NAME = CACHE_PREFIX + "v14";
+const CACHE_NAME = CACHE_PREFIX + "v15";
 const BASE = new URL("./", self.location.href);
 const FILES = [
   "index.html",
@@ -17,6 +17,7 @@ const FILES = [
   "math/transcribed-2025-09-mixed.js",
   "math/transcribed-2026-09-mixed.js",
   "math/transcribed-oct-geometry.js",
+  "math/transcribed-2025-10-algebra.js",
   "math/math.css",
   "math/math.js",
   "math/questions.json",
