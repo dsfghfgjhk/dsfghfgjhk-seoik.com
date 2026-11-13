@@ -1804,6 +1804,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
 <script src="./math/data.js"></script>
 <script src="./math/exam-sets.js"></script>
 <script src="./math/transcribed-2026-06.js"></script>
+<script src="./math/transcribed-2025-06.js"></script>
 <script>
 (function(){
 "use strict";
@@ -2058,6 +2059,7 @@ function makeMathSubject(course){
   const exam=(window.SEOIK_MATH_EXAMS||{})[String(course)]||[];
   if(exam.length){const index=subject.quiz.length;subject.quiz.push(exam);subject.titles.push("기출 유형 종합 변형 · 25문항");subject.units.unshift({name:"종합 시험지",desc:"기출 유형을 바탕으로 만든 변형 문제",indices:[index]});}
   if(course===1 && Array.isArray(window.SEOIK_2026_06_TEXT) && window.SEOIK_2026_06_TEXT.length===25){const index=subject.quiz.length;subject.quiz.push(window.SEOIK_2026_06_TEXT);subject.titles.push("2026년 6월 텍스트 기출 · 객관식 21문항 + 변형 4문항");subject.units.unshift({name:"2026년 6월 텍스트 시험지",desc:"객관식 원문 21문항과 변형 4문항",indices:[index]});}
+  if(course===1 && Array.isArray(window.SEOIK_2025_06_TEXT) && window.SEOIK_2025_06_TEXT.length===25){const index=subject.quiz.length;subject.quiz.push(window.SEOIK_2025_06_TEXT);subject.titles.push("2025년 6월 텍스트 기출 · 객관식 21문항 + 변형 4문항");subject.units.unshift({name:"2025년 6월 텍스트 시험지",desc:"객관식 원문 21문항과 변형 4문항",indices:[index]});}
   return subject;
 }
 const MATH_SUBJECTS = [makeMathSubject(1),makeMathSubject(2)];
