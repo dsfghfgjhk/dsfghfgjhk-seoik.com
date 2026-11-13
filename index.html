@@ -1131,9 +1131,11 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
   .math-matrix-row{ display:table-row; }
   .math-matrix-row > span{ display:table-cell; padding:0 .36em; min-width:1em; text-align:center; }
   .math-expression{ display:inline-block; white-space:nowrap; vertical-align:baseline; }
-  .math-root{ display:inline-flex; align-items:stretch; white-space:nowrap; vertical-align:baseline; font-family:var(--serif); line-height:1.25; }
-  .math-root-sign{ font-size:1.15em; line-height:1; }
-  .math-root-body{ border-top:1px solid currentColor; padding:0 .1em; margin-top:.12em; }
+  .math-root{ display:inline-flex; align-items:baseline; white-space:nowrap; vertical-align:baseline; font-size:1em; }
+  .math-root math{ font-size:1em; }
+  .math-root-fallback{ display:inline-flex; align-items:stretch; white-space:nowrap; vertical-align:-.12em; line-height:1.2; }
+  .math-root-hook{ width:.7em; height:1.2em; flex:none; overflow:visible; }
+  .math-root-body{ border-top:1.2px solid currentColor; padding:0 .08em; margin-left:-.04em; line-height:1.2; }
   .sq-stem{ font-family:var(--serif); font-size:15.5px; font-weight:500; line-height:1.8; letter-spacing:-0.01em; word-break:keep-all; color:var(--pi); }
   .sq-stem .mat-wrap{ background:transparent; border-color:var(--pi); }
   .sq-stem .mat-label{ border-color:var(--pi); color:var(--pi); }
@@ -3736,7 +3738,7 @@ function fitMathExpressions(container, forPrint){
     const available=forPrint ? 270 : parent.clientWidth;
     if(!available) return;
     context.font=style.fontWeight+' '+size+'px '+style.fontFamily;
-    const width=forPrint ? context.measureText(el.textContent).width : el.getBoundingClientRect().width;
+    const width=forPrint ? context.measureText(el.textContent).width + el.querySelectorAll('.math-root').length*size*.7 : el.getBoundingClientRect().width;
     if(width>available) el.style.fontSize=Math.max(6, size*available/width*.94).toFixed(2)+'px';
   });
 }
@@ -3769,10 +3771,19 @@ function formatMathNotation(container){
             inner=atom[0]; end=start+inner.length;
           }
           fragment.append(document.createTextNode(value.slice(last,match.index)));
-          const root=document.createElement('span'), sign=document.createElement('span'), body=document.createElement('span');
+          const root=document.createElement('span');
           root.className='math-root'; root.setAttribute('role','math'); root.setAttribute('aria-label','제곱근 '+inner);
-          sign.className='math-root-sign'; sign.textContent='√'; sign.setAttribute('aria-hidden','true');
-          body.className='math-root-body'; body.textContent=inner; root.append(sign,body); fragment.append(root);
+          if(window.CSS && CSS.supports && CSS.supports('math-style','normal')){
+            const ns='http://www.w3.org/1998/Math/MathML';
+            const math=document.createElementNS(ns,'math'), sqrt=document.createElementNS(ns,'msqrt'), value=document.createElementNS(ns,'mtext');
+            value.textContent=inner; math.setAttribute('aria-hidden','true'); sqrt.append(value); math.append(sqrt); root.append(math);
+          }else{
+            const ns='http://www.w3.org/2000/svg', fallback=document.createElement('span'), hook=document.createElementNS(ns,'svg'), path=document.createElementNS(ns,'path'), body=document.createElement('span');
+            fallback.className='math-root-fallback'; hook.classList.add('math-root-hook'); hook.setAttribute('viewBox','0 0 20 24'); hook.setAttribute('preserveAspectRatio','none'); hook.setAttribute('aria-hidden','true');
+            path.setAttribute('d','M1 13 L4 11 L8 21 L15 1 L20 1'); path.setAttribute('fill','none'); path.setAttribute('stroke','currentColor'); path.setAttribute('stroke-width','1.4'); hook.append(path);
+            body.className='math-root-body'; body.textContent=inner; fallback.append(hook,body); root.append(fallback);
+          }
+          fragment.append(root);
         }else{
           fragment.append(document.createTextNode(value.slice(last,match.index)));
           const matrix=document.createElement('span'), rows=document.createElement('span');
