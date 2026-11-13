@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from math_diagrams import with_figure
 root=Path(__file__).resolve().parents[1]
 # 공통수학 1: 다항식·방정식·경우의 수·행렬. 공통수학 2: 도형·집합·함수.
 r=[
@@ -37,6 +38,6 @@ short=[
 items=[]
 for n,c,q,choices,ans,p,e in r:items.append(dict(number=n,course=c,q=q,choices=choices,correct=ans-1,points=p,explain=e,fixed=True,source=f'2026년 3월 고2 {n}번'))
 for n,c,q,ans,p,e in short:items.append(dict(number=n,course=c,q=q,choices=[],type='short',answer=ans,points=p,explain=e,source=f'2026년 3월 고2 {n}번'))
-items.sort(key=lambda q:q['number']);assert len(items)==30
+items.sort(key=lambda q:q['number']);items=[with_figure(q) for q in items];assert len(items)==30
 (root/'math/transcriptions/2026-03-grade2-text.json').write_text(json.dumps(items,ensure_ascii=False,indent=2)+'\n')
 (root/'math/transcribed-2026-03-grade2.js').write_text('window.SEOIK_2026_03_GRADE2 = '+json.dumps({'1':[q for q in items if q['course']==1],'2':[q for q in items if q['course']==2]},ensure_ascii=False,separators=(',',':'))+';\n')

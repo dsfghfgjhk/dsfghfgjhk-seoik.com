@@ -2134,7 +2134,7 @@ function makeMathSubject(course){
       subject.quiz.push(set);
       subject.titles.push("2026년 3월 고2 추가 · "+name+" · "+set.length+"문항"+(i ? " · "+(i+1) : ""));
     });
-    unit.indices.unshift(...addedIndices);
+    // Keep retired sets addressable for old wrong-answer records, but hide them.
   }
   [2,3,4].forEach(points=>{
     const fresh=added.filter(q=>q.points===points);
@@ -2144,6 +2144,18 @@ function makeMathSubject(course){
   const available=[2,3,4].map(points=>pool.filter(q=>q.points===points));
   while(fill.length<25-added.length && available.some(q=>q.length)) available.forEach(q=>{if(q.length && fill.length<25-added.length)fill.push(q.shift());});
   appendExam("기출 혼합 시험지",added.concat(fill));
+  function appendToExisting(name, items){
+    const unit=subject.units.find(u=>u.name===name);
+    if(!unit || !unit.indices.length) return;
+    items.forEach(q=>{
+      // Append without changing the position of existing problems or sets.
+      const index=unit.indices.reduce((best,i)=>subject.quiz[i].length<subject.quiz[best].length?i:best,unit.indices[0]);
+      subject.quiz[index].push(q);
+      subject.titles[index]=subject.titles[index].replace(/\d+문항$/,subject.quiz[index].length+"문항");
+    });
+  }
+  [2,3,4].forEach(points=>appendToExisting(points+"점 기출",added.filter(q=>q.points===points)));
+  appendToExisting("기출 혼합 시험지",added);
   return subject;
 }
 const MATH_SUBJECTS = [makeMathSubject(1),makeMathSubject(2)];
@@ -2169,13 +2181,29 @@ const PENDING_KEY = "jokbo_app_pending_v2";
 function freshProgress(){
   const p = {};
   ALL_SUBJECTS.forEach(s => { p[s.id] = new Array(s.quiz.length).fill(false); });
+  p.__mathRevision = 1;
   return p;
 }
+// Reset math completion once when the question sets change, including old cloud snapshots.
+function normalizeMathProgress(p){
+  if(!p || typeof p !== "object" || Array.isArray(p)) return false;
+  if(p.__mathRevision === 1) return false;
+  MATH_SUBJECTS.forEach(s=>{ p[s.id]=new Array(s.quiz.length).fill(false); });
+  p.__mathRevision = 1;
+  return true;
+}
+window.__seoikNormalizeMathProgress = normalizeMathProgress;
+window.__seoikMathProgressReset = false;
 function loadProgress(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY);
     if(!raw) return freshProgress();
     const p = JSON.parse(raw);
+    if(normalizeMathProgress(p)){
+      window.__seoikMathProgressReset = true;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+      try { const pending=JSON.parse(localStorage.getItem(PENDING_KEY)||"null"); if(pending && (pending.subjectId==="math1" || pending.subjectId==="math2")) localStorage.removeItem(PENDING_KEY); } catch(e){}
+    }
     ALL_SUBJECTS.forEach(s => {
       if(Array.isArray(p[s.id]) && p[s.id].length < s.quiz.length) p[s.id] = p[s.id].concat(new Array(s.quiz.length - p[s.id].length).fill(false));
       if(!Array.isArray(p[s.id]) || p[s.id].length !== s.quiz.length) p[s.id] = new Array(s.quiz.length).fill(false);
@@ -2855,6 +2883,7 @@ function finishMock(timeUp){
       return '<details class="mk-rv"><summary>'+(i+1)+'번 · '+escapeHtml(plainText(q.q).slice(0,60))+'…</summary><div class="mk-rv-q">'+q.q+'</div><ol class="mk-rv-c">'+choices+'</ol>'+(r.a.picked===null?'<p class="mk-na">안 푼 문제</p>':'')+'<p class="mk-rv-e">'+escapeHtml(q.explain)+'</p></details>';
     }).join("")+'</div>' : '')+
     '<div class="result"><div class="row"><button class="btn" id="mkAgainBtn">새 모의고사 풀기</button><button class="btn ghost" id="mkWrongBtn">오답노트 보기</button></div></div>';
+  formatMathNotation(ra);
   document.getElementById("mkAgainBtn").onclick = ()=> goTab("mock");
   document.getElementById("mkWrongBtn").onclick = ()=>{ wrongFilter = sj.id; goTab("wrong"); };
   window.scrollTo(0,0);
@@ -3372,6 +3401,7 @@ function renderQuizQuestion(){
     nb0.textContent = quizQ===quizN()-1 ? "제출하고 채점하기" : "다음 문제";
     nb0.style.display = "inline-block";
   }
+  formatMathNotation(document.getElementById("quizArea"));
   renderQuizTrack();
 }
 
@@ -3520,6 +3550,7 @@ function onQuizAnswer(idx){
   fb.style.display = "";
   document.getElementById("stampText").textContent = correct ? "정답이에요" : "오답이에요 · 정답은 " + CIRCLED[quizCorrectIdx];
   document.getElementById("explainText").textContent = qData.explain;
+  formatMathNotation(document.getElementById("quizArea"));
 
   const nb = document.getElementById("nextBtn");
   nb.textContent = quizQ===quizN()-1 ? "결과 보기" : "다음 문제";
@@ -3654,7 +3685,7 @@ function sheetInfo(){
 }
 // Convert only text nodes, leaving diagrams, links and answer values intact.
 function formatMathNotation(container){
-  const targets=container.querySelectorAll('.sq-stem,.sq-ct,.sh-key-list p,.pd-stem,.pd-ch,.pd-exp');
+  const targets=container.querySelectorAll('.sq-stem,.sq-ct,.sh-key-list p,.pd-stem,.pd-ch,.pd-exp,#qstem,#choices,#explainText,.mk-rv-q,.mk-rv-c,.mk-rv-e');
   const re=/\[\[([^\[\]]+)\]\s*,\s*\[([^\[\]]+)\]\]|√/g;
   targets.forEach(target=>{
     const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT), nodes=[];
@@ -4585,6 +4616,7 @@ const PROMPT_KEY = "seoik_acc_prompted";
 /* 계정을 따라다니는 기록: 진도, 오답노트, 모의고사 기록 */
 const SYNC_KEYS = ["jokbo_app_progress_v2", "seoik_wrong_v1", "seoik_mock_hist_v1", "seoik_en_orig_v1"];
 const CLEAR_ALSO = ["jokbo_app_pending_v2"];
+const PROGRESS_KEY = "jokbo_app_progress_v2";
 const MAIL = "@seoik.example.com";   /* 실제 메일이 가지 않는 예약 도메인 */
 const AUTH = "https://identitytoolkit.googleapis.com/v1/accounts:";
 const TOKEN = "https://securetoken.googleapis.com/v1/token?key=";
@@ -4624,8 +4656,13 @@ async function idToken(){
 function snapshot(){ const o = {}; SYNC_KEYS.forEach(k=>{ const v = ls(k); if(v !== null) o[k] = v; }); return o; }
 function sameAsLocal(o){ const s = snapshot(); return SYNC_KEYS.every(k => (typeof o[k] === "string" ? o[k] : null) === (k in s ? s[k] : null)); }
 function applySnapshot(o){
+  let reset = false;
+  if(o && typeof o[PROGRESS_KEY] === "string"){
+    try { const p=JSON.parse(o[PROGRESS_KEY]); if(window.__seoikNormalizeMathProgress(p)){ reset=true; o=Object.assign({},o,{[PROGRESS_KEY]:JSON.stringify(p)}); } } catch(e){}
+  }
   SYNC_KEYS.forEach(k=>{ try{ if(o && typeof o[k] === "string") rawSet.call(localStorage, k, o[k]); else rawRemove.call(localStorage, k); }catch(e){} });
   CLEAR_ALSO.forEach(k=>{ try{ rawRemove.call(localStorage, k); }catch(e){} });
+  return reset;
 }
 async function cloudGet(){
   const a = acc(), t = await idToken();
@@ -4688,10 +4725,15 @@ async function startSync(){
       if(c && c.updatedAt > (a.syncedAt || 0)){
         if(sameAsLocal(c.data)){ const b = acc(); b.syncedAt = c.updatedAt; setAcc(b); }
         else if(!document.body.classList.contains("in-quiz") && !document.body.classList.contains("in-memo")){
-          applySnapshot(c.data);
-          const b = acc(); b.syncedAt = c.updatedAt; b.dirty = false; setAcc(b);
+          const reset = applySnapshot(c.data);
+          const b = acc(); b.syncedAt = c.updatedAt; b.dirty = reset; setAcc(b);
+          if(reset){ try { await cloudPut(); } catch(e){} }
           location.reload(); return;
         }
+      } else if(window.__seoikMathProgressReset){
+        const b=acc(); b.dirty=true; setAcc(b);
+        await cloudPut();
+        window.__seoikMathProgressReset=false;
       }
     }
     syncState = "ok";
@@ -4718,8 +4760,9 @@ async function signIn(id, pw){
   if(c && Object.keys(c.data).length){
     if(sameAsLocal(c.data)){ const b = acc(); b.syncedAt = c.updatedAt; setAcc(b); return false; }
     if(hadLocal && !confirm("이 기기에 있던 기록은 '" + id + "' 계정에 저장된 기록으로 바뀌어요. 계속할까요?")){ setAcc(null); throw new Error("CANCELLED"); }
-    applySnapshot(c.data);
-    const b = acc(); b.syncedAt = c.updatedAt; setAcc(b);
+    const reset = applySnapshot(c.data);
+    const b = acc(); b.syncedAt = c.updatedAt; b.dirty = reset; setAcc(b);
+    if(reset){ try { await cloudPut(); } catch(e){} }
     return true;   /* 새 기록으로 화면을 다시 그려야 함 */
   }
   const b = acc(); b.dirty = true; setAcc(b);

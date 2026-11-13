@@ -174,3 +174,25 @@ test('2026 March grade 2 questions match the supplied key and course split', () 
  assert(items.every((q,i)=>q.source===`2026년 3월 고2 ${i+1}번`&&!/<img\b/i.test(q.q)));
  assert.match(items[29].q,/\|\(ax − 4\)\/\(x − b\)\|/);
 });
+
+test('figures missing from the supplied papers are redrawn in the active question data', () => {
+  const ctx={window:{}};
+  for(const f of ['practice-pools.js','transcribed-2026-03-grade2.js']) vm.runInNewContext(readFileSync(path.join(root,'math',f),'utf8'),ctx);
+  const all=[...ctx.window.SEOIK_PRACTICE_POOLS['1'],...ctx.window.SEOIK_PRACTICE_POOLS['2'],...ctx.window.SEOIK_2026_03_GRADE2['1'],...ctx.window.SEOIK_2026_03_GRADE2['2']];
+  const sources=['2026년 3월 고2 4번','2026년 3월 고2 12번','2026년 3월 고2 14번','2026년 3월 고2 17번','2026년 3월 고2 27번','2025년 9월 고1 21번','2026년 9월 고1 20번','2025년 9월 고1 29번','2025년 10월 고1 25번','2026년 10월 고1 21번','2026년 9월 고1 17번'];
+  for(const source of sources){const q=all.find(item=>item.source===source);assert(q,source);assert.match(q.q,/<svg\b/,source);assert.doesNotMatch(q.q,/<img\b/,source);}
+});
+
+test('math progress migration resets completion once without resetting other subjects', () => {
+  const html=readFileSync(path.join(root,'index.html'),'utf8');
+  const match=html.match(/function normalizeMathProgress\(p\)\{[\s\S]*?\n\}/);assert(match);
+  const ctx={MATH_SUBJECTS:[{id:'math1',quiz:[[],[],[]]},{id:'math2',quiz:[[],[]]}]};
+  vm.runInNewContext(match[0],ctx);
+  const progress={math1:[true,true],math2:[true],en:[true],kh:[false,true]};
+  assert.equal(ctx.normalizeMathProgress(progress),true);
+  assert.deepEqual(Array.from(progress.math1),[false,false,false]);
+  assert.deepEqual(Array.from(progress.math2),[false,false]);
+  assert.deepEqual(progress.en,[true]);assert.deepEqual(progress.kh,[false,true]);
+  progress.math1[0]=true;
+  assert.equal(ctx.normalizeMathProgress(progress),false);assert.equal(progress.math1[0],true);
+});
