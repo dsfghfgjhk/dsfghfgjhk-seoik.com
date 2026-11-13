@@ -96,3 +96,14 @@ test('2025 September short answers match the supplied key and mixed paper', () =
   assert(shorts.every((q,i)=>q.type==='short'&&q.source===`2025년 9월 고1 ${i+22}번`&&!/<img\b/i.test(q.q)));
   assert.deepEqual(mixed.slice(16),shorts);assert.match(shorts[6].q,/<svg\b/);
 });
+
+test('2026 September short answers match the supplied key and mixed paper', () => {
+  const shorts=JSON.parse(readFileSync(path.join(root,'math/transcriptions/2026-09-short-text.json'),'utf8'));
+  const ctx={window:{}};vm.runInNewContext(readFileSync(path.join(root,'math/transcribed-2026-09-mixed.js'),'utf8'),ctx);
+  const mixed=JSON.parse(JSON.stringify(ctx.window.SEOIK_2026_09_MIXED));
+  assert.equal(mixed.length,25);
+  assert.deepEqual(shorts.map(q=>q.answer),[23,7,5,12,6,77,167,66,24]);
+  assert.deepEqual(shorts.map(q=>q.points),[3,3,3,3,4,4,4,4,4]);
+  assert(shorts.every((q,i)=>q.type==='short'&&q.source===`2026년 9월 고1 ${i+22}번`&&!/<img\b/i.test(q.q)));
+  assert.deepEqual(mixed.slice(16),shorts);
+});
