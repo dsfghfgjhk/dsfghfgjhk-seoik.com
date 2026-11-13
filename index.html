@@ -1122,6 +1122,17 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
   .sq-grade{ position:absolute; left:-15px; top:-9px; width:46px; height:46px; pointer-events:none; }
   .sq-grade svg{ width:100%; height:100%; overflow:visible; }
   .sq-grade svg path{ fill:none; stroke:var(--red-pen); stroke-width:2.8; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:140; stroke-dashoffset:140; animation:draw .5s cubic-bezier(.4,.1,.3,1) forwards; }
+  /* Inline mathematical notation, shared by screen and printed papers. */
+  .math-matrix{ display:inline-flex; align-items:stretch; vertical-align:middle; margin:0 .16em; white-space:nowrap; font-family:var(--serif); line-height:1.3; }
+  .math-matrix::before,.math-matrix::after{ content:""; width:.22em; flex:none; border:1.2px solid currentColor; }
+  .math-matrix::before{ border-right:0; border-radius:70% 0 0 70%; }
+  .math-matrix::after{ border-left:0; border-radius:0 70% 70% 0; }
+  .math-matrix-rows{ display:inline-table; border-collapse:collapse; margin:0 .12em; }
+  .math-matrix-row{ display:table-row; }
+  .math-matrix-row > span{ display:table-cell; padding:0 .36em; min-width:1em; text-align:center; }
+  .math-root{ display:inline-flex; align-items:stretch; white-space:nowrap; vertical-align:baseline; font-family:var(--serif); line-height:1.25; }
+  .math-root-sign{ font-size:1.15em; line-height:1; }
+  .math-root-body{ border-top:1px solid currentColor; padding:0 .1em; margin-top:.12em; }
   .sq-stem{ font-family:var(--serif); font-size:15.5px; font-weight:500; line-height:1.8; letter-spacing:-0.01em; word-break:keep-all; color:var(--pi); }
   .sq-stem .mat-wrap{ background:transparent; border-color:var(--pi); }
   .sq-stem .mat-label{ border-color:var(--pi); color:var(--pi); }
@@ -3618,6 +3629,54 @@ function sheetInfo(){
   else { subjName = "오답노트"; range = "틀렸던 문제"; kind = "오답 다시 풀기"; }
   return { title, subjName, range, kind };
 }
+// Convert only text nodes, leaving diagrams, links and answer values intact.
+function formatMathNotation(container){
+  const targets=container.querySelectorAll('.sq-stem,.sq-ct,.sh-key-list p,.pd-stem,.pd-ch,.pd-exp');
+  const re=/\[\[([^\[\]]+)\]\s*,\s*\[([^\[\]]+)\]\]|√/g;
+  targets.forEach(target=>{
+    const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT), nodes=[];
+    while(walker.nextNode()){
+      const node=walker.currentNode, parent=node.parentElement;
+      if(parent && !parent.closest('svg, .math-matrix, .math-root, script, style') && /√|\[\[/.test(node.data)) nodes.push(node);
+    }
+    nodes.forEach(node=>{
+      const value=node.data, fragment=document.createDocumentFragment(); let last=0, match;
+      re.lastIndex=0;
+      while((match=re.exec(value))){
+        let end=re.lastIndex, inner='';
+        if(match[0]==='√'){
+          const start=end, open=value[start], close=open==='('?')':open==='{'?'}':null;
+          if(close){
+            let depth=0, i=start;
+            for(;i<value.length;i++){ if(value[i]===open) depth++; else if(value[i]===close && --depth===0){i++;break;} }
+            if(depth!==0) continue;
+            inner=value.slice(start+1,i-1); end=i;
+          }else{
+            const atom=value.slice(start).match(/^[−-]?(?:\d+(?:\.\d+)?|[A-Za-z](?:\([^()]*\))?[²³⁴⁵⁶⁷⁸⁹⁰]?)/);
+            if(!atom) continue;
+            inner=atom[0]; end=start+inner.length;
+          }
+          fragment.append(document.createTextNode(value.slice(last,match.index)));
+          const root=document.createElement('span'), sign=document.createElement('span'), body=document.createElement('span');
+          root.className='math-root'; root.setAttribute('role','math'); root.setAttribute('aria-label','제곱근 '+inner);
+          sign.className='math-root-sign'; sign.textContent='√'; sign.setAttribute('aria-hidden','true');
+          body.className='math-root-body'; body.textContent=inner; root.append(sign,body); fragment.append(root);
+        }else{
+          fragment.append(document.createTextNode(value.slice(last,match.index)));
+          const matrix=document.createElement('span'), rows=document.createElement('span');
+          matrix.className='math-matrix'; matrix.setAttribute('role','math');
+          const data=[match[1],match[2]].map(row=>row.split(',').map(cell=>cell.trim()));
+          matrix.setAttribute('aria-label','행렬 '+data.map(row=>row.join(', ')).join('; '));
+          rows.className='math-matrix-rows';
+          data.forEach(row=>{const el=document.createElement('span');el.className='math-matrix-row';row.forEach(cell=>{const entry=document.createElement('span');entry.textContent=cell;el.append(entry);});rows.append(el);});
+          matrix.append(rows); fragment.append(matrix);
+        }
+        last=end; re.lastIndex=end;
+      }
+      if(last){fragment.append(document.createTextNode(value.slice(last)));node.replaceWith(fragment);}
+    });
+  });
+}
 function sqHTML(i){
   const st = sheetState.items[i], q = st.q, pts = sheetState.items.every(item=>Number.isFinite(item.q.points)) ? q.points : sheetPoints();
   const posOnly = !!q.fixed && st.order.every((o,k)=> q.choices[o] === CIRCLED[k]);
@@ -3737,6 +3796,7 @@ function renderSheet(){
     }).join("")+'</div></div>';
   const sh = sheetEl();
   sh.innerHTML = html; sh.hidden = false;
+  formatMathNotation(sh);
   if(quizMode === "mock"){
     const timer = document.getElementById("mockTimer");
     if(timer) document.getElementById("omrTimerSlot").appendChild(timer);
@@ -3867,6 +3927,7 @@ function afterSheetGraded(){
   fillSheetScore();
   const sub = document.getElementById("shSubmit"); if(sub) sub.remove();
   document.getElementById("shKeySlot").innerHTML = answerKeyHTML();
+  formatMathNotation(document.getElementById("shKeySlot"));
   const rw = document.getElementById("shRetryWrong"); if(rw) rw.addEventListener("click", retryWrongNow);
   document.getElementById("shPrint2").addEventListener("click", printSheet);
   document.querySelectorAll("#sheet .sq-flag").forEach(b=>{ b.disabled = true; });
@@ -3979,6 +4040,7 @@ function doPrint(mode){
   window.dispatchEvent(new Event("pen:leave"));
   const doc = document.getElementById("shPrintDoc");
   doc.innerHTML = printDocHTML(mode === "doc-key", mode === "graded");
+  formatMathNotation(doc);
   document.body.classList.add("print-doc");
   setTimeout(()=> window.print(), 80);
 }
