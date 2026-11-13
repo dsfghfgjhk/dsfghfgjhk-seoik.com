@@ -52,3 +52,14 @@ test('2025 September exam matches the official answer key and contains no page c
   assert.deepEqual(items.slice(0,21).map(q=>q.points),[...Array(3).fill(2),...Array(10).fill(3),...Array(8).fill(4)]);
   assert(items.slice(0,21).every((q,i)=>q.source===`2025년 9월 고1 ${i+1}번` && q.fixed && !/<img\b/i.test(q.q) && new Set(q.choices).size===5));
 });
+
+test('2026 September paper matches the official answers, points and redrawn diagrams', () => {
+  const items=JSON.parse(readFileSync(path.join(root,'math/transcriptions/2026-09-text.json'),'utf8'));
+  const ctx={window:{}};vm.runInNewContext(readFileSync(path.join(root,'math/transcribed-2026-09.js'),'utf8'),ctx);
+  assert.deepEqual(JSON.parse(JSON.stringify(ctx.window.SEOIK_2026_09_TEXT)),items);
+  assert.equal(items.length,25);
+  assert.deepEqual(items.slice(0,21).map(q=>q.correct+1),[3,5,1,3,1,4,5,5,4,2,1,4,2,3,3,2,4,2,1,3,5]);
+  assert.deepEqual(items.slice(0,21).map(q=>q.points),[...Array(3).fill(2),...Array(10).fill(3),...Array(8).fill(4)]);
+  assert(items.slice(0,21).every((q,i)=>q.source===`2026년 9월 고1 ${i+1}번` && q.fixed && !/<img\b/i.test(q.q) && new Set(q.choices).size===5));
+  assert.match(items[17].q,/<svg\b/);assert.match(items[18].q,/<svg\b/);
+});
