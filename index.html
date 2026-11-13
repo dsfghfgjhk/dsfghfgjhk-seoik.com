@@ -1835,6 +1835,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
 <script src="./math/transcribed-2026-10-algebra.js"></script>
 <script src="./math/practice-pools.js"></script>
 <script src="./math/practice-extra.js"></script>
+<script src="./math/transcribed-2026-03-grade2.js"></script>
 <script>
 (function(){
 "use strict";
@@ -2121,6 +2122,26 @@ function makeMathSubject(course){
   [2,3,4].forEach(points=>pool.filter(q=>q.points===points).forEach(q=>{mixed[offset%mixedCount].push(q);offset++;}));
   addSets("기출 혼합 시험지","2·3·4점 기출을 섞은 시험지",mixed);
   addSets("변형 문제 시험지","기출 유형을 바탕으로 새로 만든 문제",((window.SEOIK_PRACTICE_EXTRA||{})[String(course)]||[]));
+  // Append new material after existing sets so saved set indices remain stable.
+  const added=((window.SEOIK_2026_03_GRADE2||{})[String(course)]||[]);
+  function appendExam(name, questions){
+    if(!questions.length) return;
+    const unit=subject.units.find(u=>u.name===name);
+    if(!unit) return;
+    splitEvenly(questions,25).forEach((set,i)=>{
+      unit.indices.push(subject.quiz.length);
+      subject.quiz.push(set);
+      subject.titles.push("2026년 3월 고2 포함 · "+name+" · "+set.length+"문항"+(i ? " · "+(i+1) : ""));
+    });
+  }
+  [2,3,4].forEach(points=>{
+    const fresh=added.filter(q=>q.points===points);
+    if(fresh.length) appendExam(points+"점 기출",fresh.concat(pool.filter(q=>q.points===points).slice(0,Math.max(0,25-fresh.length))));
+  });
+  const fill=[];
+  const available=[2,3,4].map(points=>pool.filter(q=>q.points===points));
+  while(fill.length<25-added.length && available.some(q=>q.length)) available.forEach(q=>{if(q.length && fill.length<25-added.length)fill.push(q.shift());});
+  appendExam("기출 혼합 시험지",added.concat(fill));
   return subject;
 }
 const MATH_SUBJECTS = [makeMathSubject(1),makeMathSubject(2)];

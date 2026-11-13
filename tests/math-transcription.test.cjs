@@ -162,3 +162,15 @@ test('practice pools preserve all original questions and extra variants are uniq
     assert(variants.every(q=>q.choices.length===5&&new Set(q.choices).size===5&&q.explain&&q.source.startsWith('변형')));
   }
 });
+
+test('2026 March grade 2 questions match the supplied key and course split', () => {
+ const items=JSON.parse(readFileSync(path.join(root,'math/transcriptions/2026-03-grade2-text.json'),'utf8'));
+ const ctx={window:{}};vm.runInNewContext(readFileSync(path.join(root,'math/transcribed-2026-03-grade2.js'),'utf8'),ctx);
+ const all=JSON.parse(JSON.stringify([...ctx.window.SEOIK_2026_03_GRADE2['1'],...ctx.window.SEOIK_2026_03_GRADE2['2']])).sort((a,b)=>a.number-b.number);
+ assert.deepEqual(all,items);assert.equal(items.length,30);
+ assert.deepEqual(items.slice(0,21).map(q=>q.correct+1),[2,5,4,3,2,1,1,3,4,5,4,2,1,2,5,5,3,1,3,4,3]);
+ assert.deepEqual(items.slice(21).map(q=>q.answer),[15,4,26,3,153,150,11,45,24]);
+ assert.equal(items.filter(q=>q.course===1).length,16);assert.equal(items.filter(q=>q.course===2).length,14);
+ assert(items.every((q,i)=>q.source===`2026년 3월 고2 ${i+1}번`&&!/<img\b/i.test(q.q)));
+ assert.match(items[29].q,/\|\(ax − 4\)\/\(x − b\)\|/);
+});
