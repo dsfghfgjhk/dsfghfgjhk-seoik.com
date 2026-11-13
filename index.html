@@ -1075,7 +1075,7 @@ body.in-memo .bottomnav, body.in-memo .term-bar, body.in-memo #zbFloat, body.in-
   @media (min-width:700px){
     .sh-page{ width:calc(100% - 24px); min-height:calc(min(100vw - 24px, 1000px) * 1.414); padding:44px 48px 22px; }
   }
-  @media (max-width:699px){ .sh-page{ margin:0 8px 14px; } }
+  @media (max-width:699px){ .sh-page{ margin:0 8px 14px; } .sh-page.math-page .sh-col + .sh-col{ margin-top:80px; } }
   .sh-cols{ display:block; flex:1; }
   .sh-col + .sh-col{ margin-top:34px; }
   @media (min-width:700px){
@@ -3641,6 +3641,11 @@ function sqHTML(i){
 }
 function sheetPages(){
   const n = sheetState.items.length, pages = [];
+  // Math papers leave working room for each problem on screen and in print.
+  if(quizItems.every(it=>{const subject=subjById(it.sid); return subject && subject.math;})){
+    for(let i=0;i<n;i+=2) pages.push([[i], i+1<n ? [i+1] : []]);
+    return pages;
+  }
   let i = 0;
   while(i < n){
     const cap = pages.length === 0 ? 1.8 : 2.7, cols = [[], []];
@@ -3691,6 +3696,7 @@ function renderSheet(){
   };
   sheetState.t0 = Date.now();
   const info = sheetInfo(), pages = sheetPages(), n = quizItems.length;
+  const isMathPaper = quizItems.every(it=>{const subject=subjById(it.sid); return subject && subject.math;});
   let html = '<div class="sh-bar" id="shBar">'+
       '<button type="button" class="sh-bar-btn ghost" id="shBack">‹ 목록</button>'+
       '<div class="sh-bar-t"><b>'+escapeHtml(info.subjName+" · "+info.kind)+'</b><span><i id="shPageNo">1 / '+pages.length+' 쪽</i><i id="shClock"></i></span></div>'+
@@ -3701,7 +3707,7 @@ function renderSheet(){
     '</div>';
   pages.forEach((cols, p)=>{
     const colHTML = c => '<div class="sh-col">'+c.map(sqHTML).join("")+'</div>';
-    html += '<article class="sh-page" data-page="'+(p+1)+'">'+
+    html += '<article class="sh-page'+(isMathPaper ? ' math-page' : '')+'" data-page="'+(p+1)+'">'+
       (p === 0 ? sheetHeaderHTML(info) : '<div class="sh-runhead">'+skLogo()+'<span>'+escapeHtml(info.subjName)+' · '+escapeHtml(info.title)+'</span></div>')+
       '<div class="sh-cols">'+colHTML(cols[0])+(cols[1].length ? colHTML(cols[1]) : '')+'</div>'+
       (p === pages.length-1
