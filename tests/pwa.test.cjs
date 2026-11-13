@@ -65,7 +65,7 @@ function worker(base = "https://example.test/seoik.com/") {
 test("install precaches every declared file under the hosting subdirectory", async () => {
   const w = worker();
   await w.lifecycle("install");
-  assert.equal(w.requests.length, 23);
+  assert.equal(w.requests.length, 24);
   for (const request of w.requests) {
     assert(request.url.startsWith("https://example.test/seoik.com/"));
     assert.equal(request.cache, "reload");
@@ -126,7 +126,7 @@ test("activation removes only old app caches and claims clients", async () => {
   await w.caches.open("seoik-app-old");
   await w.caches.open("another-app");
   await w.lifecycle("activate");
-  assert(w.stores.has("seoik-app-v13"));
+  assert(w.stores.has("seoik-app-v14"));
   assert(w.stores.has("another-app"));
   assert(!w.stores.has("seoik-app-old"));
   assert(w.claimed);

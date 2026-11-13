@@ -107,3 +107,14 @@ test('2026 September short answers match the supplied key and mixed paper', () =
   assert(shorts.every((q,i)=>q.type==='short'&&q.source===`2026년 9월 고1 ${i+22}번`&&!/<img\b/i.test(q.q)));
   assert.deepEqual(mixed.slice(16),shorts);
 });
+
+test('October geometry paper has the official answers and text questions with variations', () => {
+  const items=JSON.parse(readFileSync(path.join(root,'math/transcriptions/october-geometry-text.json'),'utf8'));
+  const ctx={window:{}};vm.runInNewContext(readFileSync(path.join(root,'math/transcribed-oct-geometry.js'),'utf8'),ctx);
+  const mixed=JSON.parse(JSON.stringify(ctx.window.SEOIK_OCT_GEOMETRY));
+  assert.equal(items.length,15);assert.equal(mixed.length,25);
+  assert.deepEqual(items.slice(0,11).map(q=>q.correct+1),[2,4,1,4,1,1,5,4,4,3,1]);
+  assert.deepEqual(items.slice(11).map(q=>q.answer),[2,40,17,103]);
+  assert.deepEqual(mixed.slice(0,11),items.slice(0,11));assert.deepEqual(mixed.slice(21),items.slice(11));
+  assert(mixed.every(q=>!/<img\b/i.test(q.q)));assert.match(items[10].q,/<svg\b/);
+});
