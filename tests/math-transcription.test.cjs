@@ -63,3 +63,14 @@ test('2026 September paper matches the official answers, points and redrawn diag
   assert(items.slice(0,21).every((q,i)=>q.source===`2026년 9월 고1 ${i+1}번` && q.fixed && !/<img\b/i.test(q.q) && new Set(q.choices).size===5));
   assert.match(items[17].q,/<svg\b/);assert.match(items[18].q,/<svg\b/);
 });
+
+test('2026 June short answers match the supplied answer key and are included in the mixed paper', () => {
+  const shorts=JSON.parse(readFileSync(path.join(root,'math/transcriptions/2026-06-short-text.json'),'utf8'));
+  const ctx={window:{}};vm.runInNewContext(readFileSync(path.join(root,'math/transcribed-2026-06-mixed.js'),'utf8'),ctx);
+  const mixed=JSON.parse(JSON.stringify(ctx.window.SEOIK_2026_06_MIXED));
+  assert.equal(shorts.length,9);assert.equal(mixed.length,25);
+  assert.deepEqual(shorts.map(q=>q.answer),[15,7,6,18,11,82,143,84,23]);
+  assert.deepEqual(shorts.map(q=>q.points),[3,3,3,3,4,4,4,4,4]);
+  assert(shorts.every((q,i)=>q.type==='short'&&q.source===`2026년 6월 고1 ${i+22}번`&&q.choices.length===0&&!/<img\b/i.test(q.q)));
+  assert.deepEqual(mixed.slice(16),shorts);assert.match(shorts[5].q,/<svg\b/);
+});
