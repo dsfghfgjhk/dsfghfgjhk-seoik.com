@@ -2634,7 +2634,7 @@ document.getElementById("notesBack").addEventListener("click", ()=>{ goTab("stud
 document.getElementById("notesPrintBtn").addEventListener("click", ()=>{
   document.body.classList.remove("print-doc", "print-graded");
   document.body.classList.add("print-notes");
-  setTimeout(()=> window.print(), 80);
+  setTimeout(()=>{ if(window.SeoikAndroid && typeof window.SeoikAndroid.print==="function") window.SeoikAndroid.print(); else window.print(); }, 80);
 });
 window.addEventListener("afterprint", ()=> document.body.classList.remove("print-notes"));
 
