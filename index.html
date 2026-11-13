@@ -4036,13 +4036,18 @@ function printSheet(){
   document.body.classList.add("pmenu-open");
 }
 function doPrint(mode){
+  // The Android WebView wrapper does not provide a native print bridge.
+  if (/Android/i.test(navigator.userAgent) && /;\s*wv\)/i.test(navigator.userAgent)) {
+    alert("현재 앱에서는 인쇄창을 열 수 없어요. Chrome에서 goatseoik.github.io/seoik.com/을 열고 같은 시험지를 선택한 뒤 인쇄해 주세요.");
+    return;
+  }
   document.body.classList.remove("pmenu-open", "ans-open", "print-doc", "print-graded");
   window.dispatchEvent(new Event("pen:leave"));
   const doc = document.getElementById("shPrintDoc");
   doc.innerHTML = printDocHTML(mode === "doc-key", mode === "graded");
   formatMathNotation(doc);
   document.body.classList.add("print-doc");
-  setTimeout(()=> window.print(), 80);
+  window.print();
 }
 window.addEventListener("afterprint", ()=>{
   document.body.classList.remove("print-doc", "print-graded");
